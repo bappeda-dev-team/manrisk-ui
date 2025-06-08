@@ -29,6 +29,7 @@ export const Modal: React.FC<modal> = ({ isOpen, onClose, children }) => {
                     className="bg-white rounded-lg px-8 py-5 z-10 w-4/5 max-h-[80%] overflow-y-auto"
                 >
                     {children}
+                    {/*  */}
                 </motion.div>
             </div>
         )

@@ -10,6 +10,7 @@ const Table = () => {
                         <th rowSpan={2} className="border-r border-b py-4 px-6 border-gray-300 min-w-[50px] text-center">No</th>
                         <th rowSpan={2} className="border-r border-b py-4 px-6 border-gray-300 min-w-[200px] text-center">Pemilik Resiko</th>
                         <th rowSpan={2} className="border-r border-b py-4 px-6 border-gray-300 min-w-[100px] text-center">Aksi</th>
+                        <th rowSpan={2} className="border-r border-b py-4 px-6 border-gray-300 min-w-[100px] text-center">ID Resiko</th>
                         <th rowSpan={2} className="border-r border-b py-4 px-6 border-gray-300 min-w-[200px] text-center">Resiko Kecurangan yang dimitigasi</th>
                         <th rowSpan={2} className="border-r border-b py-4 px-6 border-gray-300 min-w-[150px] text-center">Deskripsi/Bentuk Kegiatan Pengendalian</th>
                         <th rowSpan={2} className="border-r border-b py-4 px-6 border-gray-300 min-w-[200px] text-center">Penanggung Jawab (PIC)</th>
@@ -48,6 +49,7 @@ const Table = () => {
                                 </ButtonSkyBorder>
                             </div>
                         </td>
+                        <td className="border border-gray-700 px-6 py-4">id 2025</td>
                         <td className="border border-gray-700 px-6 py-4">penerima bantuan ada hubungan kekerabatan, pertemanan dan lain lain</td>
                         <td className="border border-gray-700 px-6 py-4 text-center">konfirmasi persiapan dan laporan pelaksanaan kegiatan</td>
                         <td className="border border-gray-700 px-6 py-4">kepala dinas pendidikan daerah</td>

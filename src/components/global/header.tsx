@@ -84,13 +84,13 @@ export const Header = () => {
               <div
                 className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-md shadow-lg min-w-[160px] z-10 flex flex-col overflow-hidden"
               >
-                <Link href="/Pemda" className="block px-4 py-2 text-gray-800 hover:bg-red-700 hover:text-white transition duration-150 ease-in-out whitespace-nowrap">
+                <Link href="/manrisk-kinerja/pemda/identifikasi" className="block px-4 py-2 text-gray-800 hover:bg-red-700 hover:text-white transition duration-150 ease-in-out whitespace-nowrap">
                   Pemda
                 </Link>
-                <Link href="/Opd" className="block px-4 py-2 text-gray-800 hover:bg-red-700 hover:text-white transition duration-150 ease-in-out whitespace-nowrap">
+                <Link href="/manrisk-kinerja/opd/identifikasi" className="block px-4 py-2 text-gray-800 hover:bg-red-700 hover:text-white transition duration-150 ease-in-out whitespace-nowrap">
                   OPD
                 </Link>
-                <Link href="/Individu" className="block px-4 py-2 text-gray-800 hover:bg-red-700 hover:text-white transition duration-150 ease-in-out whitespace-nowrap">
+                <Link href="/manrisk-kinerja/individu/identifikasi" className="block px-4 py-2 text-gray-800 hover:bg-red-700 hover:text-white transition duration-150 ease-in-out whitespace-nowrap">
                   Individu
                 </Link>
               </div>

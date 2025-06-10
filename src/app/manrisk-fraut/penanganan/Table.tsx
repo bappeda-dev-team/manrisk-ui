@@ -1,7 +1,28 @@
+'use client'
+
 import { ButtonGreenBorder, ButtonSkyBorder } from "@/components/global/button";
 import { TbPencil, TbCircleCheck } from "react-icons/tb";
+import { useState } from "react";
+import { ModalPenanganan } from "./ModalPenanganan";
+import { AlertQuestion } from "@/components/global/alert/sweetAlert2";
+import { toast } from "react-toastify";
 
 const Table = () => {
+
+    const [ModalOpen, setModalOpen] = useState<boolean>(false);
+
+    const handleModal = () => {
+        if(ModalOpen){
+            setModalOpen(false);
+        } else {
+            setModalOpen(true);
+        }
+    }
+
+    const notifikasiBerhasil = () => {
+        toast.success("Berhasil Verifikasi");
+    }
+    
     return (
         <div className="overflow-auto mt-2 rounded-t-lg border border-yellow-500">
             <table className="w-full">
@@ -28,12 +49,20 @@ const Table = () => {
                             <div className="flex flex-col gap-2 justify-center">
                                 <ButtonGreenBorder
                                     className="flex items-center gap-1"
+                                    onClick={handleModal}
                                 >
                                     <TbPencil />
                                     Edit
                                 </ButtonGreenBorder>
                                 <ButtonSkyBorder
                                     className="flex items-center gap-1"
+                                    onClick={() => {
+                                        AlertQuestion("Verifikasi", "", "question", "Verifikasi", "Batal").then((result) => {
+                                            if(result.isConfirmed){
+                                                notifikasiBerhasil();
+                                            }
+                                        })
+                                    }}
                                 >
                                     <TbCircleCheck />
                                     Verifikasi
@@ -51,6 +80,10 @@ const Table = () => {
                     </tr>
                 </tbody>
             </table>
+            <ModalPenanganan 
+                isOpen={ModalOpen}
+                onClose={handleModal}
+            />
         </div>
     )
 }

@@ -1,7 +1,22 @@
+'use client'
+
 import { ButtonGreenBorder, ButtonSkyBorder } from "@/components/global/button";
 import { TbPencil, TbCircleCheck } from "react-icons/tb";
+import { useState } from "react";
+import { ModalPemantauan } from "./ModalPemantauan";
 
 const Table = () => {
+
+    const [ModalOpen, setModalOpen] = useState<boolean>(false);
+
+    const handleModal = () => {
+        if(ModalOpen){
+            setModalOpen(false);
+        } else {
+            setModalOpen(true);
+        }
+    }
+    
     return (
         <div className="overflow-auto mt-2 rounded-t-lg border border-gray-700">
             <table className="w-full">
@@ -37,6 +52,7 @@ const Table = () => {
                             <div className="flex flex-col gap-2 justify-center">
                                 <ButtonGreenBorder
                                     className="flex items-center gap-1"
+                                    onClick={handleModal}
                                 >
                                     <TbPencil />
                                     Edit
@@ -66,6 +82,10 @@ const Table = () => {
                     </tr>
                 </tbody>
             </table>
+            <ModalPemantauan 
+                isOpen={ModalOpen}
+                onClose={handleModal}
+            />
         </div>
     )
 }

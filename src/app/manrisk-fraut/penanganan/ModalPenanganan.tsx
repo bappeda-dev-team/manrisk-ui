@@ -4,16 +4,16 @@ import { Modal } from "@/components/global/Modal"
 import { ButtonRed, ButtonSky } from "@/components/global/button";
 import { useState } from "react";
 import { LoadingButtonClip } from "@/components/global/loadingButton";
-import { FloatingLabelInput, FloatingLabelTextarea } from "@/components/global/input";
-import { toast } from 'react-toastify';
-import Select from "react-select";
+import Select from 'react-select';
+import { FloatingLabelTextarea, FloatingLabelInput } from "@/components/global/input";
+import { toast } from "react-toastify";
 
-interface ModalIdentifikasi {
+interface ModalPenanganan {
     isOpen: boolean;
     onClose: () => void;
 }
 
-export const ModalIdentifikasi: React.FC<ModalIdentifikasi> = ({ isOpen, onClose }) => {
+export const ModalPenanganan: React.FC<ModalPenanganan> = ({ isOpen, onClose }) => {
 
     const [Proses, setProses] = useState<boolean>(false);
 
@@ -22,8 +22,8 @@ export const ModalIdentifikasi: React.FC<ModalIdentifikasi> = ({ isOpen, onClose
     }
 
     const OptionJenisResiko = [
-        { value: "penyuapan", label: "Penyuapan" },
-        { value: "nepotisme", label: "Nepotisme" }
+        { value: "Penyuapan", label: "Penyuapan" },
+        { value: "Nepotisme", label: "Nepotisme" },
     ]
 
     return (
@@ -31,20 +31,24 @@ export const ModalIdentifikasi: React.FC<ModalIdentifikasi> = ({ isOpen, onClose
             isOpen={isOpen}
             onClose={onClose}
         >
-            <div className="w-max-[500px] py-2 border-b border-blue-500 text-center">
-                <h1 className="text-xl uppercase">Form Identifikasi</h1>
+            <div className="w-max-[500px] py-2 border-b text-center border-blue-500">
+                <h1 className="text-xl uppercase">Form Penanganan</h1>
             </div>
             <form
                 // onSubmit={handleSubmit(onSubmit)}
                 className="flex flex-col mx-5 py-5 gap-2"
             >
-                <FloatingLabelInput
-                    id="strategi"
-                    label="Strategi / Program Unit Kerja"
+                <FloatingLabelTextarea 
+                    id="existing_control"
+                    label="Existing Control"
                 />
-                <FloatingLabelTextarea
-                    id="nama_resiko_fraud"
-                    label="Nama Resikok Fraud"
+                <FloatingLabelTextarea 
+                    id="jenis_perlakuan"
+                    label="Jenis Perlakuan"
+                />
+                <FloatingLabelTextarea 
+                    id="rencana_perlakuan_resiko"
+                    label="Rencana Perlakuan Resiko"
                 />
                 <div className="flex items-center gap-1">
                     <div className="flex flex-col py-2 w-full">
@@ -63,21 +67,17 @@ export const ModalIdentifikasi: React.FC<ModalIdentifikasi> = ({ isOpen, onClose
                         />
                     </div>
                 </div>
-                <FloatingLabelTextarea
-                    id="kemungkinan_skenario_kecurangan"
-                    label="Kemungkinan Skenario Kecurangan"
+                <FloatingLabelInput 
+                    id="target_waktu"
+                    label="Target Waktu"
                 />
-                <FloatingLabelTextarea
-                    id="gejala_indikasi"
-                    label="Gejala Indikasi"
-                />
-                <FloatingLabelTextarea
-                    id="kemungkinan_pihak_terkait"
-                    label="Kemungkinan Pihak Terkait"
+                <FloatingLabelInput
+                    id="penanggung_jawab"
+                    label="Penanggung Jawab (PIC)"
                 />
                 <div className="flex flex-col gap-2 mt-3">
-                    <ButtonSky
-                        className="w-full"
+                    <ButtonSky 
+                        className="w-full" 
                         type="submit"
                         onClick={() => {
                             notifikasiBerhasil();

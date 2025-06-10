@@ -4,6 +4,8 @@ import { ButtonGreenBorder, ButtonSkyBorder } from "@/components/global/button";
 import { TbPencil, TbCircleCheck } from "react-icons/tb";
 import { ModalIdentifikasi } from "./ModalIdentifikasi";
 import { useState } from "react";
+import { AlertQuestion } from "@/components/global/alert/sweetAlert2";
+import { toast } from 'react-toastify';
 
 const Table = () => {
 
@@ -17,6 +19,10 @@ const Table = () => {
         }
     }
 
+    const cekToast = () => {
+        toast.success("Berhasil Verifikasi");
+    }
+        
     return (
         <div className="overflow-auto mt-2 rounded-t-lg border border-green-500">
             <table className="w-full">
@@ -50,6 +56,13 @@ const Table = () => {
                                 </ButtonGreenBorder>
                                 <ButtonSkyBorder
                                     className="flex items-center gap-1"
+                                    onClick ={() => {
+                                        AlertQuestion("Verifikasi", "", "question", "Verifikasi", "Batal").then((result) => {
+                                            if(result.isConfirmed){
+                                                cekToast();
+                                            }
+                                        })
+                                    }}
                                 >
                                     <TbCircleCheck />
                                     Verifikasi

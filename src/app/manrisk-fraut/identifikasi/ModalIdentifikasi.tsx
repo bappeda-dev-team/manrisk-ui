@@ -24,7 +24,7 @@ export const ModalIdentifikasi: React.FC<ModalIdentifikasi> = ({ isOpen, onClose
     const OptionJenisResiko = [
         { value: "penyuapan", label: "Penyuapan" },
         { value: "nepotisme", label: "Nepotisme" }
-    ]
+    ];
 
     return (
         <Modal

@@ -39,6 +39,7 @@ const Table = () => {
                         <th className="border-r border-b py-4 px-6 border-gray-300 min-w-[300px] text-center">Kemungkinan Skenario Kecurangan</th>
                         <th className="border-r border-b py-4 px-6 border-gray-300 min-w-[200px] text-center">Gejala / Indikasi</th>
                         <th className="border-r border-b py-4 px-6 border-gray-300 min-w-[200px] text-center">Kemungkinan Pihak Terkait</th>
+                        <th className="border-r border-b py-4 px-6 border-gray-300 min-w-[250px] text-center">Status</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -77,6 +78,12 @@ const Table = () => {
                         <td className="border border-green-500 px-6 py-4">Penerima bantuan ada hubungan kekerabatan, pertemanan dan lain-lain</td>
                         <td className="border border-green-500 px-6 py-4">Hal-hal yang tidak sesuai dengan peraturan/ ketentuan</td>
                         <td className="border border-green-500 px-6 py-4">Staff terkait & PPTK</td>
+                        <td className="border border-green-500 px-6 py-4">
+                            <div className="flex flex-col gap-2">
+                                <p className="flex items-center gap-1 bg-green-500 text-white p-1 border rounded-xl justify-center"><TbCircleCheck /> Terverivikasi</p>
+                                <p>Diverifikasi karena sudah pas</p>
+                            </div>
+                        </td>
                     </tr>
                 </tbody>
             </table>

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { LoadingButtonClip } from "../global/loadingButton";
+import { TbActivity, TbChartBar, TbFocus, TbTools } from "react-icons/tb";
 
 export const HeaderFraut = () => {
     
@@ -24,8 +25,10 @@ export const HeaderFraut = () => {
                     }
                 }}
             >
-                {LoadingHalaman === 'identifikasi' &&
+                {LoadingHalaman === 'identifikasi' ?
                     <LoadingButtonClip />
+                    :
+                    <TbFocus />
                 }
                 Identifikasi
             </button>
@@ -40,8 +43,10 @@ export const HeaderFraut = () => {
                     }
                 }}
             >
-                {LoadingHalaman === 'analisa' &&
+                {LoadingHalaman === 'analisa' ?
                     <LoadingButtonClip />
+                    :
+                    <TbChartBar />
                 }
                 Analisa
             </button>
@@ -56,8 +61,10 @@ export const HeaderFraut = () => {
                     }
                 }}
             >
-                {LoadingHalaman === 'penanganan' &&
+                {LoadingHalaman === 'penanganan' ?
                     <LoadingButtonClip />
+                    :
+                    <TbTools />
                 }
                 Penanganan
             </button>
@@ -72,8 +79,10 @@ export const HeaderFraut = () => {
                     }
                 }}
             >
-                {LoadingHalaman === 'pemantauan' &&
+                {LoadingHalaman === 'pemantauan' ?
                     <LoadingButtonClip />
+                    :
+                    <TbActivity />
                 }
                 Pemantauan
             </button>

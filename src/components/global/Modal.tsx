@@ -1,7 +1,4 @@
-'use client'
-
 import { motion } from 'framer-motion';
-import { useEffect } from 'react';
 
 interface modal {
     isOpen: boolean;
@@ -11,24 +8,6 @@ interface modal {
 }
 
 export const Modal: React.FC<modal> = ({ isOpen, onClose, children }) => {
-
-    useEffect(() => {
-        const handleEscapeKey = (event: KeyboardEvent) => {
-            if (event.key === 'Escape') {
-                event.preventDefault();
-                onClose();
-                console.log("esc di klik");
-            }
-        };
-
-        // Tambahkan event listener saat komponen di-mount
-        document.addEventListener('keydown', handleEscapeKey);
-
-        // Hapus event listener saat komponen di-unmount (cleanup)
-        return () => {
-            document.removeEventListener('keydown', handleEscapeKey);
-        };
-    }, []);
 
     if (!isOpen) {
         return null;

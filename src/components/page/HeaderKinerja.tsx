@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { LoadingButtonClip } from "../global/loadingButton";
+import { TbActivity, TbChartBar, TbFocus, TbTools } from "react-icons/tb";
 
 interface HeaderKinerja {
     jenis: "pemda" | "opd" | "individu";
@@ -52,8 +53,10 @@ export const HeaderKinerja: React.FC<HeaderKinerja> = ({ jenis }) => {
                     }
                 }}
             >
-                {LoadingHalaman === 'identifikasi' &&
+                {LoadingHalaman === 'identifikasi' ?
                     <LoadingButtonClip />
+                    :
+                    <TbFocus />
                 }
                 Identifikasi
             </button>
@@ -92,8 +95,10 @@ export const HeaderKinerja: React.FC<HeaderKinerja> = ({ jenis }) => {
                     }
                 }}
             >
-                {LoadingHalaman === 'analisa' &&
+                {LoadingHalaman === 'analisa' ?
                     <LoadingButtonClip />
+                    :
+                    <TbChartBar />
                 }
                 Analisa
             </button>
@@ -132,8 +137,10 @@ export const HeaderKinerja: React.FC<HeaderKinerja> = ({ jenis }) => {
                     }
                 }}
             >
-                {LoadingHalaman === 'penanganan' &&
+                {LoadingHalaman === 'penanganan' ?
                     <LoadingButtonClip />
+                    :
+                    <TbTools />
                 }
                 Penanganan
             </button>
@@ -172,8 +179,10 @@ export const HeaderKinerja: React.FC<HeaderKinerja> = ({ jenis }) => {
                     }
                 }}
             >
-                {LoadingHalaman === 'pemantauan' &&
+                {LoadingHalaman === 'pemantauan' ?
                     <LoadingButtonClip />
+                    :
+                    <TbActivity />
                 }
                 Pemantauan
             </button>

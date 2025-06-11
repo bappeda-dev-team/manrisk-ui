@@ -3,6 +3,7 @@ import "./globals.css";
 import { Header } from "@/components/global/header";
 import NextTopLoader from "nextjs-toploader";
 import ToastProvider from "@/components/global/provider/toast";
+import { BrandingProvider } from "@/components/context/BrandingContext";
 
 const font = Poppins({
   subsets: ['latin'],
@@ -30,17 +31,19 @@ export default function RootLayout({
       <body
         className={`${font.className} antialiased`}
       >
-        <NextTopLoader
-          color="red"
-          showSpinner={false}
-        />
-        <header>
-          <Header />
-        </header>
-        <div className="pt-[90px] px-5 pb-5">
-          {children}
-          <ToastProvider />
-        </div>
+        <BrandingProvider>
+          <NextTopLoader
+            color="red"
+            showSpinner={false}
+          />
+          <header>
+            <Header />
+          </header>
+          <div className="pt-[90px] px-5 pb-5">
+            {children}
+            <ToastProvider />
+          </div>
+        </BrandingProvider>
       </body>
     </html>
   );

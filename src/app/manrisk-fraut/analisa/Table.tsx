@@ -39,6 +39,7 @@ const Table = () => {
                         <th colSpan={2} className="border-r border-b py-2 px-6 border-gray-300 min-w-[200px] text-center">Skala Resiko Sebelum</th>
                         <th rowSpan={2} className="border-r border-b py-4 px-6 border-gray-300 min-w-[50px] text-center">Tingkat Resiko</th>
                         <th rowSpan={2} className="border-r border-b py-4 px-6 border-gray-300 min-w-[100px] text-center">Level Resiko</th>
+                        <th rowSpan={2} className="border-r border-b py-4 px-6 border-gray-300 min-w-[250px] text-center">Status</th>
                     </tr>
                     <tr className="text-white bg-blue-700">
                         <th rowSpan={2} className="border-r border-b py-2 px-4 border-gray-300 min-w-[100px] text-center">Dampak</th>
@@ -82,6 +83,12 @@ const Table = () => {
                         <td className="border border-blue-500 px-6 py-4 text-center">3</td>
                         <td className="border border-blue-500 px-6 py-4 text-center">3</td>
                         <td className="border border-blue-500 px-6 py-4 text-center">Sedang</td>
+                        <td className="border border-green-500 px-6 py-4">
+                            <div className="flex flex-col gap-2">
+                                <p className="flex items-center gap-1 bg-green-500 text-white p-1 border rounded-xl justify-center"><TbCircleCheck /> Terverivikasi</p>
+                                <p>Diverifikasi karena sudah pas</p>
+                            </div>
+                        </td>
                     </tr>
                 </tbody>
             </table>

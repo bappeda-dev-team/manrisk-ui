@@ -9,7 +9,7 @@ const ManriskFrautAnalisa = () => {
             <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-2 uppercase font-bold text-2xl">
                     <TbAlertTriangle />
-                    <h1> manrisk fraud - identifikasi </h1>
+                    <h1> manrisk fraud - Analisa </h1>
                 </div>
                 <Table />
             </div>

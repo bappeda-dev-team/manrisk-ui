@@ -84,7 +84,25 @@ export const HeaderSpbe = () => {
                     :
                     <TbActivity />
                 }
-                Pemantauan
+                Pemantauan RTP
+            </button>
+            <button 
+                className={`flex items-center gap-1 py-1 px-3 border rounded-lg cursor-pointer ${url === '/manrisk-spbe/hasil-pemantauan' ? "bg-gray-700 border-gray-700 text-white" : "border-gray-700 text-gray-700 hover:bg-gray-700 hover:text-white"}`}
+                onClick={() => {
+                    if(url != 'manrisk-spbe/hasil-pemantauan'){
+                        router.push("/manrisk-spbe/hasil-pemantauan");
+                        setLoadingHalaman('hasil-pemantauan');
+                    } else {
+                        setLoadingHalaman('');
+                    }
+                }}
+            >
+                {LoadingHalaman === 'hasil-pemantauan' ?
+                    <LoadingButtonClip />
+                    :
+                    <TbActivity />
+                }
+                Hasil Pemantauan
             </button>
         </div>
     )

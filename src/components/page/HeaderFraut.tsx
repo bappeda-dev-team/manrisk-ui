@@ -66,7 +66,7 @@ export const HeaderFraut = () => {
                     :
                     <TbTools />
                 }
-                Penanganan
+                Pengendalian
             </button>
             <button 
                 className={`flex items-center gap-1 py-1 px-3 border rounded-lg cursor-pointer ${url === '/manrisk-fraut/pemantauan' ? "bg-gray-700 border-gray-700 text-white" : "border-gray-700 text-gray-700 hover:bg-gray-700 hover:text-white"}`}
@@ -84,7 +84,25 @@ export const HeaderFraut = () => {
                     :
                     <TbActivity />
                 }
-                Pemantauan
+                Pemantauan RTP
+            </button>
+            <button 
+                className={`flex items-center gap-1 py-1 px-3 border rounded-lg cursor-pointer ${url === '/manrisk-fraut/hasil-pemantauan' ? "bg-gray-700 border-gray-700 text-white" : "border-gray-700 text-gray-700 hover:bg-gray-700 hover:text-white"}`}
+                onClick={() => {
+                    if(url != 'manrisk-fraut/hasil-pemantauan'){
+                        router.push("/manrisk-fraut/hasil-pemantauan");
+                        setLoadingHalaman('hasil-pemantauan');
+                    } else {
+                        setLoadingHalaman('');
+                    }
+                }}
+            >
+                {LoadingHalaman === 'hasil-pemantauan' ?
+                    <LoadingButtonClip />
+                    :
+                    <TbActivity />
+                }
+                Hasil Pemantauan
             </button>
         </div>
     )

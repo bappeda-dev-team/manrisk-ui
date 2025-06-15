@@ -111,7 +111,7 @@ export const Header = () => {
                       `}
           >
             <TbAlertTriangle />
-            Manrisk Fraut
+            Manrisk Fraud
           </Link>
           <Link 
             href='/manrisk-spbe/identifikasi' 

@@ -4,93 +4,84 @@ import React, { useState } from 'react';
 import Select from 'react-select';
 
 interface Input {
-    id: string;
-    className?: string;
-    label: string;
+  id: string;
+  className?: string;
+  label: string;
+  type?: "number" | "text" | "email" | "password";
+  disable?: boolean;
 }
 interface Textarea {
-    id: string;
-    label: string;
-    rows?: number;
+  id: string;
+  label: string;
+  rows?: number;
 }
 interface SelectType {
-    id: string;
-    label: string;
-    options: { value: string; label: string }[];
-    defaultValue?: { value: string; label: string } | null;
-    onChange?: (option: any) => void;
+  id: string;
+  label: string;
+  options: { value: string; label: string }[];
+  defaultValue?: { value: string; label: string } | null;
+  onChange?: (option: any) => void;
 }
 
-export const FloatingLabelInput:React.FC<Input> = ({ id, label, className }) => {
-  const [inputValue, setInputValue] = useState('');
-  const [isFocused, setIsFocused] = useState(false);
-
-  const handleInputChange = (e: any) => {
-    setInputValue(e.target.value);
-  };
-
-  const handleFocus = () => {
-    setIsFocused(true);
-  };
-
-  const handleBlur = () => {
-    setIsFocused(false);
-  };
-
-  // Determine if the label should "float"
-  const shouldFloat = isFocused || inputValue;
-
+export const FloatingLabelInput: React.FC<Input> = ({
+  id,
+  label,
+  type = 'text', // nilai default untuk type
+  className,
+  disable = false,
+  ...rest
+}) => {
   return (
-    <div className="relative my-2">
+    <div className={`relative my-2 ${className}`}>
       <input
-        type="text"
         id={id}
-        value={inputValue}
-        onChange={handleInputChange}
-        onFocus={handleFocus}
-        onBlur={handleBlur}
+        type={type}
         className={`
           peer
           w-full
           px-3
           py-3
           border
-          border-gray-500
+          ${disable === true ? 
+            'border-blue-600 cursor-not-allowed'
+            :
+            'border-gray-500'
+          }
           rounded-lg
+          text-gray-800
+          bg-white
+          placeholder-transparent
           focus:outline-none
           focus:ring-2
           focus:ring-blue-500
           focus:border-transparent
-          transition-all
-          duration-300
-          ease-in-out
-          text-gray-800
-          bg-white
-          placeholder-transparent /* Hide default placeholder */
-          ${className}
+          transition-colors
+          duration-200
         `}
-        placeholder={label} // Use placeholder for accessibility and fallback
+        disabled={disable}
+        placeholder={label} 
+        {...rest}
       />
       <label
         htmlFor={id}
+        // Logika utama ada di sini dengan `peer-placeholder-shown`
         className={`
           absolute
-          left-4
-          top-3.5
+          left-3
+          -top-2.5
+          px-1
+          text-sm
           text-gray-500
-          transition-all
-          duration-300
-          ease-in-out
+          bg-white
           pointer-events-none
-          ${shouldFloat
-            ? 'top-[-0.75rem] text-xs text-blue-600 bg-white px-1'
-            : 'text-base'
-          }
-          peer-focus:top-[-0.75rem]
-          peer-focus:text-xs
+          transition-all
+          duration-200
+          peer-placeholder-shown:top-3.5
+          peer-placeholder-shown:text-base
+          peer-placeholder-shown:text-gray-500
+          peer-focus:-top-2.5
+          peer-focus:text-sm
           peer-focus:text-blue-600
-          peer-focus:bg-white
-          peer-focus:px-1
         `}
       >
         {label}
@@ -99,33 +90,12 @@ export const FloatingLabelInput:React.FC<Input> = ({ id, label, className }) => 
   );
 };
 
-export const FloatingLabelTextarea:React.FC<Textarea> = ({ id, label, rows = 3 }) => {
-  const [inputValue, setInputValue] = useState('');
-  const [isFocused, setIsFocused] = useState(false);
-
-  const handleInputChange = (e: any) => {
-    setInputValue(e.target.value);
-  };
-
-  const handleFocus = () => {
-    setIsFocused(true);
-  };
-
-  const handleBlur = () => {
-    setIsFocused(false);
-  };
-
-  // Determine if the label should "float"
-  const shouldFloat = isFocused || inputValue;
+export const FloatingLabelTextarea: React.FC<Textarea> = ({ id, label, rows = 3, ...rest }) => {
 
   return (
     <div className="relative my-2">
       <textarea
         id={id}
-        value={inputValue}
-        onChange={handleInputChange}
-        onFocus={handleFocus}
-        onBlur={handleBlur}
         rows={rows} // Menentukan tinggi awal textarea
         className="
           peer
@@ -147,28 +117,28 @@ export const FloatingLabelTextarea:React.FC<Textarea> = ({ id, label, rows = 3 }
           resize-y /* Izinkan pengguna mengubah ukuran secara vertikal */
           placeholder-transparent /* Hide default placeholder */
         "
-        placeholder={label} // Use placeholder for accessibility and fallback
+        placeholder={label}
+        {...rest}
       ></textarea>
       <label
         htmlFor={id}
         className={`
           absolute
-          left-4
-          top-3.5
+          left-3
+          -top-2.5
+          px-1
+          text-sm
           text-gray-500
-          transition-all
-          duration-300
-          ease-in-out
+          bg-white
           pointer-events-none
-          ${shouldFloat
-            ? 'top-[-0.75rem] text-xs text-blue-600 bg-white px-1'
-            : 'text-base'
-          }
-          peer-focus:top-[-0.75rem]
-          peer-focus:text-xs
+          transition-all
+          duration-200
+          peer-placeholder-shown:top-3.5
+          peer-placeholder-shown:text-base
+          peer-placeholder-shown:text-gray-500
+          peer-focus:-top-2.5
+          peer-focus:text-sm
           peer-focus:text-blue-600
-          peer-focus:bg-white
-          peer-focus:px-1
         `}
       >
         {label}
@@ -177,7 +147,7 @@ export const FloatingLabelTextarea:React.FC<Textarea> = ({ id, label, rows = 3 }
   );
 };
 
-export const FloatingLabelSelect:React.FC<SelectType> = ({ id, label, options, defaultValue, onChange }) => {
+export const FloatingLabelSelect: React.FC<SelectType> = ({ id, label, options, defaultValue, onChange }) => {
   const [selectedValue, setSelectedValue] = useState(defaultValue || null);
   const [isFocused, setIsFocused] = useState(false);
 

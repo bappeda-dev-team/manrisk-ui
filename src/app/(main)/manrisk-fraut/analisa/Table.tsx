@@ -11,10 +11,17 @@ const Table = () => {
 
     const [ModalOpen, setModalOpen] = useState<boolean>(false);
 
-    const handleModal = () => {
+    const [NamaPemilikResiko, setNamaPemilikResiko] = useState<string>('');
+    const [TahapProsesBisnis, setTahapProsesBisnis] = useState<string>('');
+
+    const handleModal = (nama: string, tahap: string) => {
         if (ModalOpen) {
+            setNamaPemilikResiko("");
+            setTahapProsesBisnis("");
             setModalOpen(false);
         } else {
+            setNamaPemilikResiko(nama);
+            setTahapProsesBisnis(tahap);
             setModalOpen(true);
         }
     }
@@ -29,16 +36,16 @@ const Table = () => {
                 <thead>
                     <tr className="text-white bg-blue-500">
                         <th rowSpan={2} className="border-r border-b py-4 px-6 border-gray-300 min-w-[50px] text-center">No</th>
-                        <th rowSpan={2} className="border-r border-b py-4 px-6 border-gray-300 min-w-[200px] text-center">Pemilik Resiko</th>
+                        <th rowSpan={2} className="border-r border-b py-4 px-6 border-gray-300 min-w-[200px] text-center">Pemilik Risiko</th>
                         <th rowSpan={2} className="border-r border-b py-4 px-6 border-gray-300 min-w-[100px] text-center">Aksi</th>
                         <th rowSpan={2} className="border-r border-b py-4 px-6 border-gray-300 min-w-[200px] text-center">Tahap Proses Bisnis</th>
-                        <th rowSpan={2} className="border-r border-b py-4 px-6 border-gray-300 min-w-[150px] text-center">ID Resiko</th>
-                        <th rowSpan={2} className="border-r border-b py-4 px-6 border-gray-300 min-w-[300px] text-center">Nama Resiko Fraut</th>
+                        <th rowSpan={2} className="border-r border-b py-4 px-6 border-gray-300 min-w-[150px] text-center">ID Risiko</th>
+                        <th rowSpan={2} className="border-r border-b py-4 px-6 border-gray-300 min-w-[300px] text-center">Nama Risiko Fraut</th>
                         <th rowSpan={2} className="border-r border-b py-4 px-6 border-gray-300 min-w-[200px] text-center">Penyebab</th>
                         <th rowSpan={2} className="border-r border-b py-4 px-6 border-gray-300 min-w-[200px] text-center">Akibat</th>
-                        <th colSpan={2} className="border-r border-b py-2 px-6 border-gray-300 min-w-[200px] text-center">Skala Resiko Sebelum</th>
-                        <th rowSpan={2} className="border-r border-b py-4 px-6 border-gray-300 min-w-[50px] text-center">Tingkat Resiko</th>
-                        <th rowSpan={2} className="border-r border-b py-4 px-6 border-gray-300 min-w-[100px] text-center">Level Resiko</th>
+                        <th colSpan={2} className="border-r border-b py-2 px-6 border-gray-300 min-w-[200px] text-center">Skala Risiko Sebelum</th>
+                        <th rowSpan={2} className="border-r border-b py-4 px-6 border-gray-300 min-w-[50px] text-center">Tingkat Risiko</th>
+                        <th rowSpan={2} className="border-r border-b py-4 px-6 border-gray-300 min-w-[100px] text-center">Level Risiko</th>
                         <th rowSpan={2} className="border-r border-b py-4 px-6 border-gray-300 min-w-[250px] text-center">Status</th>
                     </tr>
                     <tr className="text-white bg-blue-700">
@@ -54,7 +61,7 @@ const Table = () => {
                             <div className="flex flex-col gap-2 justify-center">
                                 <ButtonGreenBorder
                                     className="flex items-center gap-1"
-                                    onClick={handleModal}
+                                    onClick={() => handleModal("Sekretaris Daerah", "Kegiatan bantuan beasiswa mahasiswa (BBM)")}
                                 >
                                     <TbPencil />
                                     Edit
@@ -92,10 +99,14 @@ const Table = () => {
                     </tr>
                 </tbody>
             </table>
-            <ModalAnalisa
-                isOpen={ModalOpen}
-                onClose={handleModal}
-            />
+            {ModalOpen &&
+                <ModalAnalisa
+                    isOpen={ModalOpen}
+                    onClose={() => handleModal("", "")}
+                    nama_pemilik={NamaPemilikResiko}
+                    tahap_proses_bisnis={TahapProsesBisnis}
+                />
+            }
         </div>
     )
 }

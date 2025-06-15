@@ -29,14 +29,14 @@ const Table = () => {
                 <thead>
                     <tr className="text-white bg-yellow-500">
                         <th className="border-r border-b py-4 px-6 border-gray-300 min-w-[50px] text-center">No</th>
-                        <th className="border-r border-b py-4 px-6 border-gray-300 min-w-[200px] text-center">Pemilik Resiko</th>
+                        <th className="border-r border-b py-4 px-6 border-gray-300 min-w-[200px] text-center">Pemilik Risiko</th>
                         <th className="border-r border-b py-4 px-6 border-gray-300 min-w-[100px] text-center">Aksi</th>
                         <th className="border-r border-b py-4 px-6 border-gray-300 min-w-[200px] text-center">Tahap Proses Bisnis</th>
-                        <th className="border-r border-b py-4 px-6 border-gray-300 min-w-[150px] text-center">ID Resiko</th>
+                        <th className="border-r border-b py-4 px-6 border-gray-300 min-w-[150px] text-center">ID Risiko</th>
                         <th className="border-r border-b py-4 px-6 border-gray-300 min-w-[200px] text-center">Existing Control / Internal Control</th>
-                        <th className="border-r border-b py-4 px-6 border-gray-300 min-w-[200px] text-center">Jenis Perlakuan Resiko</th>
-                        <th className="border-r border-b py-4 px-6 border-gray-300 min-w-[200px] text-center">Rencana Perlakuan Resiko</th>
-                        <th className="border-r border-b py-4 px-6 border-gray-300 min-w-[200px] text-center">Biaya Perlakuan Resiko</th>
+                        <th className="border-r border-b py-4 px-6 border-gray-300 min-w-[200px] text-center">Jenis Perlakuan Risiko</th>
+                        <th className="border-r border-b py-4 px-6 border-gray-300 min-w-[200px] text-center">Rencana Perlakuan Risiko</th>
+                        <th className="border-r border-b py-4 px-6 border-gray-300 min-w-[200px] text-center">Biaya Perlakuan Risiko</th>
                         <th className="border-r border-b py-4 px-6 border-gray-300 min-w-[200px] text-center">Target Waktu</th>
                         <th className="border-r border-b py-4 px-6 border-gray-300 min-w-[200px] text-center">Penanggung Jawab (PIC)</th>
                         <th className="border-r border-b py-4 px-6 border-gray-300 min-w-[250px] text-center">Status</th>

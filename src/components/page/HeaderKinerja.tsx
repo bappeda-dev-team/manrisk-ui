@@ -184,7 +184,49 @@ export const HeaderKinerja: React.FC<HeaderKinerja> = ({ jenis }) => {
                     :
                     <TbActivity />
                 }
-                Pemantauan
+                Pemantauan RTP
+            </button>
+            <button
+                className={`flex items-center gap-1 py-1 px-3 border rounded-lg cursor-pointer 
+                    ${(
+                        url === '/manrisk-kinerja/pemda/hasil-pemantauan' ||
+                        url === '/manrisk-kinerja/opd/hasil-pemantauan' ||
+                        url === '/manrisk-kinerja/individu/hasil-pemantauan'
+                    ) ? "bg-gray-700 border-gray-700 text-white" : "border-gray-700 text-gray-700 hover:bg-gray-700 hover:text-white"}
+                `}
+                onClick={() => {
+                    if(jenis === 'pemda'){
+                        if (url != 'manrisk-kinerja/pemda/hasil-pemantauan') {
+                            router.push("/manrisk-kinerja/pemda/hasil-pemantauan");
+                            setLoadingHalaman('hasil-pemantauan');
+                        } else {
+                            setLoadingHalaman('');
+                        }
+                    }
+                    if(jenis === 'opd'){
+                        if (url != 'manrisk-kinerja/opd/hasil-pemantauan') {
+                            router.push("/manrisk-kinerja/opd/hasil-pemantauan");
+                            setLoadingHalaman('hasil-pemantauan');
+                        } else {
+                            setLoadingHalaman('');
+                        }
+                    }
+                    if(jenis === 'individu'){
+                        if (url != 'manrisk-kinerja/individu/hasil-pemantauan') {
+                            router.push("/manrisk-kinerja/individu/hasil-pemantauan");
+                            setLoadingHalaman('hasil-pemantauan');
+                        } else {
+                            setLoadingHalaman('');
+                        }
+                    }
+                }}
+            >
+                {LoadingHalaman === 'hasil-pemantauan' ?
+                    <LoadingButtonClip />
+                    :
+                    <TbActivity />
+                }
+                Hasil Pemantauan
             </button>
         </div>
     )

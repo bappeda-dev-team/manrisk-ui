@@ -4,7 +4,7 @@ import { ButtonGreenBorder, ButtonSkyBorder } from "@/components/global/button";
 import { TbPencil, TbCircleCheck } from "react-icons/tb";
 import { ModalIdentifikasi } from "./ModalIdentifikasi";
 import React, { useState } from "react";
-import { AlertQuestion } from "@/components/global/alert/sweetAlert2";
+import { AlertVerifikasi } from "@/components/global/alert/sweetAlert2";
 import { toast } from 'react-toastify';
 import { Status } from "@/components/page/Status";
 
@@ -92,6 +92,14 @@ const Table = () => {
             setDataToEdit(data);
         }
     }
+    const handleVerifikasi = (id: number, k: string) => {
+        const payload = {
+            id: id,
+            keterangan: k,
+        };
+        console.log(payload);
+        toast.success("Dokumen berhasil diverifikasi!");
+    }
 
     return (
         <div className="overflow-auto mt-2 rounded-t-lg border border-green-500">
@@ -129,9 +137,11 @@ const Table = () => {
                                     <ButtonSkyBorder
                                         className="flex items-center gap-1"
                                         onClick={() => {
-                                            AlertQuestion("Verifikasi", "", "question", "Verifikasi", "Batal").then((result) => {
+                                            AlertVerifikasi("Verifikasi", "masukkan keterangan", "question", "Verifikasi", "Tolak", "Batal").then((result) => {
                                                 if (result.isConfirmed) {
-                                                    toast.success("Berhasil Verifikasi");
+                                                    handleVerifikasi(data.id_resiko, result?.value.keterangan);
+                                                } else if (result.isDenied) {
+                                                    toast.success("Berhasi Ditolak");
                                                 }
                                             })
                                         }}
@@ -150,7 +160,7 @@ const Table = () => {
                             <td className="border border-green-500 px-6 py-4">{data.gejala_indikasi || "-"}</td>
                             <td className="border border-green-500 px-6 py-4">{data.kemungkinan_pihak_terkait || "-"}</td>
                             <td className="border border-green-500 px-6 py-4">
-                                <Status 
+                                <Status
                                     status={data.status}
                                     catatan={data.catatan_status}
                                 />

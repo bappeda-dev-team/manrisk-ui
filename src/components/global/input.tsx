@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react';
-import Select from 'react-select';
+import Select, { Props as SelectProps } from 'react-select';
 
 interface Input {
   id: string;
@@ -15,12 +15,11 @@ interface Textarea {
   label: string;
   rows?: number;
 }
-interface SelectType {
+interface FloatingLabelSelectProps extends SelectProps {
   id: string;
   label: string;
-  options: { value: string; label: string }[];
-  defaultValue?: { value: string; label: string } | null;
-  onChange?: (option: any) => void;
+  className?: string;
+  disable?: boolean;
 }
 
 export const FloatingLabelInput: React.FC<Input> = ({
@@ -147,132 +146,134 @@ export const FloatingLabelTextarea: React.FC<Textarea> = ({ id, label, rows = 3,
   );
 };
 
-export const FloatingLabelSelect: React.FC<SelectType> = ({ id, label, options, defaultValue, onChange }) => {
-  const [selectedValue, setSelectedValue] = useState(defaultValue || null);
-  const [isFocused, setIsFocused] = useState(false);
-
-  const handleSelectChange = (option: any) => {
-    setSelectedValue(option);
-    if (onChange) {
-      onChange(option);
-    }
-  };
-
-  const handleFocus = () => {
-    setIsFocused(true);
-  };
-
-  const handleBlur = () => {
-    setIsFocused(false);
-  };
-
-  // Determine if the label should "float"
-  // It floats if it's focused OR if there's a selected value
-  const shouldFloat = isFocused || selectedValue;
-
-  // Custom styles for react-select components
-  const customStyles = {
-    control: (provided: any, state: any) => ({
-      ...provided,
-      minHeight: '48px', // Sesuaikan tinggi agar sesuai dengan input/textarea
-      borderRadius: '0.5rem', // rounded-lg
-      borderColor: state.isFocused ? '#3B82F6' : '#D1D5DB', // focus:ring-2, border-gray-300
-      boxShadow: state.isFocused ? '0 0 0 2px #BFDBFE' : 'none', // focus:ring-2 (warna biru muda)
-      '&:hover': {
-        borderColor: state.isFocused ? '#3B82F6' : '#D1D5DB', // Biarkan border tetap saat hover jika tidak fokus
-      },
-      padding: '0 0.5rem', // Padding horizontal
-      transition: 'all 300ms ease-in-out', // Animasi transisi
-      backgroundColor: 'white',
-      cursor: 'pointer',
-    }),
-    valueContainer: (provided: any) => ({
-      ...provided,
-      padding: '0 8px', // Sesuaikan padding di dalam value container
-      // If label is floating, push value down a bit
-      paddingTop: shouldFloat ? '1.25rem' : '0.75rem', // Sesuaikan padding saat label floating
-      transition: 'all 300ms ease-in-out',
-    }),
-    placeholder: (provided: any) => ({
-      ...provided,
-      position: 'absolute', // Penting untuk memposisikan placeholder sebagai "label"
-      left: '8px',
-      top: shouldFloat ? '0.25rem' : '0.75rem', // Posisikan placeholder saat floating atau tidak
-      fontSize: shouldFloat ? '0.75rem' : '1rem', // Font size saat floating atau tidak
-      color: shouldFloat ? '#2563EB' : '#6B7280', // Warna saat floating atau tidak
-      backgroundColor: shouldFloat ? 'white' : 'transparent', // Latar belakang saat floating
-      padding: shouldFloat ? '0 4px' : '0', // Padding saat floating
-      transition: 'all 300ms ease-in-out',
-      pointerEvents: 'none', // Pastikan tidak mengganggu klik
-      zIndex: shouldFloat ? 2 : 1, // Agar label berada di atas
-    }),
-    singleValue: (provided: any) => ({
-      ...provided,
-      color: '#1F2937', // text-gray-800
-      marginTop: shouldFloat ? '0.5rem' : '0', // Adjust value position when label floats
-    }),
-    indicatorSeparator: (provided: any) => ({
-      ...provided,
-      display: 'none', // Sembunyikan garis pemisah indikator
-    }),
-    dropdownIndicator: (provided: any) => ({
-      ...provided,
-      color: '#6B7280', // text-gray-500
-    }),
-    menu: (provided: any) => ({
-      ...provided,
-      borderRadius: '0.5rem',
-      zIndex: 9999, // Pastikan menu muncul di atas elemen lain
-    }),
-    option: (provided: any, state: any) => ({
-      ...provided,
-      backgroundColor: state.isSelected ? '#BFDBFE' : state.isFocused ? '#E5E7EB' : 'white',
-      color: '#1F2937',
-      '&:active': {
-        backgroundColor: '#DBEAFE',
-      },
-    }),
-  };
+export const FloatingLabelSelect: React.FC<FloatingLabelSelectProps> = ({
+  id,
+  label,
+  className,
+  disable = false,
+  ...rest
+}) => {
+  const [isFocused, setIsFocused] = useState(false); // State untuk melacak fokus
 
   return (
-    <div className="relative mb-6">
-      {/* Label "artifisial" yang akan bertindak sebagai floating label */}
+    <div className={`relative my-2 ${className}`}>
+      <Select
+        inputId={id} // Menggunakan inputId untuk menghubungkan label
+        isDisabled={disable}
+        classNamePrefix="react-select" // Memberikan prefix untuk styling
+        placeholder="" // Kosongkan placeholder bawaan react-select
+        onFocus={() => setIsFocused(true)} // Set isFocused menjadi true saat difokuskan
+        onBlur={() => setIsFocused(false)}   // Set isFocused menjadi false saat blur
+        styles={{
+          control: (base, state) => ({
+            ...base,
+            // Styling dasar control
+            width: '100%',
+            padding: '4px 8px', // Sesuaikan padding
+            borderRadius: '0.5rem', // rounded-lg
+            borderColor: disable ? '#2563EB' : '#6B7280', // border-blue-600 atau border-gray-500
+            borderWidth: '1px',
+            boxShadow: 'none', // Menghilangkan shadow bawaan
+
+            // Focus state
+            '&:hover': {
+              borderColor: state.isFocused ? '#3B82F6' : (disable ? '#2563EB' : '#6B7280'), // focus:border-blue-500
+            },
+            // borderColor: state.isFocused ? '#3B82F6' : (disable ? '#2563EB' : '#6B7280'), // focus:border-blue-500
+
+            // Background color
+            backgroundColor: 'white',
+            cursor: disable ? 'not-allowed' : 'default',
+          }),
+          valueContainer: (base) => ({
+            ...base,
+            paddingTop: '1px', // Sesuaikan agar ada ruang untuk label saat "floating"
+            paddingBottom: '0px',
+          }),
+          placeholder: (base) => ({
+            ...base,
+            color: 'transparent', // Sembunyikan placeholder bawaan
+          }),
+          singleValue: (base) => ({
+            ...base,
+            color: '#1F2937', // text-gray-800
+          }),
+          input: (base) => ({
+            ...base,
+            color: '#1F2937', // text-gray-800
+          }),
+          dropdownIndicator: (base) => ({
+            ...base,
+            color: '#6B7280', // Warna ikon panah
+            '&:hover': {
+              color: '#3B82F6',
+            },
+          }),
+          clearIndicator: (base) => ({
+            ...base,
+            color: '#6B7280', // Warna ikon silang
+            '&:hover': {
+              color: '#EF4444',
+            },
+          }),
+          indicatorSeparator: (base) => ({
+            ...base,
+            backgroundColor: '#D1D5DB', // Warna separator
+          }),
+          menu: (base) => ({
+            ...base,
+            zIndex: 9999, // Pastikan menu muncul di atas elemen lain
+            borderRadius: '0.5rem',
+            boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)', // Sesuaikan shadow
+          }),
+          option: (base, state) => ({
+            ...base,
+            backgroundColor: state.isSelected
+              ? '#3B82F6' // bg-blue-500 saat terpilih
+              : state.isFocused
+              ? '#EFF6FF' // bg-blue-50 saat di-hover
+              : 'white',
+            color: state.isSelected ? 'white' : '#1F2937', // Warna teks saat terpilih atau tidak
+            '&:active': {
+              backgroundColor: '#2563EB', // bg-blue-600 saat aktif
+            },
+          }),
+        }}
+        {...rest}
+      />
       <label
         htmlFor={id}
         className={`
           absolute
-          left-4
-          top-3.5
-          text-gray-500
-          transition-all
-          duration-300
-          ease-in-out
+          left-3
+          px-1
+          text-sm
+          bg-white
           pointer-events-none
-          z-10 /* Pastikan label ini di atas react-select placeholder saat tidak floating */
-          ${shouldFloat
-            ? 'top-[-0.75rem] text-xs text-blue-600 bg-white px-1'
-            : 'text-base'
+          transition-all
+          duration-200
+          ${
+            // Logika untuk label floating:
+            // Jika select memiliki nilai ATAU sedang difokuskan, label akan "mengambang" di atas
+            // Kita menggunakan state `isFocused` yang kita kelola sendiri
+            // dan `rest.value` (jika ada nilai yang dipilih)
+            (rest.value && (rest.value as any).value !== '') || isFocused // Cek apakah ada nilai atau sedang fokus
+              ? '-top-2.5'
+              : 'top-3.5'
           }
-          /* This label will mostly be hidden by the react-select placeholder when not floating */
-          /* and become the main floating label when it is */
+          ${
+            disable
+              ? 'text-gray-400' // Warna label saat disable
+              : isFocused
+              ? 'text-blue-600' // Warna saat fokus
+              : (rest.value && (rest.value as any).value !== '')
+              ? 'text-gray-600' // Warna saat ada nilai tapi tidak fokus
+              : 'text-gray-500' // Warna default
+          }
         `}
       >
         {label}
       </label>
-
-      <Select
-        id={id}
-        options={options}
-        value={selectedValue}
-        onChange={handleSelectChange}
-        onFocus={handleFocus}
-        onBlur={handleBlur}
-        styles={customStyles}
-        isClearable
-        isSearchable={true} // Opsional: apakah bisa dicari
-        classNamePrefix="react-select" // Berguna untuk menargetkan class dari luar jika diperlukan
-        placeholder={label} // Gunakan label sebagai placeholder awal
-      />
     </div>
   );
 };

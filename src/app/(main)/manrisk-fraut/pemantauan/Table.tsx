@@ -16,6 +16,23 @@ const Table = () => {
             setModalOpen(true);
         }
     }
+
+    const Data = [
+        {
+            id_resiko: 1,
+            nama_pemilik_resiko: 'Sekretaris Daerah',
+            tahap_proses_bisnis: 'Kegiatan Beasiswa Mahasiswa (BBM)',
+            nama_resiko_fraud: 'Adanya kerjasama/penyuapan kepada staf/pejabat terkait agar pendaftar mendapat bantuan beasiswa',
+            penyebab: 'Proses pengendalian lapangan belum sepenuhnya dilaksanakan',
+            akibat: 'Terjadinya ketidaksesuaian terhadap prosedur/aturan dalam pendaftaran penerimaan peserta didik baru',
+            dampak: 3,
+            kemungkinan: 3,
+            tingkat_resiko: 9,
+            level_resiko: "Sedang",
+            status: 'disetujui',
+            catatan_status: 'Sesuai dengan SOP'
+        }
+    ];
     
     return (
         <div className="overflow-auto mt-2 rounded-t-lg border border-gray-700">

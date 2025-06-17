@@ -6,14 +6,12 @@ import { ButtonRed, ButtonSky } from "@/components/global/button";
 import React, { useState, useEffect } from "react";
 import { LoadingButtonClip } from "@/components/global/loadingButton";
 import { FloatingLabelInput, FloatingLabelTextarea } from "@/components/global/input";
-import { AlertNotification } from "@/components/global/alert/sweetAlert2";
 import useToast from "@/components/global/alert/toastAlert";
 
 interface ModalAnalisa {
     isOpen: boolean;
     onClose: () => void;
-    nama_pemilik: string;
-    tahap_proses_bisnis: string;
+    data: FormValue;
 }
 
 type FormValue = {
@@ -26,18 +24,18 @@ type FormValue = {
     kemungkinan: number;
 }
 
-export const ModalAnalisa: React.FC<ModalAnalisa> = ({ isOpen, onClose, nama_pemilik, tahap_proses_bisnis }) => {
+export const ModalAnalisa: React.FC<ModalAnalisa> = ({ isOpen, onClose, data }) => {
 
     const { toastSuccess, toastError, toastInfo, toastWarning } = useToast()
     const { reset, control, handleSubmit, setValue } = useForm<FormValue>({
         defaultValues: {
-            nama_pemilik_resiko: nama_pemilik,
-            tahap_proses_bisnis: tahap_proses_bisnis,
-            nama_resiko_fraud: "",
-            penyebab: "",
-            akibat: "",
-            dampak: 0,
-            kemungkinan: 0,
+            nama_pemilik_resiko: data.nama_pemilik_resiko,
+            tahap_proses_bisnis: data.tahap_proses_bisnis,
+            nama_resiko_fraud: data.nama_resiko_fraud,
+            penyebab: data.penyebab,
+            akibat: data.akibat,
+            dampak: data.dampak,
+            kemungkinan: data.kemungkinan,
         }
     });
 
@@ -197,7 +195,7 @@ export const ModalAnalisa: React.FC<ModalAnalisa> = ({ isOpen, onClose, nama_pem
                         <div
                             className={`border border-gray-300 px-4 py-2 rounded-lg text-white
                                 ${TingkatResiko <= 4 ? "bg-green-400" : TingkatResiko <= 12 ? "bg-yellow-400" : "bg-red-400"}    
-                                `}
+                            `}
                         >
                             {TingkatResiko || "-"}
                         </div>

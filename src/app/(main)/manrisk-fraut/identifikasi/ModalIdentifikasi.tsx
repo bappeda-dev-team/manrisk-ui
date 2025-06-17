@@ -4,7 +4,7 @@ import { Modal } from "@/components/global/Modal"
 import { ButtonRed, ButtonSky } from "@/components/global/button";
 import { useEffect, useState } from "react";
 import { LoadingButtonClip } from "@/components/global/loadingButton";
-import { FloatingLabelInput, FloatingLabelTextarea } from "@/components/global/input";
+import { FloatingLabelInput, FloatingLabelTextarea, FloatingLabelSelect } from "@/components/global/input";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { toast } from 'react-toastify';
 import Select from "react-select";
@@ -148,25 +148,35 @@ export const ModalIdentifikasi: React.FC<ModalIdentifikasi> = ({ isOpen, onClose
                     name="jenis_resiko"
                     control={control}
                     render={({ field }) => (
-                        <div className="flex items-center gap-1">
-                            <div className="flex flex-col py-2 w-full">
-                                <Select
-                                    {...field}
-                                    id="jenis_resiko"
-                                    options={OptionJenisResiko}
-                                    placeholder="Pilih Jenis Resiko"
-                                    isClearable
-                                    styles={{
-                                        control: (baseStyles) => ({
-                                            ...baseStyles,
-                                            borderRadius: '8px',
-                                            borderColor: 'gray',
-                                            textAlign: 'start',
-                                        })
-                                    }}
-                                />
-                            </div>
-                        </div>
+                        // <div className="flex items-center gap-1">
+                        //     <div className="flex flex-col py-2 w-full">
+                        //         <Select
+                        //             {...field}
+                        //             id="jenis_resiko"
+                        //             options={OptionJenisResiko}
+                        //             placeholder="Pilih Jenis Resiko"
+                        //             isClearable
+                        //             styles={{
+                        //                 control: (baseStyles) => ({
+                        //                     ...baseStyles,
+                        //                     borderRadius: '8px',
+                        //                     borderColor: 'gray',
+                        //                     textAlign: 'start',
+                        //                 })
+                        //             }}
+                        //         />
+                        //     </div>
+                        // </div>
+                            <FloatingLabelSelect
+                                {...field}
+                                id="jenis_resiko"
+                                label="Jenis Resiko"
+                                options={OptionJenisResiko}
+                                isClearable
+                            // isClearable
+                            // isSearchable
+                            // disable={true} // Contoh penggunaan disable
+                            />
                     )}
                 />
                 <Controller

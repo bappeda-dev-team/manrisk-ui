@@ -4,7 +4,7 @@ import { ButtonGreenBorder, ButtonSkyBorder } from "@/components/global/button";
 import { TbPencil, TbCircleCheck } from "react-icons/tb";
 import { ModalAnalisa } from "./ModalAnalisa";
 import { useState } from "react";
-import { AlertQuestion } from "@/components/global/alert/sweetAlert2";
+import { AlertQuestion, AlertVerifikasi } from "@/components/global/alert/sweetAlert2";
 import { toast } from "react-toastify";
 import { Status } from "@/components/page/Status";
 
@@ -42,8 +42,11 @@ const Table = () => {
         }
     }
 
-    const notifikasiBerhasil = () => {
-        toast.success("Berhasil Verifikasi");
+    const handleVerifikasi = (keterangan: string) => {
+        const DataVerifikasi ={
+            keterangan: keterangan
+        }
+        console.log(DataVerifikasi);
     }
 
     const Data = [
@@ -131,11 +134,13 @@ const Table = () => {
                                     <ButtonSkyBorder
                                         className="flex items-center gap-1"
                                         onClick={() => {
-                                            AlertQuestion("Verifikasi", "", "question", "Verifikasi", "Batal").then((result) => {
+                                            AlertVerifikasi("Verifikasi", "masukkan keterangan", "question", "Verifikasi", "Tolak", "Batal").then((result) => {
                                                 if (result.isConfirmed) {
-                                                    notifikasiBerhasil();
+                                                    handleVerifikasi(result?.value.keterangan);
+                                                } else if(result.isDenied) {
+                                                    handleVerifikasi(result?.value.keterangan);
                                                 }
-                                            })
+                                            });
                                         }}
                                     >
                                         <TbCircleCheck />

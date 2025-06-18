@@ -2,7 +2,7 @@
 
 import { Modal } from "@/components/global/Modal"
 import { ButtonRed, ButtonSky } from "@/components/global/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LoadingButtonClip } from "@/components/global/loadingButton";
 import { FloatingLabelInput, FloatingLabelTextarea } from "@/components/global/input";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
@@ -11,51 +11,72 @@ import { toast } from 'react-toastify';
 interface ModalPemantauan {
     isOpen: boolean;
     onClose: () => void;
+    data: FormValue;
 }
 interface FormValue {
-    nama_resiko_fraud: string;
-    deskripsi_kegiatan_pengendalian: string;
+    id_resiko: number;
+    nama_pemilik_resiko: string;
+    resiko_kecurangan_yang_dimitigasi: string;
+    bentuk_kegiatan_pengendalian: string;
     penanggung_jawab: string;
+    rencana_waktu_pelaksanaan: string;
     realisasi_waktu_pelaksanaan: string;
     progres_tindak_lanjut: string;
-    dampak: string;
-    kemungkinan: string;
     bukti_pelaksanaan_tindak_lanjut: string;
     kendala: string;
     catatan: string;
 }
 
-export const ModalPemantauan: React.FC<ModalPemantauan> = ({ isOpen, onClose }) => {
-
+export const ModalPemantauan: React.FC<ModalPemantauan> = ({ isOpen, onClose, data }) => {
+    const DefaultValue = {
+        nama_pemilik_resiko: '',
+        resiko_kecurangan_yang_dimitigasi: '',
+        bentuk_kegiatan_pengendalian: '',
+        penanggung_jawab: '',
+        rencana_waktu_pelaksanaan: '',
+        realisasi_waktu_pelaksanaan: '',
+        progres_tindak_lanjut: '',
+        bukti_pelaksanaan_tindak_lanjut: '',
+        kendala: '',
+        catatan: '',
+    }
+    
     const { control, handleSubmit, reset } = useForm<FormValue>({
-        defaultValues: {
-            nama_resiko_fraud: '',
-            deskripsi_kegiatan_pengendalian: '',
-            penanggung_jawab: 'Otomatis dari table sebelumnya',
-            realisasi_waktu_pelaksanaan: '',
-            progres_tindak_lanjut: '',
-            dampak: '',
-            kemungkinan: '',
-            bukti_pelaksanaan_tindak_lanjut: '',
-            kendala: '',
-            catatan: ''
-        }
+        defaultValues: DefaultValue
     });
-
+    
     const [Proses, setProses] = useState<boolean>(false);
-
+    
+    useEffect(() => {
+        if (isOpen) {
+            reset({
+                nama_pemilik_resiko: data.nama_pemilik_resiko,
+                resiko_kecurangan_yang_dimitigasi: data.resiko_kecurangan_yang_dimitigasi,
+                bentuk_kegiatan_pengendalian: data.bentuk_kegiatan_pengendalian,
+                penanggung_jawab: data.penanggung_jawab,
+                rencana_waktu_pelaksanaan: data.rencana_waktu_pelaksanaan,
+                realisasi_waktu_pelaksanaan: data.realisasi_waktu_pelaksanaan,
+                progres_tindak_lanjut: data.progres_tindak_lanjut,
+                bukti_pelaksanaan_tindak_lanjut: data.bukti_pelaksanaan_tindak_lanjut,
+                kendala: data.kendala,
+                catatan: data.catatan,
+            });
+        } else {
+            reset(DefaultValue);
+        }
+    }, [isOpen])
+    
     const onSubmit: SubmitHandler<FormValue> = async (data: FormValue) => {
         const formData = {
-            nama_resiko_fraud: data.nama_resiko_fraud,
-            deskripsi_kegiatan_pengendalian: data.deskripsi_kegiatan_pengendalian,
+            resiko_kecurangan_yang_dimitigasi: data.resiko_kecurangan_yang_dimitigasi,
+            bentuk_kegiatan_pengendalian: data.bentuk_kegiatan_pengendalian,
             penanggung_jawab: data.penanggung_jawab,
+            rencana_waktu_pelaksanaan: data.rencana_waktu_pelaksanaan,
             realisasi_waktu_pelaksanaan: data.realisasi_waktu_pelaksanaan,
             progres_tindak_lanjut: data.progres_tindak_lanjut,
-            dampak: data.dampak,
-            kemungkinan: data.kemungkinan,
             bukti_pelaksanaan_tindak_lanjut: data.bukti_pelaksanaan_tindak_lanjut,
             kendala: data.kendala,
-            catatan: data.catatan
+            catatan: data.catatan,        
         }
         toast.success("Berhasil Menambahkan Data");
         console.log(formData);
@@ -69,49 +90,83 @@ export const ModalPemantauan: React.FC<ModalPemantauan> = ({ isOpen, onClose }) 
             onClose={onClose}
         >
             <div className="w-max-[500px] py-2 border-b text-center border-blue-500">
-                <h1 className="text-xl uppercase">Form Pemantauan</h1>
+                <h1 className="text-xl uppercase">Form Pemantauan RTP</h1>
             </div>
             <form
                 onSubmit={handleSubmit(onSubmit)}
                 className="flex flex-col mx-5 py-5 gap-2"
             >
-                <Controller 
-                    name="nama_resiko_fraud"
+                <Controller
+                    name="nama_pemilik_resiko"
                     control={control}
-                    render={({field}) => (
-                        <FloatingLabelTextarea
+                    render={({ field }) => (
+                        <FloatingLabelInput
                             {...field}
-                            id="nama_resiko_fraud"
-                            label="Nama Resiko Fraud"
+                            id="nama_pemilik_resiko"
+                            label="Nama Pemilik Resiko"
+                            disable
                         />
                     )}
                 />
-                <Controller 
-                    name="deskripsi_kegiatan_pengendalian"
+                <Controller
+                    name="resiko_kecurangan_yang_dimitigasi"
                     control={control}
-                    render={({field}) => (
-                        <FloatingLabelTextarea
+                    render={({ field }) => (
+                        <FloatingLabelInput
                             {...field}
-                            id="deskripsi_kegiatan_pengendalian"
-                            label="Deskripsi Kegiatan Pengendalian"
+                            id="resiko_kecurangan_yang_dimitigasi"
+                            label="Resiko Kecurangan Yang Di Mitigasi"
                         />
                     )}
                 />
-                <Controller 
+                <Controller
+                    name="bentuk_kegiatan_pengendalian"
+                    control={control}
+                    render={({ field }) => (
+                        <FloatingLabelTextarea
+                            {...field}
+                            id="bentuk_kegiatan_pengendalian"
+                            label="Bentuk Kegiatan Pengendalian"
+                        />
+                    )}
+                />
+                <Controller
+                    name="penanggung_jawab"
+                    control={control}
+                    render={({ field }) => (
+                        <FloatingLabelInput
+                            {...field}
+                            id="penanggung_jawab"
+                            label="Penanggung Jawab"
+                        />
+                    )}
+                />
+                <Controller
+                    name="rencana_waktu_pelaksanaan"
+                    control={control}
+                    render={({ field }) => (
+                        <FloatingLabelTextarea
+                            {...field}
+                            id="rencana_waktu_pelaksanaan"
+                            label="Rencana Waktu Pelaksanaan Perlakuan Resiko"
+                        />
+                    )}
+                />
+                <Controller
                     name="realisasi_waktu_pelaksanaan"
                     control={control}
-                    render={({field}) => (
+                    render={({ field }) => (
                         <FloatingLabelInput
                             {...field}
                             id="realisasi_waktu_pelaksanaan"
-                            label="Realisasi Waktu Pelaksanaan"
+                            label="Realisasi Waktu Pelaksanaan Perlakuan Resiko"
                         />
                     )}
                 />
                 <Controller
                     name="progres_tindak_lanjut"
                     control={control}
-                    render={({field}) => (
+                    render={({ field }) => (
                         <FloatingLabelInput
                             {...field}
                             id="progres_tindak_lanjut"
@@ -119,44 +174,10 @@ export const ModalPemantauan: React.FC<ModalPemantauan> = ({ isOpen, onClose }) 
                         />
                     )}
                 />
-                <div className="grid border p-2 rounded-lg grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-1">
-                    <Controller
-                        name="dampak"
-                        control={control}
-                        render={({field}) => (
-                            <FloatingLabelInput
-                                {...field}
-                                id="dampak"
-                                label="Dampak"
-                            />
-                        )}
-                    />
-                    <Controller
-                        name="kemungkinan"
-                        control={control}
-                        render={({field}) => (
-                            <FloatingLabelInput
-                                {...field}
-                                id="kemungkinan"
-                                label="Kemungkinan"
-                            />
-                        )}
-                    />
-                    <div className="flex items-center gap-1">
-                        <div className="flex flex-col py-2 w-full">
-                            <div className="border border-gray-300 px-4 py-2 rounded-lg bg-green-500 text-white">Tingkat Resiko</div>
-                        </div>
-                    </div>
-                    <div className="flex items-center gap-1">
-                        <div className="flex flex-col py-2 w-full">
-                            <div className="border border-gray-300 px-4 py-2 rounded-lg bg-green-500 text-white">Level Resiko</div>
-                        </div>
-                    </div>
-                </div>
                 <Controller
                     name="bukti_pelaksanaan_tindak_lanjut"
                     control={control}
-                    render={({field}) => (
+                    render={({ field }) => (
                         <FloatingLabelTextarea
                             {...field}
                             id="bukti_pelaksanaan_tindak_lanjut"
@@ -167,7 +188,7 @@ export const ModalPemantauan: React.FC<ModalPemantauan> = ({ isOpen, onClose }) 
                 <Controller
                     name="kendala"
                     control={control}
-                    render={({field}) => (
+                    render={({ field }) => (
                         <FloatingLabelTextarea
                             {...field}
                             id="kendala"
@@ -178,7 +199,7 @@ export const ModalPemantauan: React.FC<ModalPemantauan> = ({ isOpen, onClose }) 
                 <Controller
                     name="catatan"
                     control={control}
-                    render={({field}) => (
+                    render={({ field }) => (
                         <FloatingLabelTextarea
                             {...field}
                             id="catatan"

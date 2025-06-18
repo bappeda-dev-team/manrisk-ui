@@ -4,7 +4,7 @@ import { ButtonGreenBorder, ButtonSkyBorder } from "@/components/global/button";
 import { TbPencil, TbCircleCheck } from "react-icons/tb";
 import { useState } from "react";
 import { ModalPenanganan } from "./ModalPenanganan";
-import { AlertQuestion } from "@/components/global/alert/sweetAlert2";
+import { AlertVerifikasi } from "@/components/global/alert/sweetAlert2";
 import { toast } from "react-toastify";
 import { Status } from "@/components/page/Status";
 
@@ -37,8 +37,18 @@ const Table = () => {
         }
     }
 
-    const notifikasiBerhasil = () => {
-        toast.success("Berhasil Verifikasi");
+    const handleVerifikasi = (keterangan: string) => {
+        const DataVerifikasi = {
+            keterangan: keterangan
+        }
+        console.log(DataVerifikasi);
+        toast.success("Data Diverifikasi");
+    }
+    function formatRupiah(angka: number) {
+        if (typeof angka !== 'number') {
+            return String(angka); // Jika bukan angka, kembalikan sebagai string
+        }
+        return angka.toLocaleString('id-ID'); // 'id-ID' untuk format Indonesia
     }
 
     const Data = [
@@ -119,9 +129,11 @@ const Table = () => {
                                     <ButtonSkyBorder
                                         className="flex items-center gap-1"
                                         onClick={() => {
-                                            AlertQuestion("Verifikasi", "", "question", "Verifikasi", "Batal").then((result) => {
+                                            AlertVerifikasi("Verifikasi", "masukkan keterangan", "question", "Verifikasi", "Tolak", "Batal").then((result) => {
                                                 if (result.isConfirmed) {
-                                                    notifikasiBerhasil();
+                                                    handleVerifikasi(result?.value.keterangan);
+                                                } else if(result.isDenied){
+                                                    handleVerifikasi(result?.value.keterangan);
                                                 }
                                             })
                                         }}
@@ -136,7 +148,7 @@ const Table = () => {
                             <td className="border border-yellow-500 px-6 py-4">{data.existing_control || "-"}</td>
                             <td className="border border-yellow-500 px-6 py-4">{data.jenis_perlakuan_resiko}</td>
                             <td className="border border-yellow-500 px-6 py-4">{data.rencana_perlakuan_resiko || "-"}</td>
-                            <td className="border border-yellow-500 px-6 py-4">{data.biaya_perlakuan_resiko || "-"}</td>
+                            <td className="border border-yellow-500 px-6 py-4">Rp.{formatRupiah(data.biaya_perlakuan_resiko) || "-"}</td>
                             <td className="border border-yellow-500 px-6 py-4">{data.target_waktu || "-"}</td>
                             <td className="border border-yellow-500 px-6 py-4">{data.penanggung_jawab || "-"}</td>
                             <td className="border border-green-500 px-6 py-4">

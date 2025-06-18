@@ -69,8 +69,15 @@ export const ModalPenanganan: React.FC<ModalPenanganan> = ({ isOpen, onClose, da
             penanggung_jawab: data.penanggung_jawab
         }
         console.log(formData);
+        toast.success("Berhasil Edit Data");
         onClose();
         reset();
+    }
+    function formatRupiah(angka: number) {
+        if (typeof angka !== 'number') {
+            return String(angka); // Jika bukan angka, kembalikan sebagai string
+        }
+        return angka.toLocaleString('id-ID'); // 'id-ID' untuk format Indonesia
     }
 
     return (

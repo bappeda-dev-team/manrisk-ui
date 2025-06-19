@@ -26,7 +26,7 @@ type FormValue = {
 
 export const ModalAnalisa: React.FC<ModalAnalisa> = ({ isOpen, onClose, data }) => {
 
-    const { toastSuccess, toastError, toastInfo, toastWarning } = useToast()
+    const { toastSuccess, toastError, toastInfo, toastWarning } = useToast();
     const { reset, control, handleSubmit, setValue } = useForm<FormValue>({
         defaultValues: {
             nama_pemilik_resiko: data.nama_pemilik_resiko,

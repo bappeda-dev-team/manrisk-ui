@@ -14,6 +14,7 @@ interface Textarea {
   id: string;
   label: string;
   rows?: number;
+  disable?: boolean,
 }
 interface FloatingLabelSelectProps extends SelectProps {
   id: string;
@@ -41,7 +42,7 @@ export const FloatingLabelInput: React.FC<Input> = ({
           px-3
           py-3
           border
-          ${disable === true ? 
+          ${disable === true ?
             'border-blue-600 cursor-not-allowed'
             :
             'border-gray-500'
@@ -58,7 +59,7 @@ export const FloatingLabelInput: React.FC<Input> = ({
           duration-200
         `}
         disabled={disable}
-        placeholder={label} 
+        placeholder={label}
         {...rest}
       />
       <label
@@ -89,20 +90,24 @@ export const FloatingLabelInput: React.FC<Input> = ({
   );
 };
 
-export const FloatingLabelTextarea: React.FC<Textarea> = ({ id, label, rows = 3, ...rest }) => {
+export const FloatingLabelTextarea: React.FC<Textarea> = ({ id, label, rows = 3, disable = false, ...rest }) => {
 
   return (
     <div className="relative my-2">
       <textarea
         id={id}
         rows={rows} // Menentukan tinggi awal textarea
-        className="
+        className={`
           peer
           w-full
           px-3
           py-3
           border
-          border-gray-500
+         ${disable === true ?
+            'border-blue-600 cursor-not-allowed'
+            :
+            'border-gray-500'
+          }
           rounded-lg
           focus:outline-none
           focus:ring-2
@@ -115,8 +120,9 @@ export const FloatingLabelTextarea: React.FC<Textarea> = ({ id, label, rows = 3,
           bg-white
           resize-y /* Izinkan pengguna mengubah ukuran secara vertikal */
           placeholder-transparent /* Hide default placeholder */
-        "
+        `}
         placeholder={label}
+        disabled={disable}
         {...rest}
       ></textarea>
       <label
@@ -231,8 +237,8 @@ export const FloatingLabelSelect: React.FC<FloatingLabelSelectProps> = ({
             backgroundColor: state.isSelected
               ? '#3B82F6' // bg-blue-500 saat terpilih
               : state.isFocused
-              ? '#EFF6FF' // bg-blue-50 saat di-hover
-              : 'white',
+                ? '#EFF6FF' // bg-blue-50 saat di-hover
+                : 'white',
             color: state.isSelected ? 'white' : '#1F2937', // Warna teks saat terpilih atau tidak
             '&:active': {
               backgroundColor: '#2563EB', // bg-blue-600 saat aktif
@@ -253,22 +259,21 @@ export const FloatingLabelSelect: React.FC<FloatingLabelSelectProps> = ({
           transition-all
           duration-200
           ${
-            // Logika untuk label floating:
-            // Jika select memiliki nilai ATAU sedang difokuskan, label akan "mengambang" di atas
-            // Kita menggunakan state `isFocused` yang kita kelola sendiri
-            // dan `rest.value` (jika ada nilai yang dipilih)
-            (rest.value && (rest.value as any).value !== '') || isFocused // Cek apakah ada nilai atau sedang fokus
-              ? '-top-2.5'
-              : 'top-3.5'
+          // Logika untuk label floating:
+          // Jika select memiliki nilai ATAU sedang difokuskan, label akan "mengambang" di atas
+          // Kita menggunakan state `isFocused` yang kita kelola sendiri
+          // dan `rest.value` (jika ada nilai yang dipilih)
+          (rest.value && (rest.value as any).value !== '') || isFocused // Cek apakah ada nilai atau sedang fokus
+            ? '-top-2.5'
+            : 'top-3.5'
           }
-          ${
-            disable
-              ? 'text-gray-400' // Warna label saat disable
-              : isFocused
+          ${disable
+            ? 'text-gray-400' // Warna label saat disable
+            : isFocused
               ? 'text-blue-600' // Warna saat fokus
               : (rest.value && (rest.value as any).value !== '')
-              ? 'text-gray-600' // Warna saat ada nilai tapi tidak fokus
-              : 'text-gray-500' // Warna default
+                ? 'text-gray-600' // Warna saat ada nilai tapi tidak fokus
+                : 'text-gray-500' // Warna default
           }
         `}
       >

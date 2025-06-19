@@ -38,8 +38,9 @@ const Table = () => {
             setDataToEdit(data);
         }
     }
-    const handleVerifikasi = async(keterangan: string) => {
+    const handleVerifikasi = (id: number, keterangan: string) => {
         const DataVerifikasi = {
+            id: id,
             keterangan: keterangan,
         }
         console.log(DataVerifikasi);
@@ -101,15 +102,15 @@ const Table = () => {
                                     </ButtonGreenBorder>
                                     <ButtonSkyBorder
                                         className="flex items-center gap-1"
-                                        onClick={() => 
+                                        onClick={() => {
                                             AlertVerifikasi("Verifikasi", "masukkan keterangan", "question", "Verifikasi", "Tolak", "Batal").then((result) => {
                                                 if(result.isConfirmed){
-                                                    handleVerifikasi(result?.value.keteragan)
+                                                    handleVerifikasi(data.id_resiko, result?.value.keterangan);
                                                 } else if(result.isDenied){
-                                                    handleVerifikasi(result?.value.keteragan)
+                                                    handleVerifikasi(data.id_resiko, result?.value.keterangan);
                                                 }
                                             })
-                                        }
+                                        }}
                                     >
                                         <TbCircleCheck />
                                         Verifikasi

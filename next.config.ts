@@ -1,8 +1,17 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  output: "standalone",
+  basePath: "/manrisk",
+  assetPrefix: "/manrisk/",
   images: {
-    domains: ['cdnkk.zeabur.app'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'cdnkk.zeabur.app',
+        pathname: '**'
+      }
+    ]
   }
 };
 

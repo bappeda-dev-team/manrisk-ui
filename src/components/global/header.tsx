@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -76,8 +77,11 @@ export const Header = () => {
     { label: "Tahun 2030", value: 2030 }
   ];
   const OptionOpd = [
-    {label: 'OPD 1', value: 0}
+    { label: 'OPD 1', value: 0 }
   ];
+  const DynamicSelect = dynamic(() => import('react-select'), {
+    ssr: false, // Menonaktifkan Server-Side Rendering untuk komponen ini
+  });
 
   return (
     <nav className={`inset-x-1 m-1 ml-2 bg-white border border-gray-100 shadow-lg shadow-slate-400 rounded-xl fixed left-0 top-0 z-50 transition duration-300 ${visible ? 'translate-y-0' : '-translate-y-full'}`}>
@@ -161,8 +165,8 @@ export const Header = () => {
           </ul>
         </div>
         {/* TAHUN */}
-        {/* <div className="hidden lg:flex gap-2">
-          <Select
+        <div className="hidden lg:flex gap-2">
+          <DynamicSelect
             value={SelectedOpd}
             options={OptionOpd}
             placeholder="Pilih Perangkat Daerah"
@@ -173,7 +177,7 @@ export const Header = () => {
               })
             }}
           />
-          <Select
+          <DynamicSelect
             value={Tahun}
             options={OptionTahun}
             placeholder="Pilih Tahun"
@@ -184,7 +188,7 @@ export const Header = () => {
               })
             }}
           />
-        </div> */}
+        </div>
 
         {/* Mobile Menu Toggle */}
         <div className="lg:hidden">
@@ -202,8 +206,8 @@ export const Header = () => {
       {/* Mobile Menu Content */}
       <div className={`lg:hidden rounded-lg border border-gray-300 bg-white py-2 mt-1 absolute top-full left-0 w-full shadow-md transition ease-in-out duration-300 ${isMobileMenuOpen ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none"}`}>
         <ul className="flex flex-col items-center space-y-2 mx-2">
-          {/* <div className="flex gap-2">
-            <Select
+          <div className="flex gap-2">
+            <DynamicSelect
               value={SelectedOpd}
               options={OptionOpd}
               placeholder="Pilih Perangkat Daerah"
@@ -214,7 +218,7 @@ export const Header = () => {
                 })
               }}
             />
-            <Select
+            <DynamicSelect
               value={Tahun}
               options={OptionTahun}
               placeholder="Pilih Tahun"
@@ -225,7 +229,7 @@ export const Header = () => {
                 })
               }}
             />
-          </div> */}
+          </div>
           <div
             onClick={() => setKinerjaMobileMenu((prev) => !prev)}
             className={`w-full flex items-center justify-center gap-1 font-bold rounded-lg cursor-pointer py-1 px-5

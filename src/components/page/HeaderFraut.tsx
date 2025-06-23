@@ -15,6 +15,24 @@ export const HeaderFraut = () => {
     return(
         <div className="flex items-center gap-2 overflow-x-auto pb-1">
             <button 
+                className={`flex items-center gap-1 py-1 px-3 border rounded-lg cursor-pointer ${url === '/manrisk-fraut/rekin' ? "bg-red-500 border-red-500 text-white" : "border-red-500 text-red-500 hover:bg-red-500 hover:text-white"}`}
+                onClick={() => {
+                    if(url != '/manrisk-fraut/rekin'){
+                        router.push("/manrisk-fraut/rekin");
+                        setLoadingHalaman('rekin');
+                    } else {
+                        setLoadingHalaman('');
+                    }
+                }}
+            >
+                {LoadingHalaman === 'rekin' ?
+                    <LoadingButtonClip />
+                    :
+                    <TbFocus />
+                }
+                Daftar Rekin
+            </button>
+            <button 
                 className={`flex items-center gap-1 py-1 px-3 border rounded-lg cursor-pointer ${url === '/manrisk-fraut/identifikasi' ? "bg-green-500 border-green-500 text-white" : "border-green-500 text-green-500 hover:bg-green-500 hover:text-white"}`}
                 onClick={() => {
                     if(url != '/manrisk-fraut/identifikasi'){

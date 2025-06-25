@@ -127,7 +127,7 @@ export const Header = () => {
             </div>
 
             <Link
-              href='/manrisk-fraut/identifikasi'
+              href='/manrisk-fraut/rekin'
               className={`flex items-center gap-1 font-medium rounded-lg cursor-pointer py-1 px-5
                           ${(
                             url === '/manrisk-fraut/rekin' ||

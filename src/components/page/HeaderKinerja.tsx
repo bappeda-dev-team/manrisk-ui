@@ -142,7 +142,7 @@ export const HeaderKinerja: React.FC<HeaderKinerja> = ({ jenis }) => {
                     :
                     <TbTools />
                 }
-                Penanganan
+                Pengendalian
             </button>
             <button
                 className={`flex items-center gap-1 py-1 px-3 border rounded-lg cursor-pointer 

@@ -1,7 +1,11 @@
+'use client'
+
 import React from "react"
 import { ButtonSkyBorder, ButtonGreenBorder } from "@/components/global/button"
 import { TbPencil, TbCircleCheck } from "react-icons/tb"
 import { TableSubKegiatan } from "../../TableSubKegiatan"
+import { AlertVerifikasi } from "@/components/global/alert/sweetAlert2"
+import { toast } from "react-toastify"
 
 export const Table = () => {
 
@@ -19,10 +23,10 @@ export const Table = () => {
             }
         ]
     }
-    
+
     return (
         <>
-            <TableSubKegiatan 
+            <TableSubKegiatan
                 jenis="identifikasi"
                 subKegiatan={dataSubKegiatan.sub_kegiatan}
                 indikator={dataSubKegiatan.indikator}
@@ -33,6 +37,15 @@ export const Table = () => {
 }
 
 export const TableIdentifikasi = () => {
+
+    const handleVerifikasi = (keterangan: string) => {
+        const verifikasi = {
+            keterangan: keterangan,
+        }
+        console.log(verifikasi);
+        toast.success("Berhasil verifikasi");
+    }
+
     return (
         <div className="overflow-auto border border-green-500">
             <table className="w-full">
@@ -71,7 +84,16 @@ export const TableIdentifikasi = () => {
                                     </ButtonGreenBorder>
                                     <ButtonSkyBorder
                                         className="flex items-center gap-1"
-
+                                        onClick={() => {
+                                            AlertVerifikasi("Verifikasi", "masukkan keterangan", "question", "Verifikasi", "Tolak", "Batal").then((result) => {
+                                                if(result.isConfirmed){
+                                                    handleVerifikasi(result?.value.keterangan);
+                                                }
+                                                if(result.isDenied){
+                                                    handleVerifikasi(result?.value.keterangan);
+                                                }
+                                            })
+                                        }}
                                     >
                                         <TbCircleCheck />
                                         Verifikasi

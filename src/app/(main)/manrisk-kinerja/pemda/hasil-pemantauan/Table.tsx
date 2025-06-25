@@ -1,8 +1,21 @@
+'use client'
+
 import React from "react"
 import { ButtonSkyBorder, ButtonGreenBorder } from "@/components/global/button"
 import { TbPencil, TbCircleCheck } from "react-icons/tb"
+import { AlertVerifikasi } from "@/components/global/alert/sweetAlert2"
+import { toast } from "react-toastify"
 
 export const Table = () => {
+
+    const handleVerifikasi = (keterangan: string) => {
+        const verifikasi = {
+            keterangan: keterangan,
+        }
+        console.log(verifikasi);
+        toast.success("Berhasil verifikasi");
+    }
+
     return (
         <>
             <div className="border border-gray-700">
@@ -42,7 +55,16 @@ export const Table = () => {
                                         </ButtonGreenBorder>
                                         <ButtonSkyBorder
                                             className="flex items-center gap-1"
-
+                                            onClick={() => {
+                                                AlertVerifikasi("Verifikasi", "masukkan keterangan", "question", "Verifikasi", "Tolak", "Batal").then((result) => {
+                                                    if(result.isConfirmed){
+                                                        handleVerifikasi(result?.value.keterangan);
+                                                    }
+                                                    if(result.isDenied){
+                                                        handleVerifikasi(result?.value.keterangan);
+                                                    }
+                                                })
+                                            }}
                                         >
                                             <TbCircleCheck />
                                             Verifikasi

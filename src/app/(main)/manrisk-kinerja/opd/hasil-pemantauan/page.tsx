@@ -1,5 +1,5 @@
 import { HeaderKinerja } from "@/components/page/HeaderKinerja";
-// import Table from "./Table";
+import { Table } from "./Table";
 import Maintenance from "@/components/global/maintenance";
 import { TbAlertTriangle } from "react-icons/tb";
 
@@ -12,8 +12,10 @@ const ManriskKinerjaHasilPemantauan = () => {
                     <TbAlertTriangle />
                     <h1> manrisk kinerja - Hasil Pemantauan </h1>
                 </div>
-                {/* <Table /> */}
-                <Maintenance />
+                <div>
+                    <Table />
+                </div>
+                {/* <Maintenance /> */}
             </div>
         </div>
     )

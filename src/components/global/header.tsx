@@ -7,6 +7,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { TbSettingsCog, TbAlertTriangle, TbDeviceAnalytics } from "react-icons/tb";
 import { useBrandingContext } from "../context/BrandingContext";
+import { setTahunCookies, getOpdTahun, setOpdCookies } from "./utils/cookies";
 
 interface OptionType {
   value: number;
@@ -60,6 +61,24 @@ export const Header = () => {
       document.removeEventListener('keydown', handleEscapeKey);
     };
   }, []);
+
+  useEffect(() => {
+    const data = getOpdTahun();
+    if(data.tahun){
+      const tahun = {
+        value: data.tahun.value,
+        label: data.tahun.label,
+      }
+      setTahun(tahun);
+    }
+    if(data.opd){
+      const opd = {
+        value: data.opd.value,
+        label: data.opd.label,
+      }
+      setSelectedOpd(opd);
+    }
+  }, [])
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -164,11 +183,15 @@ export const Header = () => {
             </Link>
           </ul>
         </div>
-        {/* TAHUN */}
+        {/* OPD */}
         <div className="hidden lg:flex gap-2">
           <DynamicSelect
             value={SelectedOpd}
             options={OptionOpd}
+            onChange={(option: any) => {
+              setSelectedOpd(option);
+              setOpdCookies(option);
+            }}
             placeholder="Pilih Perangkat Daerah"
             styles={{
               control: (baseStyles: any) => ({
@@ -177,9 +200,14 @@ export const Header = () => {
               })
             }}
           />
+          {/* TAHUN */}
           <DynamicSelect
             value={Tahun}
             options={OptionTahun}
+            onChange={(option: any) => {
+              setTahun(option)
+              setTahunCookies(option);
+            }}
             placeholder="Pilih Tahun"
             styles={{
               control: (baseStyles: any) => ({

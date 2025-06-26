@@ -26,6 +26,7 @@ interface BrandingContextType {
     opd: OptionTypeString | null | undefined;
     logo: string;
     url_dashboard: string;
+    url_login: string;
     api_perencanaan: string;
     api_manrisk: string;
   }
@@ -79,6 +80,7 @@ export function BrandingProvider({ children }: Readonly<{ children: React.ReactN
           tahun: Tahun,
           opd: SelectedOpd,
           url_dashboard: url_dashboard,
+          url_login: url_login,
           api_perencanaan: api_perencanaan,
           api_manrisk: api_manrisk,
         } 

@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { TbSettingsCog, TbAlertTriangle, TbDeviceAnalytics } from "react-icons/tb";
+import { TbSettingsCog, TbAlertTriangle, TbDeviceAnalytics, TbLogout } from "react-icons/tb";
 import { useBrandingContext } from "../context/BrandingContext";
 import { setTahunCookies, getOpdTahun, setOpdCookies } from "./utils/cookies";
 
@@ -64,14 +64,14 @@ export const Header = () => {
 
   useEffect(() => {
     const data = getOpdTahun();
-    if(data.tahun){
+    if (data.tahun) {
       const tahun = {
         value: data.tahun.value,
         label: data.tahun.label,
       }
       setTahun(tahun);
     }
-    if(data.opd){
+    if (data.opd) {
       const opd = {
         value: data.opd.value,
         label: data.opd.label,
@@ -149,15 +149,15 @@ export const Header = () => {
               href='/manrisk-fraut/rekin'
               className={`flex items-center gap-1 font-medium rounded-lg cursor-pointer py-1 px-5
                           ${(
-                            url === '/manrisk-fraut/rekin' ||
-                            url === '/manrisk-fraut/identifikasi' ||
-                            url === '/manrisk-fraut/analisa' ||
-                            url === '/manrisk-fraut/penanganan' ||
-                            url === '/manrisk-fraut/pemantauan' ||
-                            url === '/manrisk-fraut/hasil-pemantauan'
-                          ) ? "text-white bg-red-500"
-                            : "hover:text-white text-red-700 hover:bg-red-700 border border-red-700"
-                          }
+                  url === '/manrisk-fraut/rekin' ||
+                  url === '/manrisk-fraut/identifikasi' ||
+                  url === '/manrisk-fraut/analisa' ||
+                  url === '/manrisk-fraut/penanganan' ||
+                  url === '/manrisk-fraut/pemantauan' ||
+                  url === '/manrisk-fraut/hasil-pemantauan'
+                ) ? "text-white bg-red-500"
+                  : "hover:text-white text-red-700 hover:bg-red-700 border border-red-700"
+                }
                         `}
             >
               <TbAlertTriangle />
@@ -167,15 +167,15 @@ export const Header = () => {
               href='/manrisk-spbe/identifikasi'
               className={`flex items-center gap-1 font-medium rounded-lg cursor-pointer py-1 px-5
                           ${(
-                            url === '/manrisk-spbe/identifikasi' ||
-                            url === '/manrisk-spbe/analisa' ||
-                            url === '/manrisk-spbe/penanganan' ||
-                            url === '/manrisk-spbe/pemantauan' ||
-                            url === '/manrisk-spbe/hasil-pemantauan'
-                          )
-                            ? "text-white bg-red-500"
-                            : "hover:text-white text-red-500 hover:bg-red-700 border border-red-500"
-                          }
+                  url === '/manrisk-spbe/identifikasi' ||
+                  url === '/manrisk-spbe/analisa' ||
+                  url === '/manrisk-spbe/penanganan' ||
+                  url === '/manrisk-spbe/pemantauan' ||
+                  url === '/manrisk-spbe/hasil-pemantauan'
+                )
+                  ? "text-white bg-red-500"
+                  : "hover:text-white text-red-500 hover:bg-red-700 border border-red-500"
+                }
                         `}
             >
               <TbDeviceAnalytics />
@@ -216,6 +216,11 @@ export const Header = () => {
               })
             }}
           />
+          {/* <Link href={branding.url_login}>
+            <button className="border p-1 flex items-center justify-center rounded-full text-red-500 border-red-500 cursor-pointer hover:bg-red-500 hover:text-white">
+              <TbLogout />
+            </button>
+          </Link> */}
         </div>
 
         {/* Mobile Menu Toggle */}
@@ -273,11 +278,11 @@ export const Header = () => {
               href='/manrisk-kinerja/pemda/identifikasi'
               className={`w-full text-center py-1 px-5 rounded-lg
                           ${(
-                            url === '/manrisk-kinerja/pemda/identifikasi' ||
-                            url === '/manrisk-kinerja/pemda/analisa' ||
-                            url === '/manrisk-kinerja/pemda/penanganan' ||
-                            url === '/manrisk-kinerja/pemda/pemantauan'
-                          ) ? "text-white bg-red-500" : "hover:text-white text-red-500 hover:bg-red-700 border border-red-300"}
+                  url === '/manrisk-kinerja/pemda/identifikasi' ||
+                  url === '/manrisk-kinerja/pemda/analisa' ||
+                  url === '/manrisk-kinerja/pemda/penanganan' ||
+                  url === '/manrisk-kinerja/pemda/pemantauan'
+                ) ? "text-white bg-red-500" : "hover:text-white text-red-500 hover:bg-red-700 border border-red-300"}
                         `}
             >
               Pemda
@@ -286,11 +291,11 @@ export const Header = () => {
               href='/manrisk-kinerja/opd/identifikasi'
               className={`w-full text-center py-1 px-5 rounded-lg
                             ${(
-                              url === '/manrisk-kinerja/opd/identifikasi' ||
-                              url === '/manrisk-kinerja/opd/analisa' ||
-                              url === '/manrisk-kinerja/opd/penanganan' ||
-                              url === '/manrisk-kinerja/opd/pemantauan'
-                            ) ? "text-white bg-red-500" : "hover:text-white text-red-500 hover:bg-red-700 border border-red-300"}
+                  url === '/manrisk-kinerja/opd/identifikasi' ||
+                  url === '/manrisk-kinerja/opd/analisa' ||
+                  url === '/manrisk-kinerja/opd/penanganan' ||
+                  url === '/manrisk-kinerja/opd/pemantauan'
+                ) ? "text-white bg-red-500" : "hover:text-white text-red-500 hover:bg-red-700 border border-red-300"}
                           `}
             >
               OPD
@@ -299,11 +304,11 @@ export const Header = () => {
               href='/manrisk-kinerja/individu/identifikasi'
               className={`w-full text-center py-1 px-5 rounded-lg
                           ${(
-                            url === '/manrisk-kinerja/individu/identifikasi' ||
-                            url === '/manrisk-kinerja/individu/analisa' ||
-                            url === '/manrisk-kinerja/individu/penanganan' ||
-                            url === '/manrisk-kinerja/individu/pemantauan'
-                          ) ? "text-white bg-red-500" : "hover:text-white text-red-500 hover:bg-red-700 border border-red-300"}
+                  url === '/manrisk-kinerja/individu/identifikasi' ||
+                  url === '/manrisk-kinerja/individu/analisa' ||
+                  url === '/manrisk-kinerja/individu/penanganan' ||
+                  url === '/manrisk-kinerja/individu/pemantauan'
+                ) ? "text-white bg-red-500" : "hover:text-white text-red-500 hover:bg-red-700 border border-red-300"}
                         `}
             >
               Individu
@@ -313,25 +318,25 @@ export const Header = () => {
             href='/manrisk-fraut/identifikasi'
             className={`w-full flex items-center justify-center gap-1 font-bold rounded-lg cursor-pointer py-1 px-5
                         ${(
-                          url === '/manrisk-fraut/identifikasi' ||
-                          url === '/manrisk-fraut/analisa' ||
-                          url === '/manrisk-fraut/penanganan' ||
-                          url === '/manrisk-fraut/pemantauan'
-                        ) ? "text-white bg-red-500" : "hover:text-white text-red-500 hover:bg-red-700 border border-red-300"}
+                url === '/manrisk-fraut/identifikasi' ||
+                url === '/manrisk-fraut/analisa' ||
+                url === '/manrisk-fraut/penanganan' ||
+                url === '/manrisk-fraut/pemantauan'
+              ) ? "text-white bg-red-500" : "hover:text-white text-red-500 hover:bg-red-700 border border-red-300"}
                       `}
           >
             <TbAlertTriangle />
-            Manrisk Fraut
+            Manrisk Fraud
           </Link>
           <Link
             href='/manrisk-spbe/identifikasi'
             className={`w-full flex items-center justify-center gap-1 font-bold rounded-lg cursor-pointer py-1 px-5
                         ${(
-                          url === '/manrisk-spbe/identifikasi' ||
-                          url === '/manrisk-spbe/analisa' ||
-                          url === '/manrisk-spbe/penanganan' ||
-                          url === '/manrisk-spbe/pemantauan'
-                        ) ? "text-white bg-red-500" : "hover:text-white text-red-500 hover:bg-red-700 border border-red-500"}
+                url === '/manrisk-spbe/identifikasi' ||
+                url === '/manrisk-spbe/analisa' ||
+                url === '/manrisk-spbe/penanganan' ||
+                url === '/manrisk-spbe/pemantauan'
+              ) ? "text-white bg-red-500" : "hover:text-white text-red-500 hover:bg-red-700 border border-red-500"}
                       `}
           >
             <TbDeviceAnalytics />

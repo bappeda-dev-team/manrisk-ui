@@ -7,57 +7,78 @@ import React, { useState, useEffect } from "react";
 import { LoadingButtonClip } from "@/components/global/loadingButton";
 import { FloatingLabelInput, FloatingLabelTextarea } from "@/components/global/input";
 import useToast from "@/components/global/alert/toastAlert";
+import { postAnalisa } from "./hook/hookAnalisa";
 
 interface ModalAnalisa {
     isOpen: boolean;
     onClose: () => void;
+    onSuccess: () => void;
     data: FormValue;
+    jenis: "baru" | "edit" | "";
 }
 
 type FormValue = {
-    nama_pemilik_resiko: string;
-    tahap_proses_bisnis: string;
-    nama_resiko_fraud: string;
-    penyebab: string;
-    akibat: string;
-    dampak: number;
-    kemungkinan: number;
+    nama_pegawai?: string;
+    nama_rencana_kinerja?: string;
+    pegawai_id?: string;
+
+    id_rencana_kinerja: string,
+    nama_risiko: string,
+    penyebab: string,
+    akibat: string,
+    skala_dampak: number,
+    skala_kemungkinan: number,
+    pembuat: {
+        nama: string,
+        nip: string,
+        golongan: string
+    }
 }
 
-export const ModalAnalisa: React.FC<ModalAnalisa> = ({ isOpen, onClose, data }) => {
+interface PostAnalisaResponse {
+    message: string;
+}
+
+export const ModalAnalisa: React.FC<ModalAnalisa> = ({ isOpen, onClose, onSuccess, data, jenis }) => {
 
     const { toastSuccess, toastError, toastInfo, toastWarning } = useToast();
+    const [
+        triggerPostAnalisa, // Ini adalah fungsi yang akan Anda panggil untuk memicu POST
+        { data: postResponseData, proses: postProses, error: postError, message: postMessage }
+    ] = postAnalisa<FormValue, PostAnalisaResponse>(jenis === 'baru' ? '/analisa' : `/analisa/${data.id_rencana_kinerja}`, jenis);
+
     const { reset, control, handleSubmit, setValue } = useForm<FormValue>({
         defaultValues: {
-            nama_pemilik_resiko: data.nama_pemilik_resiko,
-            tahap_proses_bisnis: data.tahap_proses_bisnis,
-            nama_resiko_fraud: data.nama_resiko_fraud,
+            nama_pegawai: data.nama_pegawai,
+            nama_rencana_kinerja: data.nama_rencana_kinerja,
+            pegawai_id: data.pegawai_id,
+            id_rencana_kinerja: data.id_rencana_kinerja,
+            nama_risiko: data.nama_risiko,
             penyebab: data.penyebab,
             akibat: data.akibat,
-            dampak: data.dampak,
-            kemungkinan: data.kemungkinan,
+            skala_dampak: data.skala_dampak,
+            skala_kemungkinan: data.skala_kemungkinan,
         }
     });
 
     const [TingkatResiko, setTingkatResiko] = useState<number>(0);
     const [LevelResiko, setLevelResiko] = useState<string>("");
-    const [Proses, setProses] = useState<boolean>(false);
 
     const handleClose = () => {
         onClose();
         reset();
     }
 
-    const [dampak, kemungkinan] = useWatch({
+    const [skala_dampak, skala_kemungkinan] = useWatch({
         control,
-        name: ['dampak', 'kemungkinan'], // Watch kedua field ini
+        name: ['skala_dampak', 'skala_kemungkinan'], // Watch kedua field ini
     });
 
 
     useEffect(() => {
         // Pastikan nilai adalah angka sebelum melakukan perhitungan
-        const d = Number(dampak);
-        const k = Number(kemungkinan);
+        const d = Number(skala_dampak);
+        const k = Number(skala_kemungkinan);
 
         if (!isNaN(d) && !isNaN(k)) {
             const hasil = d * k;
@@ -77,20 +98,33 @@ export const ModalAnalisa: React.FC<ModalAnalisa> = ({ isOpen, onClose, data }) 
             setTingkatResiko(0); // Reset jika input tidak valid
             setLevelResiko('-');
         }
-    }, [dampak, kemungkinan, setValue]);
+    }, [skala_dampak, skala_kemungkinan, setValue]);
 
     const onSubmit: SubmitHandler<FormValue> = async (data) => {
         const formData = {
             //key : value
-            nama_resiko_fraud: data.nama_resiko_fraud || "-",
+            id_rencana_kinerja: data.id_rencana_kinerja || "-",
+            nama_risiko: data.nama_risiko || "-",
             penyebab: data.penyebab || "-",
             akibat: data.akibat || "-",
-            dampak: Number(data.dampak) || 0,
-            kemungkinan: Number(data.kemungkinan) || 0,
+            skala_dampak: Number(data.skala_dampak) || 0,
+            skala_kemungkinan: Number(data.skala_kemungkinan) || 0,
+            pembuat: {
+                nama: data.nama_pegawai || "-",
+                nip: data.pegawai_id || "-",
+                golongan: "-",
+            }
         };
-        console.log(formData);
-        toastSuccess("Berhasil Menyimpan Data");
-        handleClose();
+        const success = await triggerPostAnalisa(formData);
+        if (success) {
+            toastSuccess(postMessage || "Berhasil Menyimpan Data");
+            reset(); // Reset form setelah berhasil
+            handleClose(); // Tutup modal setelah berhasil
+            onSuccess();
+        } else {
+            toastError(postMessage || "Gagal Menyimpan Data");
+        }
+
     }
 
     return (
@@ -99,19 +133,19 @@ export const ModalAnalisa: React.FC<ModalAnalisa> = ({ isOpen, onClose, data }) 
             onClose={handleClose}
         >
             <div className="w-max-[500px] py-2 border-b border-blue-500 text-center">
-                <h1 className="text-xl uppercase">Form Analisa</h1>
+                <h1 className="text-xl uppercase">Form Analisa {jenis}</h1>
             </div>
             <form
                 onSubmit={handleSubmit(onSubmit)}
                 className="flex flex-col mx-5 py-5 gap-2"
             >
                 <Controller
-                    name="nama_pemilik_resiko"
+                    name="nama_pegawai"
                     control={control}
                     render={({ field }) => (
                         <FloatingLabelInput
                             {...field}
-                            id="nama_pemilik_resiko"
+                            id="nama_pegawai"
                             label="Nama Pemilik Resiko"
                             type="text"
                             disable={true}
@@ -119,12 +153,12 @@ export const ModalAnalisa: React.FC<ModalAnalisa> = ({ isOpen, onClose, data }) 
                     )}
                 />
                 <Controller
-                    name="tahap_proses_bisnis"
+                    name="nama_rencana_kinerja"
                     control={control}
                     render={({ field }) => (
                         <FloatingLabelInput
                             {...field}
-                            id="tahap_proses_bisnis"
+                            id="nama_rencana_kinerja"
                             label="Tahap Proses Bisnis"
                             type="text"
                             disable={true}
@@ -132,12 +166,12 @@ export const ModalAnalisa: React.FC<ModalAnalisa> = ({ isOpen, onClose, data }) 
                     )}
                 />
                 <Controller
-                    name="nama_resiko_fraud"
+                    name="nama_risiko"
                     control={control}
                     render={({ field }) => (
                         <FloatingLabelInput
                             {...field}
-                            id="nama_resiko_fraud"
+                            id="nama_risiko"
                             label="Nama Resiko Fraud"
                             type="text"
                         />
@@ -167,24 +201,24 @@ export const ModalAnalisa: React.FC<ModalAnalisa> = ({ isOpen, onClose, data }) 
                 />
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-1 border border-gray-500 py-1 px-3 rounded-lg">
                     <Controller
-                        name="dampak"
+                        name="skala_dampak"
                         control={control}
                         render={({ field }) => (
                             <FloatingLabelInput
                                 {...field}
-                                id="dampak"
+                                id="skala_dampak"
                                 label="Dampak"
                                 type="number"
                             />
                         )}
                     />
                     <Controller
-                        name="kemungkinan"
+                        name="skala_kemungkinan"
                         control={control}
                         render={({ field }) => (
                             <FloatingLabelInput
                                 {...field}
-                                id="kemungkinan"
+                                id="skala_kemungkinan"
                                 label="kemungkinan"
                                 type="number"
                             />
@@ -215,8 +249,9 @@ export const ModalAnalisa: React.FC<ModalAnalisa> = ({ isOpen, onClose, data }) 
                     <ButtonSky
                         className="w-full"
                         type="submit"
+                        disabled={postProses}
                     >
-                        {Proses ?
+                        {postProses ?
                             <span className="flex">
                                 <LoadingButtonClip />
                                 Menyimpan...

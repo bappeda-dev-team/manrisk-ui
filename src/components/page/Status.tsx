@@ -27,7 +27,7 @@ export const Status: React.FC<Status> = ({ status, catatan }) => {
                     <p className="text-center">{catatan || '-'}</p>
                 </React.Fragment>
             }
-            {status === 'pending' &&
+            {(status === 'PENDING' || status === '') &&
                 <React.Fragment>
                     <div className="flex items-center gap-1 bg-gray-400 text-white p-1 border rounded-xl justify-center">
                         <TbHourglassFilled />

@@ -10,7 +10,7 @@ import { Status } from "@/components/page/Status";
 import { getAnalisaAll } from "./hook/hookAnalisa";
 import { LoadingClock } from "@/components/global/loading";
 import { ErrorMessage } from "@/components/page/Error";
-import { verifikasi } from "../hookVerifikasi";
+import { useVerifikasi } from "../hookVerifikasi";
 
 interface DataValue {
     id: number;
@@ -38,18 +38,14 @@ interface OperasionalDaerah {
     kode_opd: string;
     nama_opd: string;
 }
-
-interface VerifikasiFormValue {
+interface VerifikasiValue {
     status: string;
     keterangan: string;
     verifikator: {
         nama: string;
         nip: string;
         golongan: string;
-    }
-}
-interface VerifikasiResponse {
-    message: string;
+    };
 }
 
 const Table = () => {
@@ -76,19 +72,40 @@ const Table = () => {
             }
         }
     }
+    
+    const [
+        triggerVerifikasi,
+        { data, proses, error, message },
+    ] = useVerifikasi<VerifikasiValue, { message: string; verifikasiId: string }>(
+        'analisa'
+    );
 
-    const handleVerifikasi = (keterangan: string, data: DataValue) => {
-        const DataVerifikasi = {
-            status: "-",
-            keterangan: keterangan,
+    const handleVerifikasi = async (id: string, status: string, keterangan: string, dataRekin: DataValue) => {
+        const formData: VerifikasiValue = {
+            status: status,
+            keterangan: keterangan || "",
             verifikator: {
-                nama: data.nama_pegawai,
-                nip: data.pegawai_id,
-                golongan: "-",
-            }
+                nama: dataRekin.nama_pegawai,
+                nip: dataRekin.pegawai_id,
+                golongan: '-',
+            },
+        };
+        if (!id) {
+            toast.error('ID Verifikasi belum tersedia.');
+            return;
         }
-        console.log(DataVerifikasi);
-    }
+
+        const success = await triggerVerifikasi(id, formData);
+
+        if (success) {
+            toast.success("Berhasil Verifikasi Data");
+            setFetchTrigger((prev) => !prev);
+        } else {
+            toast.error(`${message}`);
+            console.error(error);
+        }
+    };
+
 
     if (Loading) {
         return (
@@ -156,9 +173,9 @@ const Table = () => {
                                             onClick={() => {
                                                 AlertVerifikasi("Verifikasi", "masukkan keterangan", "question", "Verifikasi", "Tolak", "Batal").then((result) => {
                                                     if (result.isConfirmed) {
-                                                        handleVerifikasi(result?.value.keterangan, data);
+                                                        handleVerifikasi(data.id_rencana_kinerja, "Diverifikasi", result?.value.keterangan, data);
                                                     } else if (result.isDenied) {
-                                                        handleVerifikasi(result?.value.keterangan, data);
+                                                        handleVerifikasi(data.id_rencana_kinerja, "Ditolak", result?.value.keterangan, data);
                                                     }
                                                 });
                                             }}

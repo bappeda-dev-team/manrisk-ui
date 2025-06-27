@@ -1,8 +1,6 @@
 'use client'
 
 import { useState, useEffect, useCallback } from "react";
-import { useBrandingContext } from "@/components/context/BrandingContext";
-import { AlertNotification } from "@/components/global/alert/sweetAlert2";
 
 interface VerifikasiFormValue {
     status: string;
@@ -17,10 +15,10 @@ interface VerifikasiResponse {
     message: string;
 }
 
-export function verifikasi<TRequest = VerifikasiFormValue, TResponse = VerifikasiResponse>(
-    urlPath: string // Endpoint API, misal '/analisa'
+export function useVerifikasi<TRequest = VerifikasiFormValue, TResponse = VerifikasiResponse>(
+    url: string // Endpoint API, misal '/analisa'
 ): [
-        (data: TRequest) => Promise<boolean>, // Fungsi pemicu yang mengembalikan Promise<boolean> (sukses/gagal)
+        (id: string, data: TRequest) => Promise<boolean>, // Fungsi pemicu yang mengembalikan Promise<boolean> (sukses/gagal)
         {
             data: TResponse | null;
             proses: boolean;
@@ -36,7 +34,7 @@ export function verifikasi<TRequest = VerifikasiFormValue, TResponse = Verifikas
     const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
     const triggerVerifikasi = useCallback(
-        async (formValue: TRequest): Promise<boolean> => {
+        async (id: string, formValue: TRequest): Promise<boolean> => {
             if (!API_URL) {
                 console.error('API URL is not defined. Please set NEXT_PUBLIC_API_URL or configure rewrites.');
                 setError(true);
@@ -48,8 +46,10 @@ export function verifikasi<TRequest = VerifikasiFormValue, TResponse = Verifikas
             setError(false); // Reset error
             setMessage(null); // Reset pesan
 
+            // console.log(formValue);
+
             try {
-                const response = await fetch(`${API_URL}${urlPath}`, {
+                const response = await fetch(`${API_URL}/${url}/${id}`, {
                     method: "PATCH",
                     headers: {
                         'Content-Type': 'application/json',
@@ -81,7 +81,7 @@ export function verifikasi<TRequest = VerifikasiFormValue, TResponse = Verifikas
                 setProses(false);
             }
         },
-        [API_URL, urlPath]
+        [API_URL, url]
     );
 
     return [triggerVerifikasi, { data, proses, error, message }];

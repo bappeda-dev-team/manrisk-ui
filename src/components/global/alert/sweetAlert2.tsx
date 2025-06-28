@@ -64,6 +64,15 @@ export const AlertVerifikasi = (
             const keterangan = (Swal.getPopup()?.querySelector('#swal-input-keterangan') as HTMLInputElement)?.value;
             // Kembalikan objek dengan nilai keterangan
             return { keterangan: keterangan || undefined }; // Menggunakan undefined jika input kosong
+        },
+        preDeny: () => {
+            const keterangan = (Swal.getPopup()?.querySelector('#swal-input-keterangan') as HTMLInputElement)?.value;
+            // Mengembalikan Promise juga di preDeny agar loader tampil
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    resolve({ keterangan: keterangan || undefined });
+                }, 500); // Penundaan singkat untuk melihat loader
+            });
         }
     });
 }

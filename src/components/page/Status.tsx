@@ -1,4 +1,4 @@
-import { TbCircleCheck, TbCircleX, TbHourglassFilled } from "react-icons/tb";
+import { TbCircleCheck, TbCircleX, TbHourglassFilled, TbFileIsr } from "react-icons/tb";
 import React from "react";
 
 interface Status {
@@ -9,20 +9,20 @@ interface Status {
 export const Status: React.FC<Status> = ({ status, catatan }) => {
     return (
         <div className="flex flex-col gap-2">
-            {status === 'disetujui' &&
+            {status === 'APPROVED' &&
                 <React.Fragment>
                     <div className="flex items-center gap-1 bg-green-400 text-white p-1 border rounded-xl justify-center">
                         <TbCircleCheck />
-                        <p>Terverivikasi</p>
+                        <p>{status}</p>
                     </div>
                     <p className="text-center">{catatan || '-'}</p>
                 </React.Fragment>
             }
-            {status === 'ditolak' &&
+            {status === 'REJECTED' &&
                 <React.Fragment>
                     <div className="flex items-center gap-1 bg-red-400 text-white p-1 border rounded-xl justify-center">
                         <TbCircleX />
-                        <p>Ditolak</p>
+                        <p>{status}</p>
                     </div>
                     <p className="text-center">{catatan || '-'}</p>
                 </React.Fragment>
@@ -31,7 +31,15 @@ export const Status: React.FC<Status> = ({ status, catatan }) => {
                 <React.Fragment>
                     <div className="flex items-center gap-1 bg-gray-400 text-white p-1 border rounded-xl justify-center">
                         <TbHourglassFilled />
-                        <p>Pending</p>
+                        <p>{status || "PENDING"}</p>
+                    </div>
+                </React.Fragment>
+            }
+            {status === 'DRAFTED' &&
+                <React.Fragment>
+                    <div className="flex items-center gap-1 bg-gray-400 text-white p-1 border rounded-xl justify-center">
+                        <TbFileIsr />
+                        <p>{status}</p>
                     </div>
                 </React.Fragment>
             }

@@ -7,98 +7,116 @@ import React, { useState } from "react";
 import { AlertVerifikasi } from "@/components/global/alert/sweetAlert2";
 import { toast } from 'react-toastify';
 import { Status } from "@/components/page/Status";
-
-interface OptionTypeString {
-    value: string;
-    label: string;
-}
+import { getIdentifikasiAll } from "./hook/hookIdentifikasi";
+import { LoadingClock } from "@/components/global/loading";
+import { ErrorMessage } from "@/components/page/Error";
+import { useVerifikasi } from "../hookVerifikasi";
 
 interface IdentifikasiValue {
-    id_resiko: number;
-    pemilik_resiko: string;
-    tahap_proses_bisnis: string;
-    strategi: string;
-    nama_resiko_fraud: string;
-    jenis_resiko: OptionTypeString;
-    kemungkinan_skenario_kecurangan: string;
-    gejala_indikasi: string;
+    id: number,
+    id_rencana_kinerja: string;
+    id_pohon: number,
+    nama_pohon: string;
+    level_pohon: number,
+    nama_rencana_kinerja: string;
+    tahun: string;
+    status_rencana_kinerja: string;
+    pegawai_id: string;
+    nama_pegawai: string;
+    operasional_daerah: {
+        kode_opd: string;
+        nama_opd: string;
+    },
+    nama_risiko: string;
+    jenis_risiko: string;
+    kemungkinan_kecurangan: string;
+    indikasi: string;
     kemungkinan_pihak_terkait: string;
     status: string;
-    keterangan_status: string;
+    keterangan: string;
+    pembuat: {
+        nama: string;
+        nip: string;
+        golongan: string;
+    },
+    verifikator: {
+        nama: string;
+        nip: string;
+        golongan: string;
+    },
+}
+interface VerifikasiValue {
+    status: string;
+    keterangan: string;
+    verifikator: {
+        nama: string;
+        nip: string;
+        golongan: string;
+    };
 }
 
 const Table = () => {
 
     const [ModalOpen, setModalOpen] = useState<boolean>(false);
+    const [JenisModal, setJenisModal] = useState<"baru" | "edit" | "">('');
     const [DataToEdit, setDataToEdit] = useState<any>(null);
+    const [FetchTrigger, setFetchTrigger] = useState<boolean>(false);
 
-    const Data = [
-        {
-            id_resiko: 1,
-            pemilik_resiko: 'Sekretaris Daerah',
-            tahap_proses_bisnis: 'Kegiatan Beasiswa Mahasiswa (BBM)',
-            strategi: 'Pelaksanaan pendaftaran bantuan beasiswa mahasiswa (BBM)',
-            nama_resiko_fraud: 'Adanya kerjasama/penyuapan kepada staf/pejabat terkait agar pendaftar mendapat bantuan beasiswa',
-            jenis_resiko: {
-                value: 'penyuapan',
-                label: 'penyuapan'
-            },
-            kemungkinan_skenario_kecurangan: 'Penerima bantuan ada hubungan kekerabatan, pertemanan dan lain-lain',
-            gejala_indikasi: 'Hal-hal yang tidak sesuai dengan peraturan/ ketentuan',
-            kemungkinan_pihak_terkait: 'Staff Terkait & PPTK',
-            status: 'disetujui',
-            catatan_status: 'Sesuai dengan SOP'
-        },
-        {
-            id_resiko: 2,
-            pemilik_resiko: 'Dinas Sosial',
-            tahap_proses_bisnis: 'Kegiatan Pembagian dana BANSOS desa',
-            strategi: 'Pelaksanaan bersih desa setiap triwulan',
-            nama_resiko_fraud: 'Adanya kerjasama/penyuapan kepada staf/pejabat terkait agar peserta mendapatkan dana lebih',
-            jenis_resiko: {
-                value: 'penyuapan',
-                label: 'penyuapan'
-            },
-            kemungkinan_skenario_kecurangan: 'Penerima bantuan ada hubungan kekerabatan, pertemanan dan lain-lain',
-            gejala_indikasi: 'Hal-hal yang tidak sesuai dengan peraturan/ ketentuan',
-            kemungkinan_pihak_terkait: 'Staff Terkait & PPTK',
-            status: 'ditolak',
-            catatan_status: 'Koreksi Kegiatan kecil yang dilaksanakan'
-        },
-        {
-            id_resiko: 3,
-            pemilik_resiko: 'Dinas Lingkungan Hidup',
-            tahap_proses_bisnis: 'Pemasangan Tempat Sampah di jalan Ahmad yani ',
-            strategi: '',
-            nama_resiko_fraud: '',
-            jenis_resiko: {
-                value: '',
-                label: ''
-            },
-            kemungkinan_skenario_kecurangan: '',
-            gejala_indikasi: '',
-            kemungkinan_pihak_terkait: '',
-            status: 'pending',
-            catatan_status: ''
-        }
-    ];
+    const { Identifikasi, Loading, Error } = getIdentifikasiAll('akun_test_level_3', FetchTrigger);
 
-    const handleModal = (data?: IdentifikasiValue) => {
+    const handleModal = (jenis: "baru" | "edit" | "", data?: IdentifikasiValue) => {
         if (ModalOpen) {
             setModalOpen(false);
             setDataToEdit(null);
+            setJenisModal('');
         } else {
             setModalOpen(true);
-            setDataToEdit(data);
+            setJenisModal(jenis);
+            if (data) {
+                setDataToEdit(data);
+            } else {
+                setDataToEdit(null);
+            }
         }
     }
-    const handleVerifikasi = (id: number, k: string) => {
-        const payload = {
-            id: id,
-            keterangan: k,
+
+    const [triggerVerifikasi, { data, proses, error, message }] = useVerifikasi<VerifikasiValue, { message: string, verifikasiId: string }>('identifikasi');
+
+    const handleVerifikasi = async (id: string, status: string, keterangan: string, dataRekin: IdentifikasiValue) => {
+        const formData: VerifikasiValue = {
+            status: status,
+            keterangan: keterangan || "",
+            verifikator: {
+                nama: dataRekin.nama_pegawai,
+                nip: dataRekin.pegawai_id,
+                golongan: '-',
+            },
         };
-        console.log(payload);
-        toast.success("Dokumen berhasil diverifikasi!");
+        if (!id) {
+            toast.error('ID Verifikasi belum tersedia.');
+            return;
+        }
+        // console.log(formData);
+
+        const success = await triggerVerifikasi(id, formData);
+
+        if (success) {
+            toast.success("Berhasil Verifikasi Data");
+            setFetchTrigger((prev) => !prev);
+        } else {
+            toast.error(`${message}`);
+        }
+    };
+
+    if (Loading) {
+        return (
+            <LoadingClock />
+        )
+    }
+    if (Error) {
+        return (
+            <ErrorMessage />
+        )
     }
 
     return (
@@ -121,59 +139,77 @@ const Table = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {Data.map((data: any, index: number) => (
-                        <tr key={data.id_resiko}>
-                            <td className="border-b border-green-500 px-6 py-4 text-center">{index + 1}</td>
-                            <td className="border border-green-500 px-6 py-4">{data.pemilik_resiko}</td>
-                            <td className="border border-green-500 px-6 py-4 text-center">
-                                <div className="flex flex-col gap-2 justify-center">
-                                    <ButtonGreenBorder
-                                        className="flex items-center gap-1"
-                                        onClick={() => handleModal(data)}
-                                    >
-                                        <TbPencil />
-                                        Edit
-                                    </ButtonGreenBorder>
-                                    <ButtonSkyBorder
-                                        className="flex items-center gap-1"
-                                        onClick={() => {
-                                            AlertVerifikasi("Verifikasi", "masukkan keterangan", "question", "Verifikasi", "Tolak", "Batal").then((result) => {
-                                                if (result.isConfirmed) {
-                                                    handleVerifikasi(data.id_resiko, result?.value.keterangan);
-                                                } else if (result.isDenied) {
-                                                    toast.success("Berhasi Ditolak");
-                                                }
-                                            })
-                                        }}
-                                    >
-                                        <TbCircleCheck />
-                                        Verifikasi
-                                    </ButtonSkyBorder>
-                                </div>
-                            </td>
-                            <td className="border border-green-500 px-6 py-4">{data.tahap_proses_bisnis}</td>
-                            <td className="border border-green-500 px-6 py-4 text-center">{data.id_resiko}</td>
-                            <td className="border border-green-500 px-6 py-4">{data.strategi || "-"}</td>
-                            <td className="border border-green-500 px-6 py-4">{data.nama_resiko_fraud || "-"}</td>
-                            <td className="border border-green-500 px-6 py-4">{data.jenis_resiko?.label || "-"}</td>
-                            <td className="border border-green-500 px-6 py-4">{data.kemungkinan_skenario_kecurangan || "-"}</td>
-                            <td className="border border-green-500 px-6 py-4">{data.gejala_indikasi || "-"}</td>
-                            <td className="border border-green-500 px-6 py-4">{data.kemungkinan_pihak_terkait || "-"}</td>
-                            <td className="border border-green-500 px-6 py-4">
-                                <Status
-                                    status={data.status}
-                                    catatan={data.catatan_status}
-                                />
+                    {Identifikasi.length === 0 ?
+                        <tr>
+                            <td className="px-6 py-3 uppercase" colSpan={13}>
+                                Data Kosong / Belum Ditambahkan
                             </td>
                         </tr>
-                    ))}
+                        :
+                        Identifikasi.map((data: IdentifikasiValue, index: number) => (
+                            <tr key={data.id_rencana_kinerja || index}>
+                                <td className="border-b border-green-500 px-6 py-4 text-center">{index + 1}</td>
+                                <td className="border border-green-500 px-6 py-4">{data.nama_pegawai || "-"}</td>
+                                <td className="border border-green-500 px-6 py-4 text-center">
+                                    <div className="flex flex-col gap-2 justify-center">
+                                        <ButtonGreenBorder
+                                            className="flex items-center gap-1"
+                                            onClick={() => {
+                                                if (data.id) {
+                                                    handleModal("edit", data);
+                                                } else {
+                                                    handleModal("baru", data);
+                                                }
+                                            }}
+                                        >
+                                            <TbPencil />
+                                            Edit
+                                        </ButtonGreenBorder>
+                                        <ButtonSkyBorder
+                                            className="flex items-center gap-1"
+                                            onClick={() => {
+                                                AlertVerifikasi("Verifikasi", "masukkan keterangan", "question", "Verifikasi", "Tolak", "Batal").then((result) => {
+                                                    if (result.isConfirmed) {
+                                                        handleVerifikasi(data.id_rencana_kinerja, "APPROVED", result?.value.keterangan, data);
+                                                    } else if (result.isDenied) {
+                                                        handleVerifikasi(data.id_rencana_kinerja, "REJECTED", result?.value.keterangan, data);
+                                                    }
+                                                })
+                                            }}
+                                        >
+                                            <TbCircleCheck />
+                                            Verifikasi
+                                        </ButtonSkyBorder>
+                                    </div>
+                                </td>
+                                <td className="border border-green-500 px-6 py-4">{data.nama_rencana_kinerja || "-"}</td>
+                                <td className="border border-green-500 px-6 py-4 text-center">{data.id_rencana_kinerja || "-"}</td>
+                                <td className="border border-green-500 px-6 py-4">pohon tactical</td>
+                                <td className="border border-green-500 px-6 py-4">{data.nama_risiko || "-"}</td>
+                                <td className="border border-green-500 px-6 py-4">{data.jenis_risiko || "-"}</td>
+                                <td className="border border-green-500 px-6 py-4">{data.kemungkinan_kecurangan || "-"}</td>
+                                <td className="border border-green-500 px-6 py-4">{data.indikasi || "-"}</td>
+                                <td className="border border-green-500 px-6 py-4">{data.kemungkinan_pihak_terkait || "-"}</td>
+                                <td className="border border-green-500 px-6 py-4">
+                                    <Status
+                                        status={data.status}
+                                        catatan={data.keterangan}
+                                    />
+                                </td>
+                            </tr>
+                        ))
+                    }
                 </tbody>
             </table>
-            <ModalIdentifikasi
-                isOpen={ModalOpen}
-                onClose={handleModal}
-                data={DataToEdit}
-            />
+            {ModalOpen &&
+                <ModalIdentifikasi
+                    isOpen={ModalOpen}
+                    onClose={() => handleModal("")}
+                    onSuccess={() => setFetchTrigger((prev) => !prev)}
+                    data={DataToEdit}
+                    jenis={JenisModal}
+                />
+            }
         </div>
     )
 }

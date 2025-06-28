@@ -6,38 +6,57 @@ import { useEffect, useState } from "react";
 import { LoadingButtonClip } from "@/components/global/loadingButton";
 import { FloatingLabelInput, FloatingLabelTextarea, FloatingLabelSelect } from "@/components/global/input";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
-import { toast } from 'react-toastify';
+import useToast from "@/components/global/alert/toastAlert";
 import Select from "react-select";
+import { postIdentifikasi } from "./hook/hookIdentifikasi";
 
-interface ModalIdentifikasi {
+interface ModalIdentifikasiProps {
     isOpen: boolean;
     onClose: () => void;
+    onSuccess: () => void;
     data: FormValue;
+    jenis: "baru" | "edit" | "";
 }
 interface OptionTypeString {
     value: string;
     label: string;
 }
 interface FormValue {
-    pemilik_resiko: string;
-    tahap_proses_bisnis: string;
+    nama_pegawai?: string;
+    nama_rencana_kinerja?: string;
+    pegawai_id?: string;
+    
+    id_rencana_kinerja: string;
+    nama_risiko: string;
+    jenis_risiko?: OptionTypeString | null | undefined;
+    kemungkinan_kecurangan: string;
     strategi: string;
-    nama_resiko_fraud: string;
-    jenis_resiko: OptionTypeString | null;
-    kemungkinan_skenario_kecurangan: string;
-    gejala_indikasi: string;
+    indikasi: string;
     kemungkinan_pihak_terkait: string;
+    pembuat: {
+        nama: string;
+        nip: string;
+        golongan: string;
+    }
+}
+interface PostIdentifikasiResponse {
+    message: string;
 }
 
-export const ModalIdentifikasi: React.FC<ModalIdentifikasi> = ({ isOpen, onClose, data }) => {
+export const ModalIdentifikasi: React.FC<ModalIdentifikasiProps> = ({ isOpen, onClose, data, jenis, onSuccess }) => {
+    const [
+        triggerPostIdentifikasi, // Ini adalah fungsi yang akan Anda panggil untuk memicu POST
+        { data: postResponseData, proses: postProses, error: postError, message: postMessage }
+    ] = postIdentifikasi<FormValue, PostIdentifikasiResponse>(jenis === 'baru' ? '/identifikasi' : `/identifikasi/${data.id_rencana_kinerja}`, jenis);
+
     const DefaultValue = {
         pemilik_resiko: '-',
-        tahap_proses_bisnis: '-',
+        nama_rencana_kinerja: '-',
         strategi: "",
         nama_resiko_fraud: "",
         jenis_resiko: null,
-        kemungkinan_skenario_kecurangan: '',
-        gejala_indikasi: '',
+        kemungkinan_kecurangan: '',
+        indikasi: '',
         kemungkinan_pihak_terkait: '',
     }
     const { control, reset, handleSubmit } = useForm<FormValue>({
@@ -47,38 +66,56 @@ export const ModalIdentifikasi: React.FC<ModalIdentifikasi> = ({ isOpen, onClose
     useEffect(() => {
         if (isOpen) {
             reset({
-                pemilik_resiko: data.pemilik_resiko,
-                tahap_proses_bisnis: data.tahap_proses_bisnis,
-                strategi: data.strategi,
-                nama_resiko_fraud: data.nama_resiko_fraud,
-                jenis_resiko: {
-                    value: data.jenis_resiko?.value,
-                    label: data.jenis_resiko?.label
-                },
-                kemungkinan_skenario_kecurangan: data.kemungkinan_skenario_kecurangan,
-                gejala_indikasi: data.gejala_indikasi,
-                kemungkinan_pihak_terkait: data.kemungkinan_pihak_terkait,
+                id_rencana_kinerja: data.id_rencana_kinerja || '',
+                nama_pegawai: data.nama_pegawai || '',
+                nama_rencana_kinerja: data.nama_rencana_kinerja || '',
+                strategi: data.strategi || '',
+                nama_risiko: data.nama_risiko || '',
+                // Perbaiki logika jenis_risiko: pastikan menghasilkan { value: string, label: string }
+                jenis_risiko: (data.jenis_risiko && typeof data.jenis_risiko === 'string')
+                    ? { value: data.jenis_risiko, label: data.jenis_risiko }
+                    : null,
+                kemungkinan_kecurangan: data.kemungkinan_kecurangan || '',
+                indikasi: data.indikasi || '',
+                kemungkinan_pihak_terkait: data.kemungkinan_pihak_terkait || '',
+                pembuat: data.pembuat || { nama: '', nip: '', golongan: '' } // Pastikan pembuat juga diisi
             });
         } else {
             reset(DefaultValue);
         }
     }, [isOpen, reset, data]);
 
-    const [Proses, setProses] = useState<boolean>(false);
+    const { toastSuccess, toastError, toastInfo, toastWarning } = useToast();
 
-    const onSubmit: SubmitHandler<FormValue> = async (data: FormValue) => {
-        const formData = {
-            strategi: data.strategi,
-            nama_resiko_fraud: data.nama_resiko_fraud,
-            jenis_resiko: data.jenis_resiko?.value,
-            kemungkinan_skenario_kecurangan: data.kemungkinan_skenario_kecurangan,
-            gejala_indikasi: data.gejala_indikasi,
-            kemungkinan_pihak_terkait: data.kemungkinan_pihak_terkait
-        }
-        console.log(formData);
-        toast.success("Berhasil Menyimpan Data");
+    const handleClose = () => {
         onClose();
         reset();
+    }
+
+    const onSubmit: SubmitHandler<FormValue> = async (dataValue: FormValue) => {
+        const formData = {
+            id_rencana_kinerja: dataValue.id_rencana_kinerja,
+            nama_risiko: dataValue.nama_risiko,
+            // jenis_risiko: dataValue.jenis_risiko?.value,
+            kemungkinan_kecurangan: dataValue.kemungkinan_kecurangan,
+            strategi: "-",
+            indikasi: dataValue.indikasi,
+            kemungkinan_pihak_terkait: dataValue.kemungkinan_pihak_terkait,
+            pembuat: {
+                nama: dataValue.nama_pegawai || "-",
+                nip: dataValue.pegawai_id || "-",
+                golongan: "-",
+            }
+        }
+        const success = await triggerPostIdentifikasi(formData);
+        if (success) {
+            toastSuccess(postMessage || "Berhasil Menyimpan Data");
+            reset(); // Reset form setelah berhasil
+            handleClose(); // Tutup modal setelah berhasil
+            onSuccess();
+        } else {
+            toastError(postMessage || "Gagal Menyimpan Data");
+        }
     }
 
     const OptionJenisResiko = [
@@ -92,31 +129,31 @@ export const ModalIdentifikasi: React.FC<ModalIdentifikasi> = ({ isOpen, onClose
             onClose={onClose}
         >
             <div className="w-max-[500px] pb-2 border-b border-blue-500 text-center font-semibold">
-                <h1 className="text-xl uppercase">Form Identifikasi</h1>
+                <h1 className="text-xl uppercase">Form Identifikasi {jenis}</h1>
             </div>
             <form
                 onSubmit={handleSubmit(onSubmit)}
                 className="flex flex-col mx-5 py-5 gap-2"
             >
                 <Controller
-                    name="pemilik_resiko"
+                    name="nama_pegawai"
                     control={control}
                     render={({ field }) => (
                         <FloatingLabelInput
                             {...field}
-                            id="pemiliki_resiko"
+                            id="nama_pegawai"
                             label="Pemilik Resiko"
                             disable={true}
                         />
                     )}
                 />
                 <Controller
-                    name="tahap_proses_bisnis"
+                    name="nama_rencana_kinerja"
                     control={control}
                     render={({ field }) => (
                         <FloatingLabelInput
                             {...field}
-                            id="tahap_proses_bisnis"
+                            id="nama_recana_kinerja"
                             label="Tahap Proses Bisnis"
                             disable={true}
                         />
@@ -130,73 +167,52 @@ export const ModalIdentifikasi: React.FC<ModalIdentifikasi> = ({ isOpen, onClose
                             {...field}
                             id="strategi"
                             label="Strategi / Program Unit Kerja"
+                            disable={true}
                         />
                     )}
                 />
                 <Controller
-                    name="nama_resiko_fraud"
+                    name="nama_risiko"
                     control={control}
                     render={({ field }) => (
                         <FloatingLabelTextarea
                             {...field}
-                            id="nama_resiko_fraud"
-                            label="Nama Resiko Fraud"
+                            id="nama_risiko"
+                            label="Nama Risiko Fraud"
                         />
                     )}
                 />
                 <Controller
-                    name="jenis_resiko"
+                    name="jenis_risiko"
                     control={control}
                     render={({ field }) => (
-                        // <div className="flex items-center gap-1">
-                        //     <div className="flex flex-col py-2 w-full">
-                        //         <Select
-                        //             {...field}
-                        //             id="jenis_resiko"
-                        //             options={OptionJenisResiko}
-                        //             placeholder="Pilih Jenis Resiko"
-                        //             isClearable
-                        //             styles={{
-                        //                 control: (baseStyles) => ({
-                        //                     ...baseStyles,
-                        //                     borderRadius: '8px',
-                        //                     borderColor: 'gray',
-                        //                     textAlign: 'start',
-                        //                 })
-                        //             }}
-                        //         />
-                        //     </div>
-                        // </div>
-                            <FloatingLabelSelect
-                                {...field}
-                                id="jenis_resiko"
-                                label="Jenis Resiko"
-                                options={OptionJenisResiko}
-                                isClearable
-                            // isClearable
-                            // isSearchable
-                            // disable={true} // Contoh penggunaan disable
-                            />
+                        <FloatingLabelSelect
+                            {...field}
+                            id="jenis_risiko"
+                            label="Jenis Resiko"
+                            options={OptionJenisResiko}
+                            isClearable
+                        />
                     )}
                 />
                 <Controller
-                    name="kemungkinan_skenario_kecurangan"
+                    name="kemungkinan_kecurangan"
                     control={control}
                     render={({ field }) => (
                         <FloatingLabelTextarea
                             {...field}
-                            id="kemungkinan_skenario_kecurangan"
+                            id="kemungkinan_kecurangan"
                             label="Kemungkinan Skenario Kecurangan"
                         />
                     )}
                 />
                 <Controller
-                    name="gejala_indikasi"
+                    name="indikasi"
                     control={control}
                     render={({ field }) => (
                         <FloatingLabelTextarea
                             {...field}
-                            id="gejala_indikasi"
+                            id="indikasi"
                             label="Gejala Indikasi"
                         />
                     )}
@@ -205,7 +221,7 @@ export const ModalIdentifikasi: React.FC<ModalIdentifikasi> = ({ isOpen, onClose
                     name="kemungkinan_pihak_terkait"
                     control={control}
                     render={({ field }) => (
-                        <FloatingLabelTextarea
+                        <FloatingLabelInput
                             {...field}
                             id="kemungkinan_pihak_terkait"
                             label="Kemungkinan Pihak Terkait"
@@ -217,7 +233,7 @@ export const ModalIdentifikasi: React.FC<ModalIdentifikasi> = ({ isOpen, onClose
                         className="w-full"
                         type="submit"
                     >
-                        {Proses ?
+                        {postProses ?
                             <span className="flex">
                                 <LoadingButtonClip />
                                 Menyimpan...

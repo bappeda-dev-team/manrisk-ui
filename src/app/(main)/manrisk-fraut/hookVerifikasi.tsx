@@ -59,15 +59,15 @@ export function useVerifikasi<TRequest = VerifikasiFormValue, TResponse = Verifi
 
                 const result = await response.json();
 
-                if (response.ok) {
+                if (result.success) {
                     setData(result);
                     // console.log(result);
-                    setMessage(result.message || 'Berhasil Menambahkan Verifikasi.');
+                    setMessage('Berhasil Verifikasi Data.');
                     return true; // Menandakan keberhasilan
                 } else {
                     setError(true);
-                    // console.log(result);
-                    setMessage(result.message || 'Gagal Verifikasi.');
+                    console.log(result);
+                    setMessage(result.data || 'Gagal Verifikasi.');
                     setData(null);
                     return false; // Menandakan kegagalan
                 }

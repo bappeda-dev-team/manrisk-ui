@@ -124,7 +124,6 @@ export const ModalAnalisa: React.FC<ModalAnalisa> = ({ isOpen, onClose, onSucces
         } else {
             toastError(postMessage || "Gagal Menyimpan Data");
         }
-
     }
 
     return (

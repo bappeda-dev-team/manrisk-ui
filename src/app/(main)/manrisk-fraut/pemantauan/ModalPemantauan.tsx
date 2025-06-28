@@ -6,80 +6,101 @@ import { useEffect, useState } from "react";
 import { LoadingButtonClip } from "@/components/global/loadingButton";
 import { FloatingLabelInput, FloatingLabelTextarea } from "@/components/global/input";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
-import { toast } from 'react-toastify';
+import useToast from "@/components/global/alert/toastAlert";
+import { postPemantauan } from "./hook/hookPemantauan";
 
 interface ModalPemantauan {
     isOpen: boolean;
     onClose: () => void;
+    onSuccess: () => void
     data: FormValue;
+    jenis: "baru" | "edit" | "";
 }
 interface FormValue {
-    id_resiko: number;
-    nama_pemilik_resiko: string;
-    resiko_kecurangan_yang_dimitigasi: string;
-    bentuk_kegiatan_pengendalian: string;
-    penanggung_jawab: string;
+    pegawai_id?: string;
+    nama_pegawai?: string;
+
+    id_rencana_kinerja: string;
+    pemilik_risiko: string;
+    risiko_kecurangan: string;
+    deskripsi_kegiatan_pengendalian: string;
+    pic: string;
     rencana_waktu_pelaksanaan: string;
     realisasi_waktu_pelaksanaan: string;
     progres_tindak_lanjut: string;
     bukti_pelaksanaan_tindak_lanjut: string;
     kendala: string;
     catatan: string;
+    pembuat: {
+        nama: string;
+        nip: string;
+        golongan: string;
+    }
+}
+interface PostPemantauanResponse {
+    message: string;
 }
 
-export const ModalPemantauan: React.FC<ModalPemantauan> = ({ isOpen, onClose, data }) => {
-    const DefaultValue = {
-        nama_pemilik_resiko: '',
-        resiko_kecurangan_yang_dimitigasi: '',
-        bentuk_kegiatan_pengendalian: '',
-        penanggung_jawab: '',
-        rencana_waktu_pelaksanaan: '',
-        realisasi_waktu_pelaksanaan: '',
-        progres_tindak_lanjut: '',
-        bukti_pelaksanaan_tindak_lanjut: '',
-        kendala: '',
-        catatan: '',
-    }
-    
+export const ModalPemantauan: React.FC<ModalPemantauan> = ({ isOpen, onClose, onSuccess, jenis, data }) => {
+
+    const { toastSuccess, toastError, toastWarning, toastInfo } = useToast();
     const { control, handleSubmit, reset } = useForm<FormValue>({
-        defaultValues: DefaultValue
-    });
-    
-    const [Proses, setProses] = useState<boolean>(false);
-    
-    useEffect(() => {
-        if (isOpen) {
-            reset({
-                nama_pemilik_resiko: data.nama_pemilik_resiko,
-                resiko_kecurangan_yang_dimitigasi: data.resiko_kecurangan_yang_dimitigasi,
-                bentuk_kegiatan_pengendalian: data.bentuk_kegiatan_pengendalian,
-                penanggung_jawab: data.penanggung_jawab,
-                rencana_waktu_pelaksanaan: data.rencana_waktu_pelaksanaan,
-                realisasi_waktu_pelaksanaan: data.realisasi_waktu_pelaksanaan,
-                progres_tindak_lanjut: data.progres_tindak_lanjut,
-                bukti_pelaksanaan_tindak_lanjut: data.bukti_pelaksanaan_tindak_lanjut,
-                kendala: data.kendala,
-                catatan: data.catatan,
-            });
-        } else {
-            reset(DefaultValue);
-        }
-    }, [isOpen])
-    
-    const onSubmit: SubmitHandler<FormValue> = async (data: FormValue) => {
-        const formData = {
-            resiko_kecurangan_yang_dimitigasi: data.resiko_kecurangan_yang_dimitigasi,
-            bentuk_kegiatan_pengendalian: data.bentuk_kegiatan_pengendalian,
-            penanggung_jawab: data.penanggung_jawab,
+        defaultValues: {
+            id_rencana_kinerja: data.id_rencana_kinerja,
+            pemilik_risiko: data.nama_pegawai,
+            risiko_kecurangan: data.risiko_kecurangan,
+            deskripsi_kegiatan_pengendalian: data.deskripsi_kegiatan_pengendalian,
+            pic: data.pic,
             rencana_waktu_pelaksanaan: data.rencana_waktu_pelaksanaan,
             realisasi_waktu_pelaksanaan: data.realisasi_waktu_pelaksanaan,
             progres_tindak_lanjut: data.progres_tindak_lanjut,
             bukti_pelaksanaan_tindak_lanjut: data.bukti_pelaksanaan_tindak_lanjut,
             kendala: data.kendala,
-            catatan: data.catatan,        
+            catatan: data.catatan,
+            pembuat: {
+                nama: data.nama_pegawai,
+                nip: data.pegawai_id,
+                golongan: "-"
+            }
         }
-        toast.success("Berhasil Menambahkan Data");
-        console.log(formData);
+    });
+
+    const [
+        triggerPostPemantauan, { data: postResponseData, proses: postProses, error: postError, message: postMessage }
+    ] = postPemantauan<FormValue, PostPemantauanResponse>(jenis === 'baru' ? '/pemantauan' : `/pemantauan/${data.id_rencana_kinerja}`, jenis);
+
+    const onSubmit: SubmitHandler<FormValue> = async (data: FormValue) => {
+        const formData = {
+            id_rencana_kinerja: data.id_rencana_kinerja,
+            pemilik_risiko: data.nama_pegawai || "-",
+            risiko_kecurangan: data.risiko_kecurangan,
+            deskripsi_kegiatan_pengendalian: data.deskripsi_kegiatan_pengendalian,
+            pic: data.pic,
+            rencana_waktu_pelaksanaan: data.rencana_waktu_pelaksanaan,
+            realisasi_waktu_pelaksanaan: data.realisasi_waktu_pelaksanaan,
+            progres_tindak_lanjut: data.progres_tindak_lanjut,
+            bukti_pelaksanaan_tindak_lanjut: data.bukti_pelaksanaan_tindak_lanjut,
+            kendala: data.kendala,
+            catatan: data.catatan,
+            pembuat: {
+                nama: data.nama_pegawai || "-",
+                nip: data.pegawai_id || "-",
+                golongan: "-"
+            }
+        }
+        // console.log(formData);
+        const success = await triggerPostPemantauan(formData);
+        if (success) {
+            toastSuccess("Berhasil Menyimpan Data");
+            reset(); // Reset form setelah berhasil
+            handleClose(); // Tutup modal setelah berhasil
+            onSuccess();
+        } else {
+            toastError(postMessage || "Gagal Menyimpan Data");
+        }
+    }
+
+    const handleClose = () => {
         onClose();
         reset();
     }
@@ -90,53 +111,53 @@ export const ModalPemantauan: React.FC<ModalPemantauan> = ({ isOpen, onClose, da
             onClose={onClose}
         >
             <div className="w-max-[500px] py-2 border-b text-center border-blue-500">
-                <h1 className="text-xl uppercase">Form Pemantauan RTP</h1>
+                <h1 className="text-xl uppercase">Form Pemantauan RTP {jenis}</h1>
             </div>
             <form
                 onSubmit={handleSubmit(onSubmit)}
                 className="flex flex-col mx-5 py-5 gap-2"
             >
                 <Controller
-                    name="nama_pemilik_resiko"
+                    name="pemilik_risiko"
                     control={control}
                     render={({ field }) => (
                         <FloatingLabelInput
                             {...field}
-                            id="nama_pemilik_resiko"
-                            label="Nama Pemilik Resiko"
+                            id="pemilik_risiko"
+                            label="Nama Pemilik Risiko"
                             disable
                         />
                     )}
                 />
                 <Controller
-                    name="resiko_kecurangan_yang_dimitigasi"
+                    name="risiko_kecurangan"
                     control={control}
                     render={({ field }) => (
                         <FloatingLabelInput
                             {...field}
-                            id="resiko_kecurangan_yang_dimitigasi"
-                            label="Resiko Kecurangan Yang Di Mitigasi"
+                            id="risiko_kecurangan"
+                            label="Risiko Kecurangan Yang Di Mitigasi"
                         />
                     )}
                 />
                 <Controller
-                    name="bentuk_kegiatan_pengendalian"
+                    name="deskripsi_kegiatan_pengendalian"
                     control={control}
                     render={({ field }) => (
                         <FloatingLabelTextarea
                             {...field}
-                            id="bentuk_kegiatan_pengendalian"
+                            id="deskripsi_kegiatan_pengendalian"
                             label="Bentuk Kegiatan Pengendalian"
                         />
                     )}
                 />
                 <Controller
-                    name="penanggung_jawab"
+                    name="pic"
                     control={control}
                     render={({ field }) => (
                         <FloatingLabelInput
                             {...field}
-                            id="penanggung_jawab"
+                            id="pic"
                             label="Penanggung Jawab"
                         />
                     )}
@@ -148,7 +169,7 @@ export const ModalPemantauan: React.FC<ModalPemantauan> = ({ isOpen, onClose, da
                         <FloatingLabelTextarea
                             {...field}
                             id="rencana_waktu_pelaksanaan"
-                            label="Rencana Waktu Pelaksanaan Perlakuan Resiko"
+                            label="Rencana Waktu Pelaksanaan Perlakuan Risiko"
                         />
                     )}
                 />
@@ -159,7 +180,7 @@ export const ModalPemantauan: React.FC<ModalPemantauan> = ({ isOpen, onClose, da
                         <FloatingLabelInput
                             {...field}
                             id="realisasi_waktu_pelaksanaan"
-                            label="Realisasi Waktu Pelaksanaan Perlakuan Resiko"
+                            label="Realisasi Waktu Pelaksanaan Perlakuan Risiko"
                         />
                     )}
                 />
@@ -212,7 +233,7 @@ export const ModalPemantauan: React.FC<ModalPemantauan> = ({ isOpen, onClose, da
                         className="w-full"
                         type="submit"
                     >
-                        {Proses ?
+                        {postProses ?
                             <span className="flex">
                                 <LoadingButtonClip />
                                 Menyimpan...

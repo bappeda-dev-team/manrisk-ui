@@ -6,72 +6,91 @@ import { useState, useEffect } from "react";
 import { LoadingButtonClip } from "@/components/global/loadingButton";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { FloatingLabelTextarea, FloatingLabelInput } from "@/components/global/input";
-import { toast } from "react-toastify";
+import { } from "react-toastify";
+import useToast from "@/components/global/alert/toastAlert";
+import { postPenanganan } from "./hook/hookPenanganan";
 
 interface ModalPenanganan {
     isOpen: boolean;
     onClose: () => void;
+    onSuccess: () => void;
     data: FormValue;
+    jenis: "baru" | "edit" | "";
 }
 interface FormValue {
-    id_resiko: number,
-    nama_pemilik_resiko: string,
-    tahap_proses_bisnis: string,
+    nama_pegawai?: string,
+    nama_rencana_kinerja?: string,
+    pegawai_id?: string;
+
+    id_rencana_kinerja: string;
     existing_control: string;
-    jenis_perlakuan_resiko: string;
-    rencana_perlakuan_resiko: string;
-    biaya_perlakuan_resiko: number;
+    jenis_perlakuan_risiko: string;
+    rencana_perlakuan_risiko: string;
+    biaya_perlakuan_risiko: string;
     target_waktu: string;
-    penanggung_jawab: string;
+    pic: string;
+    pembuat: {
+        nama: string;
+        nip: string;
+        golongan: string;
+    }
 }
 
-export const ModalPenanganan: React.FC<ModalPenanganan> = ({ isOpen, onClose, data }) => {
-    const DefaultValue = {
-        nama_pemilik_resiko: '',
-        tahap_proses_bisnis: '',
-        existing_control: '',
-        jenis_perlakuan_resiko: '',
-        rencana_perlakuan_resiko: '',
-        biaya_perlakuan_resiko: 0,
-        target_waktu: '',
-        penanggung_jawab: '',
-    }
+interface PostPenanganResponse {
+    message: string;
+}
+
+export const ModalPenanganan: React.FC<ModalPenanganan> = ({ isOpen, onClose, onSuccess, jenis, data }) => {
+    const { toastSuccess, toastError, toastInfo, toastWarning } = useToast();
+    const [
+        triggerPostPenanganan, // Ini adalah fungsi yang akan Anda panggil untuk memicu POST
+        { data: postResponseData, proses: postProses, error: postError, message: postMessage }
+    ] = postPenanganan<FormValue, PostPenanganResponse>(jenis === 'baru' ? '/penanganan' : `/penanganan/${data.id_rencana_kinerja}`, jenis);
     const { control, handleSubmit, reset } = useForm<FormValue>({
-        defaultValues: DefaultValue
+        defaultValues: {
+            id_rencana_kinerja: data.id_rencana_kinerja,
+            nama_pegawai: data.nama_pegawai,
+            pegawai_id: data.pegawai_id,
+            nama_rencana_kinerja: data.nama_rencana_kinerja,
+            existing_control: data.existing_control,
+            jenis_perlakuan_risiko: data.jenis_perlakuan_risiko,
+            rencana_perlakuan_risiko: data.rencana_perlakuan_risiko,
+            biaya_perlakuan_risiko: data.biaya_perlakuan_risiko,
+            target_waktu: data.target_waktu,
+            pic: data.pic
+        }
     });
 
-    useEffect(() => {
-        if(isOpen){
-            reset({
-                nama_pemilik_resiko: data.nama_pemilik_resiko,
-                tahap_proses_bisnis: data.tahap_proses_bisnis,
-                existing_control: data.existing_control,
-                jenis_perlakuan_resiko: data.jenis_perlakuan_resiko,
-                rencana_perlakuan_resiko: data.rencana_perlakuan_resiko,
-                biaya_perlakuan_resiko: data.biaya_perlakuan_resiko,
-                target_waktu: data.target_waktu,
-                penanggung_jawab: data.penanggung_jawab
-            });
-        } else {
-            reset(DefaultValue)
-        }
-    },[isOpen]);
-
-    const [Proses, setProses] = useState<boolean>(false);
+    const handleClose = () => {
+        onClose();
+        reset();
+    }
 
     const onSubmit: SubmitHandler<FormValue> = async (data: FormValue) => {
         const formData = {
+            id_rencana_kinerja: data.id_rencana_kinerja,
             existing_control: data.existing_control,
-            rencana_perlakuan_resiko: data.rencana_perlakuan_resiko,
-            jenis_perlakuan_resiko: data.jenis_perlakuan_resiko,
-            biaya_perlakuan_resiko: data.biaya_perlakuan_resiko,
+            jenis_perlakuan_risiko: data.jenis_perlakuan_risiko,
+            rencana_perlakuan_risiko: data.rencana_perlakuan_risiko,
+            biaya_perlakuan_risiko: data.biaya_perlakuan_risiko,
             target_waktu: data.target_waktu,
-            penanggung_jawab: data.penanggung_jawab
+            pic: data.pic,
+            pembuat: {
+                nama: data.nama_pegawai || "-",
+                nip: data.pegawai_id || "-",
+                golongan: "-"
+            }
         }
-        console.log(formData);
-        toast.success("Berhasil Edit Data");
-        onClose();
-        reset();
+        // console.log(formData);
+        const success = await triggerPostPenanganan(formData);
+        if (success) {
+            toastSuccess(postMessage || "Berhasil Menyimpan Data");
+            reset(); // Reset form setelah berhasil
+            handleClose(); // Tutup modal setelah berhasil
+            onSuccess();
+        } else {
+            toastError(postMessage || "Gagal Menyimpan Data");
+        }
     }
     function formatRupiah(angka: number) {
         if (typeof angka !== 'number') {
@@ -86,32 +105,33 @@ export const ModalPenanganan: React.FC<ModalPenanganan> = ({ isOpen, onClose, da
             onClose={onClose}
         >
             <div className="w-max-[500px] py-2 border-b text-center border-blue-500">
-                <h1 className="text-xl uppercase font-semibold">Form Penanganan</h1>
+                <h1 className="text-xl uppercase font-semibold">Form Penanganan {jenis}</h1>
             </div>
             <form
                 onSubmit={handleSubmit(onSubmit)}
                 className="flex flex-col mx-5 py-5 gap-2"
             >
                 <Controller
-                    name="nama_pemilik_resiko"
+                    name="nama_pegawai"
                     control={control}
                     render={({ field }) => (
                         <FloatingLabelInput
                             {...field}
-                            id="nama_pemilik_resiko"
-                            label="Nama Pemilik Resiko"
+                            id="nama_pegawai"
+                            label="Nama Pemilik Risiko"
                             disable={true}
                         />
                     )}
                 />
                 <Controller
-                    name="tahap_proses_bisnis"
+                    name="nama_rencana_kinerja"
                     control={control}
                     render={({ field }) => (
                         <FloatingLabelTextarea
                             {...field}
-                            id="tahap_proses_bisnis"
+                            id="nama_rencana_kinerja"
                             label="Tahap Proses Bisnis"
+                            disable
                         />
                     )}
                 />
@@ -127,24 +147,35 @@ export const ModalPenanganan: React.FC<ModalPenanganan> = ({ isOpen, onClose, da
                     )}
                 />
                 <Controller
-                    name="rencana_perlakuan_resiko"
+                    name="rencana_perlakuan_risiko"
                     control={control}
                     render={({ field }) => (
                         <FloatingLabelTextarea
                             {...field}
-                            id="rencana_perlakuan_resiko"
-                            label="Rencana Perlakuan Resiko"
+                            id="rencana_perlakuan_risiko"
+                            label="Rencana Perlakuan Risiko"
                         />
                     )}
                 />
                 <Controller
-                    name="jenis_perlakuan_resiko"
+                    name="jenis_perlakuan_risiko"
                     control={control}
                     render={({ field }) => (
                         <FloatingLabelInput
                             {...field}
-                            id="jenis_perlakuan_resiko"
-                            label="Jenis Perlakuan resiko"
+                            id="jenis_perlakuan_risiko"
+                            label="Jenis Perlakuan risiko"
+                        />
+                    )}
+                />
+                <Controller
+                    name="biaya_perlakuan_risiko"
+                    control={control}
+                    render={({ field }) => (
+                        <FloatingLabelInput
+                            {...field}
+                            id="biaya_perlakuan_risiko"
+                            label="Biaya Perlakuan risiko"
                         />
                     )}
                 />
@@ -160,14 +191,13 @@ export const ModalPenanganan: React.FC<ModalPenanganan> = ({ isOpen, onClose, da
                     )}
                 />
                 <Controller
-                    name="penanggung_jawab"
+                    name="pic"
                     control={control}
                     render={({ field }) => (
                         <FloatingLabelInput
                             {...field}
-                            id="penanggung_jawab"
+                            id="pic"
                             label="Penanggung Jawab (PIC)"
-                            disable={true}
                         />
                     )}
                 />
@@ -176,7 +206,7 @@ export const ModalPenanganan: React.FC<ModalPenanganan> = ({ isOpen, onClose, da
                         className="w-full"
                         type="submit"
                     >
-                        {Proses ?
+                        {postProses ?
                             <span className="flex">
                                 <LoadingButtonClip />
                                 Menyimpan...

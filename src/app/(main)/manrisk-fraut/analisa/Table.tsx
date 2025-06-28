@@ -102,7 +102,6 @@ const Table = () => {
             setFetchTrigger((prev) => !prev);
         } else {
             toast.error(`${message}`);
-            console.error(error);
         }
     };
 
@@ -173,9 +172,9 @@ const Table = () => {
                                             onClick={() => {
                                                 AlertVerifikasi("Verifikasi", "masukkan keterangan", "question", "Verifikasi", "Tolak", "Batal").then((result) => {
                                                     if (result.isConfirmed) {
-                                                        handleVerifikasi(data.id_rencana_kinerja, "Diverifikasi", result?.value.keterangan, data);
+                                                        handleVerifikasi(data.id_rencana_kinerja, "APPROVED", result?.value.keterangan, data);
                                                     } else if (result.isDenied) {
-                                                        handleVerifikasi(data.id_rencana_kinerja, "Ditolak", result?.value.keterangan, data);
+                                                        handleVerifikasi(data.id_rencana_kinerja, "REJECTED", result?.value.keterangan, data);
                                                     }
                                                 });
                                             }}

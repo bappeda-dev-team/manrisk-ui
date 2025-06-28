@@ -4,73 +4,66 @@ import { useState, useEffect, useCallback } from "react";
 import { useBrandingContext } from "@/components/context/BrandingContext";
 import { AlertNotification } from "@/components/global/alert/sweetAlert2";
 
-interface OptionTypeString {
-    value: string;
-    label: string;
-}
-
 interface DataValue {
-    id: number,
+    id: number;
     id_rencana_kinerja: string;
-    id_pohon: number,
+    id_pohon: number;
     nama_pohon: string;
-    level_pohon: number,
+    level_pohon: number;
     nama_rencana_kinerja: string;
     tahun: string;
     status_rencana_kinerja: string;
     pegawai_id: string;
     nama_pegawai: string;
-    operasional_daerah: {
-        kode_opd: string;
-        nama_opd: string;
-    },
-    nama_risiko: string;
-    jenis_risiko: string;
-    kemungkinan_kecurangan: string;
-    indikasi: string;
-    kemungkinan_pihak_terkait: string;
+    operasional_daerah: OperasionalDaerah;
+    pemilik_risiko: string;
+    risiko_kecurangan: string;
+    deskripsi_kegiatan_pengendalian: string;
+    pic: string;
+    rencana_waktu_pelaksanaan: string;
+    realisasi_waktu_pelaksanaan: string;
+    progres_tindak_lanjut: string;
+    bukti_pelaksanaan_tindak_lanjut: string;
+    kendala: string;
+    catatan: string;
     status: string;
     keterangan: string;
-    pembuat: {
-        nama: string;
-        nip: string;
-        golongan: string;
-    },
-    verifikator: {
-        nama: string;
-        nip: string;
-        golongan: string;
-    },
+    pembuat: PembuatVerifikator;
+    verifikator: PembuatVerifikator;
+}
+interface PembuatVerifikator {
+    nama: string;
+    nip: string;
+    golongan: string;
+}
+interface OperasionalDaerah {
+    kode_opd: string;
+    nama_opd: string;
 }
 
-interface IdentifikasiFormValue {
-    nama_pegawai?: string;
-    nama_rencana_kinerja?: string;
-    pegawai_id?: string;
-    
+interface PemantauanFormValue {
     id_rencana_kinerja: string;
-    nama_risiko: string;
-    jenis_risiko?: OptionTypeString | null | undefined;
-    kemungkinan_kecurangan: string;
-    strategi: string;
-    indikasi: string;
-    kemungkinan_pihak_terkait: string;
+    nama_risiko?: string;
+    penyebab?: string;
+    akibat?: string;
+    skala_dampak?: number;
+    skala_kemungkinan?: number;
     pembuat: {
         nama: string;
         nip: string;
         golongan: string;
-    }
+    };
 }
 
-interface IdentifikasiPostResponse {
+interface PenangananPostResponse {
     message: string;
 }
 
-export function getIdentifikasiAll(nip: string, fetchTrigger: boolean = false) {
+export function getPemantauanAll(nip: string, fetchTrigger: boolean = false) {
 
     const [Loading, setLoading] = useState<boolean>(false);
     const [Error, setError] = useState<boolean>(false);
-    const [Identifikasi, setIdentifikasi] = useState<DataValue[]>([]);
+    const [Pemantauan, setPemantauan] = useState<DataValue[]>([]);
 
     const { branding } = useBrandingContext();
     const tahun = branding.tahun ? branding?.tahun.value : 0;
@@ -89,13 +82,13 @@ export function getIdentifikasiAll(nip: string, fetchTrigger: boolean = false) {
 
             try {
                 setLoading(true);
-                const response = await fetch(`${API_URL}/identifikasi/get-all-data/${nip}/${tahun}`);
+                const response = await fetch(`${API_URL}/pemantauan/get-all-data/${nip}/${tahun}`);
                 const data = await response.json();
                 if (!response.ok) {
                     console.log("error dengan response !ok");
-                    setIdentifikasi([]);
+                    setPemantauan([]);
                 } else {
-                    setIdentifikasi(data.data);
+                    setPemantauan(data.data);
                     // console.log(data.data);
                 }
             } catch (err) {
@@ -109,18 +102,18 @@ export function getIdentifikasiAll(nip: string, fetchTrigger: boolean = false) {
             getListData();
         } else {
             // Reset state jika kondisi tidak terpenuhi
-            setIdentifikasi([]);
+            setPemantauan([]);
             setLoading(false);
             setError(false);
         }
     }, [nip, tahun, API_URL, fetchTrigger]);
 
     return (
-        { Identifikasi, Loading, Error }
+        { Pemantauan, Loading, Error }
     )
 }
 
-export function postIdentifikasi<TRequest = IdentifikasiFormValue, TResponse = IdentifikasiPostResponse>(
+export function postPenanganan<TRequest = PemantauanFormValue, TResponse = PenangananPostResponse>(
     urlPath: string, jenis: string // Endpoint API, misal '/analisa'
 ): [
         (data: TRequest) => Promise<boolean>, // Fungsi pemicu yang mengembalikan Promise<boolean> (sukses/gagal)
@@ -169,7 +162,7 @@ export function postIdentifikasi<TRequest = IdentifikasiFormValue, TResponse = I
                     return true; // Menandakan keberhasilan
                 } else {
                     setError(true);
-                    console.log(result);
+                    // console.log(result);
                     setMessage(result.message || 'Gagal menyimpan data.');
                     setData(null);
                     return false; // Menandakan kegagalan

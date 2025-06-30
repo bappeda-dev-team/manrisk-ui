@@ -1,13 +1,18 @@
-import { Poppins } from "next/font/google";
+import { Figtree } from "next/font/google";
 import "./globals.css";
 import NextTopLoader from "nextjs-toploader";
 import { BrandingProvider } from "@/components/context/BrandingContext";
 
-const font = Poppins({
+const font = Figtree({
   subsets: ['latin'],
-  weight: ['200', '300', '400', '500', '600', '700', '800'],
-  display: 'swap', // Mengatur tampilan swap agar tidak ada flash saat font dimuat
+  weight: ['300', '400', '500', '600', '700', '800', '900'],
+  display: 'swap',
 });
+// const font = Poppins({
+//   subsets: ['latin'],
+//   weight: ['200', '300', '400', '500', '600', '700', '800'],
+//   display: 'swap',
+// });
 
 const logo = process.env.NEXT_PUBLIC_LOGO_URL;
 

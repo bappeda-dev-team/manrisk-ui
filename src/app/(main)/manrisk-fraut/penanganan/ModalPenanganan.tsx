@@ -105,7 +105,7 @@ export const ModalPenanganan: React.FC<ModalPenanganan> = ({ isOpen, onClose, on
             onClose={onClose}
         >
             <div className="w-max-[500px] py-2 border-b text-center border-blue-500">
-                <h1 className="text-xl uppercase font-semibold">Form Penanganan {jenis}</h1>
+                <h1 className="text-xl uppercase font-semibold">Form Pengendalian {jenis}</h1>
             </div>
             <form
                 onSubmit={handleSubmit(onSubmit)}

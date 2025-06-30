@@ -184,7 +184,7 @@ const Table = () => {
                                 </td>
                                 <td className="border border-green-500 px-6 py-4">{data.nama_rencana_kinerja || "-"}</td>
                                 <td className="border border-green-500 px-6 py-4 text-center">{data.id_rencana_kinerja || "-"}</td>
-                                <td className="border border-green-500 px-6 py-4">pohon tactical</td>
+                                <td className="border border-green-500 px-6 py-4">-</td>
                                 <td className="border border-green-500 px-6 py-4">{data.nama_risiko || "-"}</td>
                                 <td className="border border-green-500 px-6 py-4">{data.jenis_risiko || "-"}</td>
                                 <td className="border border-green-500 px-6 py-4">{data.kemungkinan_kecurangan || "-"}</td>

@@ -132,7 +132,7 @@ export const ModalAnalisa: React.FC<ModalAnalisa> = ({ isOpen, onClose, onSucces
             onClose={handleClose}
         >
             <div className="w-max-[500px] py-2 border-b border-blue-500 text-center">
-                <h1 className="text-xl uppercase">Form Analisa {jenis}</h1>
+                <h1 className="text-xl uppercase font-semibold">Form Analisa {jenis}</h1>
             </div>
             <form
                 onSubmit={handleSubmit(onSubmit)}

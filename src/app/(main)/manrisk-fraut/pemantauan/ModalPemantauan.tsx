@@ -111,7 +111,7 @@ export const ModalPemantauan: React.FC<ModalPemantauan> = ({ isOpen, onClose, on
             onClose={onClose}
         >
             <div className="w-max-[500px] py-2 border-b text-center border-blue-500">
-                <h1 className="text-xl uppercase">Form Pemantauan RTP {jenis}</h1>
+                <h1 className="text-xl uppercase font-semibold">Form Pemantauan RTP {jenis}</h1>
             </div>
             <form
                 onSubmit={handleSubmit(onSubmit)}

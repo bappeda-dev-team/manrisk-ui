@@ -128,8 +128,8 @@ export const ModalIdentifikasi: React.FC<ModalIdentifikasiProps> = ({ isOpen, on
             isOpen={isOpen}
             onClose={onClose}
         >
-            <div className="w-max-[500px] pb-2 border-b border-blue-500 text-center font-semibold">
-                <h1 className="text-xl uppercase">Form Identifikasi {jenis}</h1>
+            <div className="w-max-[500px] pb-2 border-b border-blue-500 text-center">
+                <h1 className="text-xl uppercase font-semibold">Form Identifikasi {jenis}</h1>
             </div>
             <form
                 onSubmit={handleSubmit(onSubmit)}

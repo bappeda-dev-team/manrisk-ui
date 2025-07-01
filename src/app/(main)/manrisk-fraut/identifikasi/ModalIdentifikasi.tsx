@@ -8,7 +8,6 @@ import { FloatingLabelInput, FloatingLabelTextarea, FloatingLabelSelect } from "
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import useToast from "@/components/global/alert/toastAlert";
 import Select from "react-select";
-import { postIdentifikasi } from "./hook/hookIdentifikasi";
 
 interface ModalIdentifikasiProps {
     isOpen: boolean;
@@ -44,11 +43,7 @@ interface PostIdentifikasiResponse {
 }
 
 export const ModalIdentifikasi: React.FC<ModalIdentifikasiProps> = ({ isOpen, onClose, data, jenis, onSuccess }) => {
-    const [
-        triggerPostIdentifikasi, // Ini adalah fungsi yang akan Anda panggil untuk memicu POST
-        { data: postResponseData, proses: postProses, error: postError, message: postMessage }
-    ] = postIdentifikasi<FormValue, PostIdentifikasiResponse>(jenis === 'baru' ? '/identifikasi' : `/identifikasi/${data.id_rencana_kinerja}`, jenis);
-
+    
     const DefaultValue = {
         pemilik_resiko: '-',
         nama_rencana_kinerja: '-',
@@ -107,15 +102,7 @@ export const ModalIdentifikasi: React.FC<ModalIdentifikasiProps> = ({ isOpen, on
                 golongan: "-",
             }
         }
-        const success = await triggerPostIdentifikasi(formData);
-        if (success) {
-            toastSuccess(postMessage || "Berhasil Menyimpan Data");
-            reset(); // Reset form setelah berhasil
-            handleClose(); // Tutup modal setelah berhasil
-            onSuccess();
-        } else {
-            toastError(postMessage || "Gagal Menyimpan Data");
-        }
+        
     }
 
     const OptionJenisResiko = [
@@ -233,14 +220,7 @@ export const ModalIdentifikasi: React.FC<ModalIdentifikasiProps> = ({ isOpen, on
                         className="w-full"
                         type="submit"
                     >
-                        {postProses ?
-                            <span className="flex">
-                                <LoadingButtonClip />
-                                Menyimpan...
-                            </span>
-                            :
-                            "Simpan"
-                        }
+                        Simpan
                     </ButtonSky>
                     <ButtonRed className="w-full" type="button" onClick={onClose}>
                         Batal

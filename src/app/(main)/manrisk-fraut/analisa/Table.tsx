@@ -4,49 +4,15 @@ import { ButtonGreenBorder, ButtonSkyBorder } from "@/components/global/button";
 import { TbPencil, TbCircleCheck } from "react-icons/tb";
 import { ModalAnalisa } from "./ModalAnalisa";
 import { useState } from "react";
-import { AlertQuestion, AlertVerifikasi } from "@/components/global/alert/sweetAlert2";
+import { AlertVerifikasi } from "@/components/global/alert/sweetAlert2";
 import { toast } from "react-toastify";
 import { Status } from "@/components/page/Status";
-import { getAnalisaAll } from "./hook/hookAnalisa";
 import { LoadingClock } from "@/components/global/loading";
 import { ErrorMessage } from "@/components/page/Error";
-import { useVerifikasi } from "../hookVerifikasi";
-
-interface DataValue {
-    id: number;
-    id_rencana_kinerja: string;
-    id_pohon: number;
-    nama_pohon: string;
-    level_pohon: number;
-    nama_rencana_kinerja: string;
-    tahun: string;
-    status_rencana_kinerja: string;
-    pegawai_id: string;
-    nama_pegawai: string;
-    operasional_daerah: OperasionalDaerah;
-    nama_risiko: string;
-    penyebab: string;
-    akibat: string;
-    skala_dampak: number;
-    skala_kemungkinan: number;
-    tingkat_risiko: number;
-    level_risiko: string;
-    status: string;
-    keterangan: string;
-}
-interface OperasionalDaerah {
-    kode_opd: string;
-    nama_opd: string;
-}
-interface VerifikasiValue {
-    status: string;
-    keterangan: string;
-    verifikator: {
-        nama: string;
-        nip: string;
-        golongan: string;
-    };
-}
+import { useGet } from "@/hook/useGet";
+import { useVerifikasi } from "@/hook/useVerifikasi";
+import { ApiResponse, VerifikasiFormValue, AnalisaFraudValue } from "@/app/types";
+import { useBrandingContext } from "@/components/context/BrandingContext";
 
 const Table = () => {
 
@@ -54,10 +20,14 @@ const Table = () => {
     const [JenisModal, setJenisModal] = useState<"baru" | "edit" | "">('');
     const [DataToEdit, setDataToEdit] = useState<any>(null);
     const [FetchTrigger, setFetchTrigger] = useState<boolean>(false);
+    const API_URL = process.env.NEXT_PUBLIC_API_URL;
+    const {branding} = useBrandingContext();
+    const tahun = branding?.tahun ? branding?.tahun.value : 0;
 
-    const { Analisa, Loading, Error } = getAnalisaAll("akun_test_level_3", FetchTrigger);
+    const { Data: HasilData, Loading, Error } = useGet<ApiResponse<AnalisaFraudValue[]>>({url: `${API_URL}/analisa/get-all-data/akun_test_level_3/${tahun}`, fetchTrigger: FetchTrigger});
+    const Analisa = HasilData?.data || [];
 
-    const handleModal = (jenis: "baru" | "edit" | "", data?: DataValue) => {
+    const handleModal = (jenis: "baru" | "edit" | "", data?: AnalisaFraudValue) => {
         if (ModalOpen) {
             setModalOpen(false);
             setDataToEdit(null);
@@ -75,13 +45,13 @@ const Table = () => {
     
     const [
         triggerVerifikasi,
-        { data, proses, error, message },
-    ] = useVerifikasi<VerifikasiValue, { message: string; verifikasiId: string }>(
+        { proses, error: ErrorVerifikasi, message },
+    ] = useVerifikasi<VerifikasiFormValue, { message: string; verifikasiId: string }>(
         'analisa'
     );
 
-    const handleVerifikasi = async (id: string, status: string, keterangan: string, dataRekin: DataValue) => {
-        const formData: VerifikasiValue = {
+    const handleVerifikasi = async (id: string, status: string, keterangan: string, dataRekin: AnalisaFraudValue) => {
+        const formData: VerifikasiFormValue = {
             status: status,
             keterangan: keterangan || "",
             verifikator: {
@@ -100,7 +70,7 @@ const Table = () => {
         if (success) {
             toast.success("Berhasil Verifikasi Data");
             setFetchTrigger((prev) => !prev);
-        } else {
+        } else if(ErrorVerifikasi){
             toast.error(`${message}`);
         }
     };
@@ -148,7 +118,7 @@ const Table = () => {
                             </td>
                         </tr>
                         :
-                        Analisa.map((data: DataValue, index: number) => (
+                        Analisa.map((data: AnalisaFraudValue, index: number) => (
                             <tr key={data.id_rencana_kinerja || index}>
                                 <td className="border-b border-blue-500 px-6 py-4 text-center">{index + 1}</td>
                                 <td className="border border-blue-500 px-6 py-4">{data.nama_pegawai || "-"}</td>
@@ -210,7 +180,7 @@ const Table = () => {
                     isOpen={ModalOpen}
                     onClose={() => handleModal('')}
                     onSuccess={() => setFetchTrigger((prev) => !prev)}
-                    data={DataToEdit}
+                    Data={DataToEdit}
                 />
             }
         </div>

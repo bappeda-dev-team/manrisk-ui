@@ -8,32 +8,15 @@ import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { FloatingLabelTextarea, FloatingLabelInput } from "@/components/global/input";
 import { } from "react-toastify";
 import useToast from "@/components/global/alert/toastAlert";
-import { postPenanganan } from "./hook/hookPenanganan";
+import { usePost } from "@/hook/usePost";
+import { UsePostResponse, PenangananFraudPostValue, ResultPostResponse } from "@/app/types";
 
 interface ModalPenanganan {
     isOpen: boolean;
     onClose: () => void;
     onSuccess: () => void;
-    data: FormValue;
+    data: PenangananFraudPostValue;
     jenis: "baru" | "edit" | "";
-}
-interface FormValue {
-    nama_pegawai?: string,
-    nama_rencana_kinerja?: string,
-    pegawai_id?: string;
-
-    id_rencana_kinerja: string;
-    existing_control: string;
-    jenis_perlakuan_risiko: string;
-    rencana_perlakuan_risiko: string;
-    biaya_perlakuan_risiko: string;
-    target_waktu: string;
-    pic: string;
-    pembuat: {
-        nama: string;
-        nip: string;
-        golongan: string;
-    }
 }
 
 interface PostPenanganResponse {
@@ -42,11 +25,10 @@ interface PostPenanganResponse {
 
 export const ModalPenanganan: React.FC<ModalPenanganan> = ({ isOpen, onClose, onSuccess, jenis, data }) => {
     const { toastSuccess, toastError, toastInfo, toastWarning } = useToast();
-    const [
-        triggerPostPenanganan, // Ini adalah fungsi yang akan Anda panggil untuk memicu POST
-        { data: postResponseData, proses: postProses, error: postError, message: postMessage }
-    ] = postPenanganan<FormValue, PostPenanganResponse>(jenis === 'baru' ? '/penanganan' : `/penanganan/${data.id_rencana_kinerja}`, jenis);
-    const { control, handleSubmit, reset } = useForm<FormValue>({
+    const [PostPenanganan, { data: PostPenangananData, proses: Proses, error: Error, message: MessagePost }] = usePost<PenangananFraudPostValue, ResultPostResponse>(
+        jenis === 'baru' ? '/penanganan' : `/penanganan/${data.id_rencana_kinerja}`, jenis 
+    );
+    const { control, handleSubmit, reset } = useForm<PenangananFraudPostValue>({
         defaultValues: {
             id_rencana_kinerja: data.id_rencana_kinerja,
             nama_pegawai: data.nama_pegawai,
@@ -66,7 +48,7 @@ export const ModalPenanganan: React.FC<ModalPenanganan> = ({ isOpen, onClose, on
         reset();
     }
 
-    const onSubmit: SubmitHandler<FormValue> = async (data: FormValue) => {
+    const onSubmit: SubmitHandler<PenangananFraudPostValue> = async (data: PenangananFraudPostValue) => {
         const formData = {
             id_rencana_kinerja: data.id_rencana_kinerja,
             existing_control: data.existing_control,
@@ -82,15 +64,16 @@ export const ModalPenanganan: React.FC<ModalPenanganan> = ({ isOpen, onClose, on
             }
         }
         // console.log(formData);
-        const success = await triggerPostPenanganan(formData);
-        if (success) {
-            toastSuccess(postMessage || "Berhasil Menyimpan Data");
-            reset(); // Reset form setelah berhasil
-            handleClose(); // Tutup modal setelah berhasil
+        const success = await PostPenanganan(formData);
+        if(success && !Proses){
+            toastSuccess(MessagePost || "berhasil menambahkan data");
+            reset();
+            handleClose();
             onSuccess();
-        } else {
-            toastError(postMessage || "Gagal Menyimpan Data");
+        } else if(Error && !Proses) {
+            toastError(MessagePost || "Gagal Menyimpan Data");
         }
+        
     }
     function formatRupiah(angka: number) {
         if (typeof angka !== 'number') {
@@ -206,7 +189,7 @@ export const ModalPenanganan: React.FC<ModalPenanganan> = ({ isOpen, onClose, on
                         className="w-full"
                         type="submit"
                     >
-                        {postProses ?
+                        {Proses ?
                             <span className="flex">
                                 <LoadingButtonClip />
                                 Menyimpan...

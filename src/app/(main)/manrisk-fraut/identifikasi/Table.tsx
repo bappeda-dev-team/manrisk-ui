@@ -7,53 +7,12 @@ import React, { useState } from "react";
 import { AlertVerifikasi } from "@/components/global/alert/sweetAlert2";
 import { toast } from 'react-toastify';
 import { Status } from "@/components/page/Status";
-import { getIdentifikasiAll } from "./hook/hookIdentifikasi";
 import { LoadingClock } from "@/components/global/loading";
 import { ErrorMessage } from "@/components/page/Error";
-import { useVerifikasi } from "../hookVerifikasi";
-
-interface IdentifikasiValue {
-    id: number,
-    id_rencana_kinerja: string;
-    id_pohon: number,
-    nama_pohon: string;
-    level_pohon: number,
-    nama_rencana_kinerja: string;
-    tahun: string;
-    status_rencana_kinerja: string;
-    pegawai_id: string;
-    nama_pegawai: string;
-    operasional_daerah: {
-        kode_opd: string;
-        nama_opd: string;
-    },
-    nama_risiko: string;
-    jenis_risiko: string;
-    kemungkinan_kecurangan: string;
-    indikasi: string;
-    kemungkinan_pihak_terkait: string;
-    status: string;
-    keterangan: string;
-    pembuat: {
-        nama: string;
-        nip: string;
-        golongan: string;
-    },
-    verifikator: {
-        nama: string;
-        nip: string;
-        golongan: string;
-    },
-}
-interface VerifikasiValue {
-    status: string;
-    keterangan: string;
-    verifikator: {
-        nama: string;
-        nip: string;
-        golongan: string;
-    };
-}
+import { useGet } from "@/hook/useGet";
+import { useVerifikasi } from "@/hook/useVerifikasi";
+import { useBrandingContext } from "@/components/context/BrandingContext";
+import { ApiResponse, IdentifikasiFraudValue, VerifikasiFormValue } from "@/app/types";
 
 const Table = () => {
 
@@ -61,10 +20,17 @@ const Table = () => {
     const [JenisModal, setJenisModal] = useState<"baru" | "edit" | "">('');
     const [DataToEdit, setDataToEdit] = useState<any>(null);
     const [FetchTrigger, setFetchTrigger] = useState<boolean>(false);
+    const {branding} = useBrandingContext();
+    const tahun = branding.tahun ? branding?.tahun.value : 0;
+    const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-    const { Identifikasi, Loading, Error } = getIdentifikasiAll('akun_test_level_3', FetchTrigger);
-
-    const handleModal = (jenis: "baru" | "edit" | "", data?: IdentifikasiValue) => {
+    const { Data: HasilData, Loading, Error } = useGet<ApiResponse<IdentifikasiFraudValue[]>>({
+        url: `${API_URL}/identifikasi/get-all-data/akun_test_level_3/${tahun}`,
+        fetchTrigger: FetchTrigger
+    });
+    const Identifikasi = HasilData?.data ?? [];
+    
+    const handleModal = (jenis: "baru" | "edit" | "", data?: IdentifikasiFraudValue) => {
         if (ModalOpen) {
             setModalOpen(false);
             setDataToEdit(null);
@@ -80,10 +46,10 @@ const Table = () => {
         }
     }
 
-    const [triggerVerifikasi, { data, proses, error, message }] = useVerifikasi<VerifikasiValue, { message: string, verifikasiId: string }>('identifikasi');
+    const [triggerVerifikasi, { proses, error, message }] = useVerifikasi<VerifikasiFormValue, { message: string, verifikasiId: string }>('identifikasi');
 
-    const handleVerifikasi = async (id: string, status: string, keterangan: string, dataRekin: IdentifikasiValue) => {
-        const formData: VerifikasiValue = {
+    const handleVerifikasi = async (id: string, status: string, keterangan: string, dataRekin: IdentifikasiFraudValue) => {
+        const formData: VerifikasiFormValue = {
             status: status,
             keterangan: keterangan || "",
             verifikator: {
@@ -146,7 +112,7 @@ const Table = () => {
                             </td>
                         </tr>
                         :
-                        Identifikasi.map((data: IdentifikasiValue, index: number) => (
+                        Identifikasi.map((data: IdentifikasiFraudValue, index: number) => (
                             <tr key={data.id_rencana_kinerja || index}>
                                 <td className="border-b border-green-500 px-6 py-4 text-center">{index + 1}</td>
                                 <td className="border border-green-500 px-6 py-4">{data.nama_pegawai || "-"}</td>

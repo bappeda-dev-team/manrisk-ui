@@ -90,7 +90,7 @@ export const Header = () => {
     { label: "Tahun 2025", value: 2025 },
     { label: "Tahun 2026", value: 2026 },
     { label: "Tahun 2027", value: 2027 },
-    { label: "Tahun 2024", value: 2024 },
+    { label: "Tahun 2028", value: 2028 },
     { label: "Tahun 2029", value: 2029 },
     { label: "Tahun 2030", value: 2030 }
   ];

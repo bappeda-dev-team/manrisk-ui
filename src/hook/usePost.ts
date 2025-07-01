@@ -1,31 +1,10 @@
-'use client'
+import { useState, useCallback } from "react";
+import { UsePostResponse } from "@/app/types";
 
-import { useState, useEffect, useCallback } from "react";
-
-interface VerifikasiFormValue {
-    status: string;
-    keterangan: string;
-    verifikator: {
-        nama: string;
-        nip: string;
-        golongan: string;
-    }
-}
-interface VerifikasiResponse {
-    message: string;
-}
-
-export function useVerifikasi<TRequest = VerifikasiFormValue, TResponse = VerifikasiResponse>(
-    url: string // Endpoint API, misal '/analisa'
-): [
-        (id: string, data: TRequest) => Promise<boolean>, // Fungsi pemicu yang mengembalikan Promise<boolean> (sukses/gagal)
-        {
-            data: TResponse | null;
-            proses: boolean;
-            error: boolean;
-            message: string | null;
-        }
-    ] {
+export const usePost = <T, TResponse = { message: string }>(urlPath: string, jenis: string ): [
+    (formValue: T) => Promise<boolean>, // Fungsi untuk memicu POST/PUT
+    UsePostResponse<TResponse> // Objek state yang dikembalikan
+] => {
     const [data, setData] = useState<TResponse | null>(null);
     const [proses, setProses] = useState<boolean>(false);
     const [error, setError] = useState<boolean>(false);
@@ -33,8 +12,8 @@ export function useVerifikasi<TRequest = VerifikasiFormValue, TResponse = Verifi
 
     const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-    const triggerVerifikasi = useCallback(
-        async (id: string, formValue: TRequest): Promise<boolean> => {
+    const triggerPost = useCallback(
+        async (formValue: T): Promise<boolean> => {
             if (!API_URL) {
                 console.error('API URL is not defined. Please set NEXT_PUBLIC_API_URL or configure rewrites.');
                 setError(true);
@@ -46,11 +25,9 @@ export function useVerifikasi<TRequest = VerifikasiFormValue, TResponse = Verifi
             setError(false); // Reset error
             setMessage(null); // Reset pesan
 
-            // console.log(formValue);
-
             try {
-                const response = await fetch(`${API_URL}/${url}/${id}`, {
-                    method: "PATCH",
+                const response = await fetch(`${API_URL}${urlPath}`, {
+                    method: jenis === "baru" ? 'POST' : "PUT",
                     headers: {
                         'Content-Type': 'application/json',
                     },
@@ -59,15 +36,15 @@ export function useVerifikasi<TRequest = VerifikasiFormValue, TResponse = Verifi
 
                 const result = await response.json();
 
-                if (result.success) {
+                if (response.ok) {
                     setData(result);
                     // console.log(result);
-                    setMessage('Berhasil Verifikasi Data.');
+                    setMessage(result.message || 'Berhasil menyimpan data.');
                     return true; // Menandakan keberhasilan
                 } else {
                     setError(true);
-                    console.log(result);
-                    setMessage(result.data || 'Gagal Verifikasi.');
+                    // console.log(result);
+                    setMessage(result.message || 'Gagal menyimpan data.');
                     setData(null);
                     return false; // Menandakan kegagalan
                 }
@@ -81,8 +58,8 @@ export function useVerifikasi<TRequest = VerifikasiFormValue, TResponse = Verifi
                 setProses(false);
             }
         },
-        [API_URL, url]
+        [API_URL, urlPath]
     );
 
-    return [triggerVerifikasi, { data, proses, error, message }];
+    return [triggerPost, { data, proses, error, message }];
 }

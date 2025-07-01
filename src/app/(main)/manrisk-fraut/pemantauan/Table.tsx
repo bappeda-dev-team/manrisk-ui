@@ -7,56 +7,12 @@ import { ModalPemantauan } from "./ModalPemantauan";
 import { Status } from "@/components/page/Status";
 import { AlertVerifikasi } from "@/components/global/alert/sweetAlert2";
 import { toast } from "react-toastify";
-import { getPemantauanAll } from "./hook/hookPemantauan";
 import { LoadingClock } from "@/components/global/loading";
 import { ErrorMessage } from "@/components/page/Error";
-import { useVerifikasi } from "../hookVerifikasi";
-
-interface PemantauanValue {
-    id: number;
-    id_rencana_kinerja: string;
-    id_pohon: number;
-    nama_pohon: string;
-    level_pohon: number;
-    nama_rencana_kinerja: string;
-    tahun: string;
-    status_rencana_kinerja: string;
-    pegawai_id: string;
-    nama_pegawai: string;
-    operasional_daerah: OperasionalDaerah;
-    pemilik_risiko: string;
-    risiko_kecurangan: string;
-    deskripsi_kegiatan_pengendalian: string;
-    pic: string;
-    rencana_waktu_pelaksanaan: string;
-    realisasi_waktu_pelaksanaan: string;
-    progres_tindak_lanjut: string;
-    bukti_pelaksanaan_tindak_lanjut: string;
-    kendala: string;
-    catatan: string;
-    status: string;
-    keterangan: string;
-    pembuat: PembuatVerifikator;
-    verifikator: PembuatVerifikator;
-}
-interface PembuatVerifikator {
-    nama: string;
-    nip: string;
-    golongan: string;
-}
-interface OperasionalDaerah {
-    kode_opd: string;
-    nama_opd: string;
-}
-interface VerifikasiValue {
-    status: string;
-    keterangan: string;
-    verifikator: {
-        nama: string;
-        nip: string;
-        golongan: string;
-    };
-}
+import { PemantauanFraudValue, ApiResponse, VerifikasiFormValue } from "@/app/types";
+import { useGet } from "@/hook/useGet";
+import { useVerifikasi } from "@/hook/useVerifikasi";
+import { useBrandingContext } from "@/components/context/BrandingContext";
 
 const Table = () => {
 
@@ -64,10 +20,17 @@ const Table = () => {
     const [FetchTrigger, setFetchTrigger] = useState<boolean>(false);
     const [DataToEdit, setDataToEdit] = useState<any>(null);
     const [JenisModal, setJenisModal] = useState<"baru" | "edit" | "">("");
+    const { branding } = useBrandingContext();
+    const tahun = branding.tahun ? branding?.tahun.value : 0;
+    const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-    const { Pemantauan, Loading, Error } = getPemantauanAll('akun_test_level_3', FetchTrigger);
+    const { Data: HasilData, Loading, Error: ErrorFetch } = useGet<ApiResponse<PemantauanFraudValue[]>>({
+        url: `${API_URL}/pemantauan/get-all-data/akun_test_level_3/${tahun}`,
+        fetchTrigger: FetchTrigger
+    });
+    const Pemantauan = HasilData?.data ?? [];
 
-    const handleModal = (jenis: "baru" | "edit" | "", data?: PemantauanValue) => {
+    const handleModal = (jenis: "baru" | "edit" | "", data?: PemantauanFraudValue) => {
         if (ModalOpen) {
             setModalOpen(false);
             setDataToEdit(null);
@@ -84,12 +47,12 @@ const Table = () => {
     }
     const [
         triggerVerifikasi,
-        { data, proses, error, message },
-    ] = useVerifikasi<VerifikasiValue, { message: string; verifikasiId: string }>(
-        'pemantauan'
+        { proses, error: ErrorVerifikasi, message },
+    ] = useVerifikasi<VerifikasiFormValue, { message: string; verifikasiId: string }>(
+        'analisa'
     );
-    const handleVerifikasi = async (id: string, status: string, keterangan: string, dataRekin: PemantauanValue) => {
-        const formData: VerifikasiValue = {
+    const handleVerifikasi = async (id: string, status: string, keterangan: string, dataRekin: PemantauanFraudValue) => {
+        const formData: VerifikasiFormValue = {
             status: status,
             keterangan: keterangan || "",
             verifikator: {
@@ -110,7 +73,6 @@ const Table = () => {
             setFetchTrigger((prev) => !prev);
         } else {
             toast.error(`${message}`);
-            console.error(error);
         }
     };
 
@@ -119,7 +81,7 @@ const Table = () => {
             <LoadingClock />
         )
     }
-    if (Error) {
+    if (ErrorFetch) {
         return (
             <ErrorMessage />
         )
@@ -154,7 +116,7 @@ const Table = () => {
                             </td>
                         </tr>
                         :
-                        Pemantauan.map((data: PemantauanValue, index: number) => (
+                        Pemantauan.map((data: PemantauanFraudValue, index: number) => (
                             <tr key={data.id_rencana_kinerja || index}>
                                 <td className="border-b border-gray-700 px-6 py-4 text-center">{index + 1}</td>
                                 <td className="border border-gray-700 px-6 py-4">{data.nama_pegawai || "-"}</td>
@@ -217,7 +179,7 @@ const Table = () => {
                     jenis={JenisModal}
                     onSuccess={() => setFetchTrigger((prev) => !prev)}
                     onClose={() => handleModal("")}
-                    data={DataToEdit}
+                    Data={DataToEdit}
                 />
             }
         </div>

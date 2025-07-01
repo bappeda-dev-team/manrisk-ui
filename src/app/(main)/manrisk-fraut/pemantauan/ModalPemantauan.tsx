@@ -2,74 +2,51 @@
 
 import { Modal } from "@/components/global/Modal"
 import { ButtonRed, ButtonSky } from "@/components/global/button";
-import { useEffect, useState } from "react";
 import { LoadingButtonClip } from "@/components/global/loadingButton";
 import { FloatingLabelInput, FloatingLabelTextarea } from "@/components/global/input";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import useToast from "@/components/global/alert/toastAlert";
-import { postPemantauan } from "./hook/hookPemantauan";
+import { usePost } from "@/hook/usePost";
+import { PemantauanFraudPostValue, ResultPostResponse } from "@/app/types";
 
 interface ModalPemantauan {
     isOpen: boolean;
     onClose: () => void;
     onSuccess: () => void
-    data: FormValue;
+    Data: PemantauanFraudPostValue;
     jenis: "baru" | "edit" | "";
 }
-interface FormValue {
-    pegawai_id?: string;
-    nama_pegawai?: string;
 
-    id_rencana_kinerja: string;
-    pemilik_risiko: string;
-    risiko_kecurangan: string;
-    deskripsi_kegiatan_pengendalian: string;
-    pic: string;
-    rencana_waktu_pelaksanaan: string;
-    realisasi_waktu_pelaksanaan: string;
-    progres_tindak_lanjut: string;
-    bukti_pelaksanaan_tindak_lanjut: string;
-    kendala: string;
-    catatan: string;
-    pembuat: {
-        nama: string;
-        nip: string;
-        golongan: string;
-    }
-}
-interface PostPemantauanResponse {
-    message: string;
-}
-
-export const ModalPemantauan: React.FC<ModalPemantauan> = ({ isOpen, onClose, onSuccess, jenis, data }) => {
+export const ModalPemantauan: React.FC<ModalPemantauan> = ({ isOpen, onClose, onSuccess, jenis, Data }) => {
 
     const { toastSuccess, toastError, toastWarning, toastInfo } = useToast();
-    const { control, handleSubmit, reset } = useForm<FormValue>({
+    const { control, handleSubmit, reset } = useForm<PemantauanFraudPostValue>({
         defaultValues: {
-            id_rencana_kinerja: data.id_rencana_kinerja,
-            pemilik_risiko: data.nama_pegawai,
-            risiko_kecurangan: data.risiko_kecurangan,
-            deskripsi_kegiatan_pengendalian: data.deskripsi_kegiatan_pengendalian,
-            pic: data.pic,
-            rencana_waktu_pelaksanaan: data.rencana_waktu_pelaksanaan,
-            realisasi_waktu_pelaksanaan: data.realisasi_waktu_pelaksanaan,
-            progres_tindak_lanjut: data.progres_tindak_lanjut,
-            bukti_pelaksanaan_tindak_lanjut: data.bukti_pelaksanaan_tindak_lanjut,
-            kendala: data.kendala,
-            catatan: data.catatan,
+            id_rencana_kinerja: Data.id_rencana_kinerja,
+            pemilik_risiko: Data.nama_pegawai,
+            risiko_kecurangan: Data.risiko_kecurangan,
+            deskripsi_kegiatan_pengendalian: Data.deskripsi_kegiatan_pengendalian,
+            pic: Data.pic,
+            rencana_waktu_pelaksanaan: Data.rencana_waktu_pelaksanaan,
+            realisasi_waktu_pelaksanaan: Data.realisasi_waktu_pelaksanaan,
+            progres_tindak_lanjut: Data.progres_tindak_lanjut,
+            bukti_pelaksanaan_tindak_lanjut: Data.bukti_pelaksanaan_tindak_lanjut,
+            kendala: Data.kendala,
+            catatan: Data.catatan,
             pembuat: {
-                nama: data.nama_pegawai,
-                nip: data.pegawai_id,
+                nama: Data.nama_pegawai,
+                nip: Data.pegawai_id,
                 golongan: "-"
             }
         }
     });
 
-    const [
-        triggerPostPemantauan, { data: postResponseData, proses: postProses, error: postError, message: postMessage }
-    ] = postPemantauan<FormValue, PostPemantauanResponse>(jenis === 'baru' ? '/pemantauan' : `/pemantauan/${data.id_rencana_kinerja}`, jenis);
+    const [postPemantauan, { data, proses, error, message }] = usePost<PemantauanFraudPostValue, ResultPostResponse>(
+        jenis === "baru" ? `/pemantauan` : `/pemantauan/${Data.id_rencana_kinerja}`,
+        jenis
+    )
 
-    const onSubmit: SubmitHandler<FormValue> = async (data: FormValue) => {
+    const onSubmit: SubmitHandler<PemantauanFraudPostValue> = async (data: PemantauanFraudPostValue) => {
         const formData = {
             id_rencana_kinerja: data.id_rencana_kinerja,
             pemilik_risiko: data.nama_pegawai || "-",
@@ -89,14 +66,14 @@ export const ModalPemantauan: React.FC<ModalPemantauan> = ({ isOpen, onClose, on
             }
         }
         // console.log(formData);
-        const success = await triggerPostPemantauan(formData);
-        if (success) {
-            toastSuccess("Berhasil Menyimpan Data");
-            reset(); // Reset form setelah berhasil
-            handleClose(); // Tutup modal setelah berhasil
+        const success = await postPemantauan(formData);
+        if (success && !proses) {
+            toastSuccess(message || "berhasil menambahkan data");
+            reset();
+            handleClose();
             onSuccess();
-        } else {
-            toastError(postMessage || "Gagal Menyimpan Data");
+        } else if (error && !proses) {
+            toastError(message || "Gagal Menyimpan Data");
         }
     }
 
@@ -233,7 +210,7 @@ export const ModalPemantauan: React.FC<ModalPemantauan> = ({ isOpen, onClose, on
                         className="w-full"
                         type="submit"
                     >
-                        {postProses ?
+                        {proses ?
                             <span className="flex">
                                 <LoadingButtonClip />
                                 Menyimpan...

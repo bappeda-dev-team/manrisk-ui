@@ -7,57 +7,34 @@ import React, { useState, useEffect } from "react";
 import { LoadingButtonClip } from "@/components/global/loadingButton";
 import { FloatingLabelInput, FloatingLabelTextarea } from "@/components/global/input";
 import useToast from "@/components/global/alert/toastAlert";
-import { postAnalisa } from "./hook/hookAnalisa";
+import { usePost } from "@/hook/usePost";
+import { ResultPostResponse, AnalisaFraudFormPost } from "@/app/types";
 
 interface ModalAnalisa {
     isOpen: boolean;
     onClose: () => void;
     onSuccess: () => void;
-    data: FormValue;
+    Data: AnalisaFraudFormPost;
     jenis: "baru" | "edit" | "";
 }
 
-type FormValue = {
-    nama_pegawai?: string;
-    nama_rencana_kinerja?: string;
-    pegawai_id?: string;
-
-    id_rencana_kinerja: string,
-    nama_risiko: string,
-    penyebab: string,
-    akibat: string,
-    skala_dampak: number,
-    skala_kemungkinan: number,
-    pembuat: {
-        nama: string,
-        nip: string,
-        golongan: string
-    }
-}
-
-interface PostAnalisaResponse {
-    message: string;
-}
-
-export const ModalAnalisa: React.FC<ModalAnalisa> = ({ isOpen, onClose, onSuccess, data, jenis }) => {
+export const ModalAnalisa: React.FC<ModalAnalisa> = ({ isOpen, onClose, onSuccess, Data, jenis }) => {
 
     const { toastSuccess, toastError, toastInfo, toastWarning } = useToast();
-    const [
-        triggerPostAnalisa, // Ini adalah fungsi yang akan Anda panggil untuk memicu POST
-        { data: postResponseData, proses: postProses, error: postError, message: postMessage }
-    ] = postAnalisa<FormValue, PostAnalisaResponse>(jenis === 'baru' ? '/analisa' : `/analisa/${data.id_rencana_kinerja}`, jenis);
+    
+    const [sendData, { data, proses, error, message }] = usePost<AnalisaFraudFormPost, ResultPostResponse>(jenis === 'baru' ? '/analisa' : `/analisa/${Data.id_rencana_kinerja}`, jenis);
 
-    const { reset, control, handleSubmit, setValue } = useForm<FormValue>({
+    const { reset, control, handleSubmit, setValue } = useForm<AnalisaFraudFormPost>({
         defaultValues: {
-            nama_pegawai: data.nama_pegawai,
-            nama_rencana_kinerja: data.nama_rencana_kinerja,
-            pegawai_id: data.pegawai_id,
-            id_rencana_kinerja: data.id_rencana_kinerja,
-            nama_risiko: data.nama_risiko,
-            penyebab: data.penyebab,
-            akibat: data.akibat,
-            skala_dampak: data.skala_dampak,
-            skala_kemungkinan: data.skala_kemungkinan,
+            nama_pegawai: Data.nama_pegawai,
+            nama_rencana_kinerja: Data.nama_rencana_kinerja,
+            pegawai_id: Data.pegawai_id,
+            id_rencana_kinerja: Data.id_rencana_kinerja,
+            nama_risiko: Data.nama_risiko,
+            penyebab: Data.penyebab,
+            akibat: Data.akibat,
+            skala_dampak: Data.skala_dampak,
+            skala_kemungkinan: Data.skala_kemungkinan,
         }
     });
 
@@ -100,7 +77,7 @@ export const ModalAnalisa: React.FC<ModalAnalisa> = ({ isOpen, onClose, onSucces
         }
     }, [skala_dampak, skala_kemungkinan, setValue]);
 
-    const onSubmit: SubmitHandler<FormValue> = async (data) => {
+    const onSubmit: SubmitHandler<AnalisaFraudFormPost> = async (data) => {
         const formData = {
             //key : value
             id_rencana_kinerja: data.id_rencana_kinerja || "-",
@@ -115,14 +92,15 @@ export const ModalAnalisa: React.FC<ModalAnalisa> = ({ isOpen, onClose, onSucces
                 golongan: "-",
             }
         };
-        const success = await triggerPostAnalisa(formData);
-        if (success) {
-            toastSuccess(postMessage || "Berhasil Menyimpan Data");
+        // console.log(formData);
+        const success = await sendData(formData);
+        if (success && !proses) {
+            toastSuccess("Berhasil Menyimpan Data");
             reset(); // Reset form setelah berhasil
             handleClose(); // Tutup modal setelah berhasil
             onSuccess();
-        } else {
-            toastError(postMessage || "Gagal Menyimpan Data");
+        } else if(error && !proses){
+            toastError(message || "Gagal Menyimpan Data");
         }
     }
 
@@ -248,9 +226,9 @@ export const ModalAnalisa: React.FC<ModalAnalisa> = ({ isOpen, onClose, onSucces
                     <ButtonSky
                         className="w-full"
                         type="submit"
-                        disabled={postProses}
+                        disabled={proses}
                     >
-                        {postProses ?
+                        {proses ?
                             <span className="flex">
                                 <LoadingButtonClip />
                                 Menyimpan...

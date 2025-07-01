@@ -40,15 +40,16 @@ export const useGet = <T>({ url, fetchTrigger }: useFetchDataProps): FetchRespon
                     console.error('API tidak terbaca');
                     setError(true);
                     return;
-                } else if(!USERNAME_API){
-                    console.error('Username API tidak terbaca');
-                    setError(true);
-                    return;
-                } else if(!PASS_API){
-                    console.error('Password API tidak terbaca');
-                    setError(true);
-                    return;
-                }
+                } 
+                // else if(!USERNAME_API){
+                //     console.error('Username API tidak terbaca');
+                //     setError(true);
+                //     return;
+                // } else if(!PASS_API){
+                //     console.error('Password API tidak terbaca');
+                //     setError(true);
+                //     return;
+                // }
 
                 setLoading(true);
                 setError(false); // Reset error state on new fetch
@@ -58,16 +59,17 @@ export const useGet = <T>({ url, fetchTrigger }: useFetchDataProps): FetchRespon
                     const response = await fetch(`${url}`, {
                         headers: {
                             'Content-Type' : "application/json",
-                            'Authorization' : `Basic ${basicToken}`
+                            // 'Authorization' : `Basic ${basicToken}`
                         }
                     });
                     const data = await response.json();
-                    if (!response.ok) {
-                        console.log("error dengan response !ok");
-                        setData(undefined);
+                    if (data.success) {
+                        setData(data);
+                        // console.log(data);
                     } else {
-                        setData(data.data);
-                        // console.log(data.data);
+                        console.log(data);
+                        setData(undefined);
+                        setError(true);
                     }
                 } catch (err) {
                     console.error(err);

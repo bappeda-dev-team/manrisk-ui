@@ -7,36 +7,13 @@ import { ModalPenanganan } from "./ModalPenanganan";
 import { AlertVerifikasi } from "@/components/global/alert/sweetAlert2";
 import { toast } from "react-toastify";
 import { Status } from "@/components/page/Status";
-import { getPenangananAll } from "./hook/hookPenanganan";
 import { LoadingClock } from "@/components/global/loading";
 import { ErrorMessage } from "@/components/page/Error";
-import { useVerifikasi } from "../hookVerifikasi";
+import { useGet } from "@/hook/useGet";
+import { ApiResponse, PenangananFraudValue } from "@/app/types";
+import { useBrandingContext } from "@/components/context/BrandingContext";
+import { useVerifikasi } from "@/hook/useVerifikasi";
 
-interface PenangananValue {
-    id: number;
-    id_rencana_kinerja: string;
-    id_pohon: number;
-    nama_pohon: string;
-    level_pohon: number;
-    nama_rencana_kinerja: string;
-    tahun: string;
-    status_rencana_kinerja: string;
-    pegawai_id: string;
-    nama_pegawai: string;
-    operasional_daerah: OperasionalDaerah;
-    existing_control: string;
-    jenis_perlakuan_risiko: string;
-    rencana_perlakuan_risiko: string;
-    biaya_perlakuan_risiko: string;
-    target_waktu: string;
-    pic: string;
-    status: string;
-    keterangan: string;
-}
-interface OperasionalDaerah {
-    kode_opd: string;
-    nama_opd: string;
-}
 interface VerifikasiValue {
     status: string;
     keterangan: string;
@@ -53,10 +30,18 @@ const Table = () => {
     const [FetchTrigger, setFetchTrigger] = useState<boolean>(false);
     const [DataToEdit, setDataToEdit] = useState<any>(null);
     const [JenisModal, setJenisModal] = useState<"baru" | "edit" | "">("");
+    const {branding} = useBrandingContext();
+    const tahun = branding?.tahun ? branding?.tahun.value : 0;
 
-    const { Penanganan, Loading, Error } = getPenangananAll('akun_test_level_3', FetchTrigger);
+    const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-    const handleModal = (jenis: "baru" | "edit" | "", data?: PenangananValue) => {
+    const { Data: HasilData, Loading, Error } = useGet<ApiResponse<PenangananFraudValue[]>>({
+        url: `${API_URL}/penanganan/get-all-data/akun_test_level_3/${tahun}`,
+        fetchTrigger: FetchTrigger
+    });
+    const Penanganan = HasilData?.data ?? [];
+
+    const handleModal = (jenis: "baru" | "edit" | "", data?: PenangananFraudValue) => {
         if (ModalOpen) {
             setModalOpen(false);
             setDataToEdit(null);
@@ -74,11 +59,11 @@ const Table = () => {
 
     const [
         triggerVerifikasi,
-        { data, proses, error, message },
+        { proses, error, message },
     ] = useVerifikasi<VerifikasiValue, { message: string; verifikasiId: string }>(
         'penanganan'
     );
-    const handleVerifikasi = async (id: string, status: string, keterangan: string, dataRekin: PenangananValue) => {
+    const handleVerifikasi = async (id: string, status: string, keterangan: string, dataRekin: PenangananFraudValue) => {
         const formData: VerifikasiValue = {
             status: status,
             keterangan: keterangan || "",
@@ -148,7 +133,7 @@ const Table = () => {
                             </td>
                         </tr>
                         :
-                        Penanganan.map((data: PenangananValue, index: number) => (
+                        Penanganan.map((data: PenangananFraudValue, index: number) => (
                             <tr key={data.id_rencana_kinerja || index}>
                                 <td className="border-b border-yellow-500 px-6 py-4 text-center">{index + 1}</td>
                                 <td className="border border-yellow-500 px-6 py-4">{data.nama_pegawai || "-"}</td>

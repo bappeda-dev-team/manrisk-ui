@@ -12,6 +12,7 @@ import { ErrorMessage } from "@/components/page/Error";
 import { useGet } from "@/hook/useGet";
 import { ApiResponse, PenangananFraudValue } from "@/app/types";
 import { useBrandingContext } from "@/components/context/BrandingContext";
+import { useApiUrlContext } from "@/components/context/ApiUrlContext";
 import { useVerifikasi } from "@/hook/useVerifikasi";
 
 interface VerifikasiValue {
@@ -26,6 +27,7 @@ interface VerifikasiValue {
 
 const Table = () => {
 
+    const { url_manrisk } = useApiUrlContext();
     const [ModalOpen, setModalOpen] = useState<boolean>(false);
     const [FetchTrigger, setFetchTrigger] = useState<boolean>(false);
     const [DataToEdit, setDataToEdit] = useState<any>(null);
@@ -33,10 +35,8 @@ const Table = () => {
     const {branding} = useBrandingContext();
     const tahun = branding?.tahun ? branding?.tahun.value : 0;
 
-    const API_URL = process.env.NEXT_PUBLIC_API_URL;
-
     const { Data: HasilData, Loading, Error } = useGet<ApiResponse<PenangananFraudValue[]>>({
-        url: `${API_URL}/penanganan/get-all-data/akun_test_level_3/${tahun}`,
+        url: `${url_manrisk}/penanganan/get-all-data/akun_test_level_3/${tahun}`,
         fetchTrigger: FetchTrigger
     });
     const Penanganan = HasilData?.data ?? [];

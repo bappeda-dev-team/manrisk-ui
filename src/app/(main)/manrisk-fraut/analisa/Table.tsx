@@ -13,6 +13,7 @@ import { useGet } from "@/hook/useGet";
 import { useVerifikasi } from "@/hook/useVerifikasi";
 import { ApiResponse, VerifikasiFormValue, AnalisaFraudValue } from "@/app/types";
 import { useBrandingContext } from "@/components/context/BrandingContext";
+import { useApiUrlContext } from "@/components/context/ApiUrlContext";
 
 const Table = () => {
 
@@ -20,11 +21,11 @@ const Table = () => {
     const [JenisModal, setJenisModal] = useState<"baru" | "edit" | "">('');
     const [DataToEdit, setDataToEdit] = useState<any>(null);
     const [FetchTrigger, setFetchTrigger] = useState<boolean>(false);
-    const API_URL = process.env.NEXT_PUBLIC_API_URL;
     const {branding} = useBrandingContext();
     const tahun = branding?.tahun ? branding?.tahun.value : 0;
+    const { url_manrisk } = useApiUrlContext();
 
-    const { Data: HasilData, Loading, Error } = useGet<ApiResponse<AnalisaFraudValue[]>>({url: `${API_URL}/analisa/get-all-data/akun_test_level_3/${tahun}`, fetchTrigger: FetchTrigger});
+    const { Data: HasilData, Loading, Error } = useGet<ApiResponse<AnalisaFraudValue[]>>({url: `${url_manrisk}/analisa/get-all-data/akun_test_level_3/${tahun}`, fetchTrigger: FetchTrigger});
     const Analisa = HasilData?.data || [];
 
     const handleModal = (jenis: "baru" | "edit" | "", data?: AnalisaFraudValue) => {

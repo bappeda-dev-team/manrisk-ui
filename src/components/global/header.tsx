@@ -62,6 +62,20 @@ export const Header = () => {
     };
   }, []);
 
+  // Di luar komponen atau di file utilitas terpisah
+  const getActiveClass = (isActive: boolean, type = 'default') => {
+    const activeClasses = "text-white bg-red-500";
+    let defaultClasses = "hover:text-white text-red-500 hover:bg-red-700";
+
+    if (type === 'default') {
+      defaultClasses += " border border-red-500";
+    } else if (type === 'dropdown') {
+      defaultClasses += " border border-red-300";
+    }
+
+    return isActive ? activeClasses : defaultClasses;
+  };
+
   useEffect(() => {
     const data = getOpdTahun();
     if (data.tahun) {
@@ -105,7 +119,7 @@ export const Header = () => {
     <nav className={`inset-x-1 m-1 ml-2 bg-white border border-gray-100 shadow-lg shadow-slate-400 rounded-xl fixed left-0 top-0 z-50 transition duration-300 ${visible ? 'translate-y-0' : '-translate-y-full'}`}>
       <div className="mx-auto flex justify-between gap-5 items-center px-4 py-3">
         <div className="flex justify-start gap-5">
-          <Link href={branding.url_dashboard || "/"}>
+          <Link href="/">
             <Image
               src={branding.logo || "/placeholder-logo.png"}
               alt="logo"
@@ -120,7 +134,7 @@ export const Header = () => {
             >
               <div
                 className={`flex items-center gap-1 font-medium rounded-lg cursor-pointer py-1 px-5
-                            ${showManriskKinerjaDropdown ? "text-white bg-red-500 border border-red-500" : "hover:text-white text-red-500 hover:bg-red-700 border border-red-500"}
+                            ${showManriskKinerjaDropdown ? "text-white bg-red-500 border border-red-500" : "hover:text-white text-red-500 hover:bg-red-700 border border-red-700"}
                           `}
               >
                 <TbSettingsCog />
@@ -147,36 +161,18 @@ export const Header = () => {
 
             <Link
               href='/manrisk-fraut/rekin'
-              className={`flex items-center gap-1 font-medium rounded-lg cursor-pointer py-1 px-5
-                          ${(
-                  url === '/manrisk-fraut/rekin' ||
-                  url === '/manrisk-fraut/identifikasi' ||
-                  url === '/manrisk-fraut/analisa' ||
-                  url === '/manrisk-fraut/penanganan' ||
-                  url === '/manrisk-fraut/pemantauan' ||
-                  url === '/manrisk-fraut/hasil-pemantauan'
-                ) ? "text-white bg-red-500"
-                  : "hover:text-white text-red-700 hover:bg-red-700 border border-red-700"
-                }
-                        `}
+              className={`flex items-center gap-1 font-medium rounded-lg cursor-pointer py-1 px-5 ${getActiveClass(
+                url.startsWith('/manrisk-fraut'), 'default'
+              )}`}
             >
               <TbAlertTriangle />
               Manrisk Fraud
             </Link>
             <Link
               href='/manrisk-spbe/identifikasi'
-              className={`flex items-center gap-1 font-medium rounded-lg cursor-pointer py-1 px-5
-                          ${(
-                  url === '/manrisk-spbe/identifikasi' ||
-                  url === '/manrisk-spbe/analisa' ||
-                  url === '/manrisk-spbe/penanganan' ||
-                  url === '/manrisk-spbe/pemantauan' ||
-                  url === '/manrisk-spbe/hasil-pemantauan'
-                )
-                  ? "text-white bg-red-500"
-                  : "hover:text-white text-red-500 hover:bg-red-700 border border-red-500"
-                }
-                        `}
+              className={`flex items-center gap-1 font-medium rounded-lg cursor-pointer py-1 px-5 ${getActiveClass(
+                url.startsWith('/manrisk-spbe'), 'default'
+              )}`}
             >
               <TbDeviceAnalytics />
               Manrisk SPBE
@@ -276,68 +272,44 @@ export const Header = () => {
           <div className={`w-full flex flex-col items-center rounded-lg border transition-all duration-200 ease-in-out ${KinerjaMobileMenu ? "opacity-100 space-y-2 p-3" : "opacity-0 max-h-0 pointer-events-none"}`}>
             <Link
               href='/manrisk-kinerja/pemda/identifikasi'
-              className={`w-full text-center py-1 px-5 rounded-lg
-                          ${(
-                  url === '/manrisk-kinerja/pemda/identifikasi' ||
-                  url === '/manrisk-kinerja/pemda/analisa' ||
-                  url === '/manrisk-kinerja/pemda/penanganan' ||
-                  url === '/manrisk-kinerja/pemda/pemantauan'
-                ) ? "text-white bg-red-500" : "hover:text-white text-red-500 hover:bg-red-700 border border-red-300"}
-                        `}
+              className={`w-full text-center py-1 px-5 rounded-lg ${getActiveClass(
+                url.startsWith('/manrisk-kinerja/pemda'), 'dropdown'
+              )}`}
             >
               Pemda
             </Link>
             <Link
               href='/manrisk-kinerja/opd/identifikasi'
-              className={`w-full text-center py-1 px-5 rounded-lg
-                            ${(
-                  url === '/manrisk-kinerja/opd/identifikasi' ||
-                  url === '/manrisk-kinerja/opd/analisa' ||
-                  url === '/manrisk-kinerja/opd/penanganan' ||
-                  url === '/manrisk-kinerja/opd/pemantauan'
-                ) ? "text-white bg-red-500" : "hover:text-white text-red-500 hover:bg-red-700 border border-red-300"}
-                          `}
+              className={`w-full text-center py-1 px-5 rounded-lg ${getActiveClass(
+                url.startsWith('/manrisk-kinerja/opd'), 'dropdown'
+              )}`}
             >
               OPD
             </Link>
             <Link
               href='/manrisk-kinerja/individu/identifikasi'
-              className={`w-full text-center py-1 px-5 rounded-lg
-                          ${(
-                  url === '/manrisk-kinerja/individu/identifikasi' ||
-                  url === '/manrisk-kinerja/individu/analisa' ||
-                  url === '/manrisk-kinerja/individu/penanganan' ||
-                  url === '/manrisk-kinerja/individu/pemantauan'
-                ) ? "text-white bg-red-500" : "hover:text-white text-red-500 hover:bg-red-700 border border-red-300"}
-                        `}
+              className={`w-full text-center py-1 px-5 rounded-lg ${getActiveClass(
+                url.startsWith('/manrisk-kinerja/individu'), 'dropdown'
+              )}`}
             >
               Individu
             </Link>
           </div>
+
           <Link
             href='/manrisk-fraut/identifikasi'
-            className={`w-full flex items-center justify-center gap-1 font-bold rounded-lg cursor-pointer py-1 px-5
-                        ${(
-                url === '/manrisk-fraut/identifikasi' ||
-                url === '/manrisk-fraut/analisa' ||
-                url === '/manrisk-fraut/penanganan' ||
-                url === '/manrisk-fraut/pemantauan'
-              ) ? "text-white bg-red-500" : "hover:text-white text-red-500 hover:bg-red-700 border border-red-300"}
-                      `}
+            className={`w-full flex items-center justify-center gap-1 font-bold rounded-lg cursor-pointer py-1 px-5 ${getActiveClass(
+              url.startsWith('/manrisk-fraut')
+            )}`}
           >
             <TbAlertTriangle />
             Manrisk Fraud
           </Link>
           <Link
             href='/manrisk-spbe/identifikasi'
-            className={`w-full flex items-center justify-center gap-1 font-bold rounded-lg cursor-pointer py-1 px-5
-                        ${(
-                url === '/manrisk-spbe/identifikasi' ||
-                url === '/manrisk-spbe/analisa' ||
-                url === '/manrisk-spbe/penanganan' ||
-                url === '/manrisk-spbe/pemantauan'
-              ) ? "text-white bg-red-500" : "hover:text-white text-red-500 hover:bg-red-700 border border-red-500"}
-                      `}
+            className={`w-full flex items-center justify-center gap-1 font-bold rounded-lg cursor-pointer py-1 px-5 ${getActiveClass(
+              url.startsWith('/manrisk-spbe')
+            )}`}
           >
             <TbDeviceAnalytics />
             Manrisk SPBE

@@ -10,33 +10,31 @@ import { ApiResponse, RisikoResponse } from "@/app/types";
 import { LoadingClock } from "@/components/global/loading";
 import { ErrorMessage } from "@/components/page/Error";
 import { ModalJenisRisiko } from "./ModalJenisRisiko";
+import { useApiUrlContext } from "@/components/context/ApiUrlContext";
 
 export const Table = () => {
 
-    const API_URL = process.env.NEXT_PUBLIC_API_URL;
+    const { url_manrisk } = useApiUrlContext();
     const [FetchTrigger, setFetchTrigger] = useState<boolean>(false);
-    const handleFetchTrigger = () => {
-        setFetchTrigger((prev) => !prev);
-    }
     const [ModalOpen, setModalOpen] = useState<boolean>(false);
     const [DataToEdit, setDataToEdit] = useState<RisikoResponse | null>(null);
     const [JenisModal, setJenisModal] = useState<"baru" | "edit" | "">('');
 
     const handleModal = (jenis: "baru" | "edit" | "", data?: RisikoResponse) => {
-        if(ModalOpen){
+        if (ModalOpen) {
             setModalOpen(false);
             setJenisModal('');
             setDataToEdit(null)
         } else {
             setModalOpen(true);
             setJenisModal(jenis);
-            if(data){
+            if (data) {
                 setDataToEdit(data);
             }
         }
     }
 
-    const { Data: RisikoData, Loading, Error } = useGet<ApiResponse<RisikoResponse[]>>({ url: `${API_URL}/risiko-kecurangan`, fetchTrigger: FetchTrigger });
+    const { Data: RisikoData, Loading, Error } = useGet<ApiResponse<RisikoResponse[]>>({ url: `${url_manrisk}/risiko-kecurangan`, fetchTrigger: FetchTrigger });
     const data = RisikoData?.data || [];
 
     if (Loading) {
@@ -113,7 +111,7 @@ export const Table = () => {
                     </tbody>
                 </table>
                 {ModalOpen &&
-                    <ModalJenisRisiko 
+                    <ModalJenisRisiko
                         isOpen={ModalOpen}
                         onClose={() => handleModal("")}
                         jenis={JenisModal}
@@ -124,4 +122,4 @@ export const Table = () => {
             </div>
         </>
     )
-} 
+}

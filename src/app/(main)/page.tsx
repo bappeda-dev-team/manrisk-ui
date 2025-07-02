@@ -40,7 +40,7 @@ export default function Home() {
             <BoxMenu
               title="Daftar Pegawai"
               detail=' Menampilkan daftar Pegawai siapa saja yang terdaftar didalam website, control data tersedia di data master menu perencanaan'
-              url="/"
+              url="/datamaster/pegawai"
             >
               <TbUsers size={50} />
             </BoxMenu>

@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
 import { UsePostResponse } from "@/app/types";
+import { useApiUrlContext } from "@/components/context/ApiUrlContext";
 
 export const usePost = <T, TResponse = { message: string }>(urlPath: string, jenis: string ): [
     (formValue: T) => Promise<boolean>, // Fungsi untuk memicu POST/PUT
@@ -9,12 +10,11 @@ export const usePost = <T, TResponse = { message: string }>(urlPath: string, jen
     const [proses, setProses] = useState<boolean>(false);
     const [error, setError] = useState<boolean>(false);
     const [message, setMessage] = useState<string | null>(null);
-
-    const API_URL = process.env.NEXT_PUBLIC_API_URL;
+    const { url_manrisk } = useApiUrlContext();
 
     const triggerPost = useCallback(
         async (formValue: T): Promise<boolean> => {
-            if (!API_URL) {
+            if (!url_manrisk) {
                 console.error('API URL is not defined. Please set NEXT_PUBLIC_API_URL or configure rewrites.');
                 setError(true);
                 setMessage('API URL is not configured.');
@@ -26,7 +26,7 @@ export const usePost = <T, TResponse = { message: string }>(urlPath: string, jen
             setMessage(null); // Reset pesan
 
             try {
-                const response = await fetch(`${API_URL}${urlPath}`, {
+                const response = await fetch(`${url_manrisk}${urlPath}`, {
                     method: jenis === "baru" ? 'POST' : "PUT",
                     headers: {
                         'Content-Type': 'application/json',
@@ -58,7 +58,7 @@ export const usePost = <T, TResponse = { message: string }>(urlPath: string, jen
                 setProses(false);
             }
         },
-        [API_URL, urlPath]
+        [url_manrisk, urlPath]
     );
 
     return [triggerPost, { data, proses, error, message }];

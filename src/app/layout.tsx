@@ -2,6 +2,7 @@ import { Figtree } from "next/font/google";
 import "./globals.css";
 import NextTopLoader from "nextjs-toploader";
 import { BrandingProvider } from "@/components/context/BrandingContext";
+import { ApiUrlProvider } from "@/components/context/ApiUrlContext";
 
 const font = Figtree({
   subsets: ['latin'],
@@ -39,9 +40,11 @@ export default function RootLayout({
             color="red"
             showSpinner={false}
           />
-          <div>
-            {children}
-          </div>
+          <ApiUrlProvider>
+            <div>
+              {children}
+            </div>
+          </ApiUrlProvider>
         </BrandingProvider>
       </body>
     </html>

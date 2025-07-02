@@ -13,19 +13,20 @@ import { PemantauanFraudValue, ApiResponse, VerifikasiFormValue } from "@/app/ty
 import { useGet } from "@/hook/useGet";
 import { useVerifikasi } from "@/hook/useVerifikasi";
 import { useBrandingContext } from "@/components/context/BrandingContext";
+import { useApiUrlContext } from "@/components/context/ApiUrlContext";
 
 const Table = () => {
 
+    const { url_manrisk } = useApiUrlContext();
     const [ModalOpen, setModalOpen] = useState<boolean>(false);
     const [FetchTrigger, setFetchTrigger] = useState<boolean>(false);
     const [DataToEdit, setDataToEdit] = useState<any>(null);
     const [JenisModal, setJenisModal] = useState<"baru" | "edit" | "">("");
     const { branding } = useBrandingContext();
     const tahun = branding.tahun ? branding?.tahun.value : 0;
-    const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
     const { Data: HasilData, Loading, Error: ErrorFetch } = useGet<ApiResponse<PemantauanFraudValue[]>>({
-        url: `${API_URL}/pemantauan/get-all-data/akun_test_level_3/${tahun}`,
+        url: `${url_manrisk}/pemantauan/get-all-data/akun_test_level_3/${tahun}`,
         fetchTrigger: FetchTrigger
     });
     const Pemantauan = HasilData?.data ?? [];

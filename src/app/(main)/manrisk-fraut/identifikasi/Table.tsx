@@ -12,20 +12,21 @@ import { ErrorMessage } from "@/components/page/Error";
 import { useGet } from "@/hook/useGet";
 import { useVerifikasi } from "@/hook/useVerifikasi";
 import { useBrandingContext } from "@/components/context/BrandingContext";
+import { useApiUrlContext } from "@/components/context/ApiUrlContext";
 import { ApiResponse, IdentifikasiFraudValue, VerifikasiFormValue } from "@/app/types";
 
 const Table = () => {
 
+    const { url_manrisk } = useApiUrlContext();
     const [ModalOpen, setModalOpen] = useState<boolean>(false);
     const [JenisModal, setJenisModal] = useState<"baru" | "edit" | "">('');
     const [DataToEdit, setDataToEdit] = useState<any>(null);
     const [FetchTrigger, setFetchTrigger] = useState<boolean>(false);
     const {branding} = useBrandingContext();
     const tahun = branding.tahun ? branding?.tahun.value : 0;
-    const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
     const { Data: HasilData, Loading, Error } = useGet<ApiResponse<IdentifikasiFraudValue[]>>({
-        url: `${API_URL}/identifikasi/get-all-data/akun_test_level_3/${tahun}`,
+        url: `${url_manrisk}/identifikasi/get-all-data/akun_test_level_3/${tahun}`,
         fetchTrigger: FetchTrigger
     });
     const Identifikasi = HasilData?.data ?? [];

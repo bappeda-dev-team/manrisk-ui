@@ -15,6 +15,20 @@ export type ResultPostResponse = {
   message: string;
 }
 
+export type ApiResponse<T> = {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: T;
+  errors: string[];
+  timestamp: string; // This is typically a string in ISO 8601 format
+}
+export type PerencanaanResponse<T> = {
+  code: number;
+  status: string;
+  data: T;
+}
+
 interface OperasionalDaerah {
   nama_opd: string;
   kode_opd: string;
@@ -42,39 +56,48 @@ export type JenisRisikoBody = {
   uraian: string;
 }
 
+// list pegawai
+export type PegawaiResponse = {
+  id: number;
+  nama_pegawai: string;
+  nip: string;
+  kode_opd: string;
+  nama_opd: string;
+}
+
 //fraud identifikasi
 export type IdentifikasiFraudValue = {
-    id: number,
-    id_rencana_kinerja: string;
-    id_pohon: number,
-    nama_pohon: string;
-    level_pohon: number,
-    nama_rencana_kinerja: string;
-    tahun: string;
-    status_rencana_kinerja: string;
-    pegawai_id: string;
-    nama_pegawai: string;
-    operasional_daerah: {
-        kode_opd: string;
-        nama_opd: string;
-    },
-    nama_risiko: string;
-    jenis_risiko: string;
-    kemungkinan_kecurangan: string;
-    indikasi: string;
-    kemungkinan_pihak_terkait: string;
-    status: string;
-    keterangan: string;
-    pembuat: {
-        nama: string;
-        nip: string;
-        golongan: string;
-    },
-    verifikator: {
-        nama: string;
-        nip: string;
-        golongan: string;
-    },
+  id: number,
+  id_rencana_kinerja: string;
+  id_pohon: number,
+  nama_pohon: string;
+  level_pohon: number,
+  nama_rencana_kinerja: string;
+  tahun: string;
+  status_rencana_kinerja: string;
+  pegawai_id: string;
+  nama_pegawai: string;
+  operasional_daerah: {
+    kode_opd: string;
+    nama_opd: string;
+  },
+  nama_risiko: string;
+  jenis_risiko: string;
+  kemungkinan_kecurangan: string;
+  indikasi: string;
+  kemungkinan_pihak_terkait: string;
+  status: string;
+  keterangan: string;
+  pembuat: {
+    nama: string;
+    nip: string;
+    golongan: string;
+  },
+  verifikator: {
+    nama: string;
+    nip: string;
+    golongan: string;
+  },
 }
 
 // fraud analisa
@@ -211,13 +234,4 @@ export type PemantauanFraudPostValue = {
     nip: string;
     golongan: string;
   }
-}
-
-export type ApiResponse<T> = {
-  success: boolean;
-  statusCode: number;
-  message: string;
-  data: T;
-  errors: string[];
-  timestamp: string; // This is typically a string in ISO 8601 format
 }

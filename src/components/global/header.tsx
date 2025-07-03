@@ -7,7 +7,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { TbSettingsCog, TbAlertTriangle, TbDeviceAnalytics, TbLogout } from "react-icons/tb";
 import { useBrandingContext } from "../context/BrandingContext";
+import { useApiUrlContext } from "../context/ApiUrlContext";
 import { setTahunCookies, getOpdTahun, setOpdCookies } from "./utils/cookies";
+import { useGet } from "@/hook/useGet";
+import { OpdResponse } from "@/app/types";
 
 interface OptionType {
   value: number;
@@ -22,10 +25,14 @@ export const Header = () => {
 
   const [showManriskKinerjaDropdown, setShowManriskKinerjaDropdown] = useState<boolean>(false);
   const [Tahun, setTahun] = useState<OptionType | null>(null);
+
+  const [OptionOpd, setOptionOpd] = useState<OpdResponse[]>([]);
   const [SelectedOpd, setSelectedOpd] = useState<OptionType | null>(null);
 
   const url = usePathname();
   const { branding } = useBrandingContext();
+
+  const { url_perencanaan } = useApiUrlContext();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -76,6 +83,16 @@ export const Header = () => {
     return isActive ? activeClasses : defaultClasses;
   };
 
+  const fetchOpd = () => {
+    const { Data: HasilData, Loading, Error } = useGet<OpdResponse[]>({ url: `${url_perencanaan}/api/v1/master_opd/opds` });
+    if(HasilData){
+      setOptionOpd(HasilData);
+    } else {
+      setOptionOpd([]);
+      console.log("data opd kosong / gagal mendapatkan data opd");
+    }
+  }
+
   useEffect(() => {
     const data = getOpdTahun();
     if (data.tahun) {
@@ -108,7 +125,7 @@ export const Header = () => {
     { label: "Tahun 2029", value: 2029 },
     { label: "Tahun 2030", value: 2030 }
   ];
-  const OptionOpd = [
+  const OptionOpdStatic = [
     { label: 'OPD 1', value: 0 }
   ];
   const DynamicSelect = dynamic(() => import('react-select'), {
@@ -184,6 +201,7 @@ export const Header = () => {
           <DynamicSelect
             value={SelectedOpd}
             options={OptionOpd}
+            // onMenuOpen={fetchOpd}
             onChange={(option: any) => {
               setSelectedOpd(option);
               setOpdCookies(option);

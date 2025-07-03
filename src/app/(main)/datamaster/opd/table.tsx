@@ -1,17 +1,17 @@
 'use client'
 
 import { useGet } from "@/hook/useGet";
-import { PerencanaanResponse, PegawaiResponse } from "@/app/types";
+import { PerencanaanResponse, OpdResponse } from "@/app/types";
 import { LoadingClock } from "@/components/global/loading";
 import { ErrorMessage } from "@/components/page/Error";
 import { useApiUrlContext } from "@/components/context/ApiUrlContext";
 
 export const Table = () => {
 
-    const { token, url_perencanaan, url_manrisk } = useApiUrlContext();
+    const { url_perencanaan } = useApiUrlContext();
 
-    const { Data: HasilData, Loading, Error } = useGet<PerencanaanResponse<PegawaiResponse[]>>({ url: `${url_perencanaan}/api/v1/perencanaan/pegawai/findall?kode_opd=5.01.5.05.0.00.01.0000`});
-    const data = HasilData?.data || [];
+    const { Data: HasilData, Loading, Error } = useGet<OpdResponse[]>({ url: `${url_perencanaan}/api/v1/master_opd/opds`});
+    const data = HasilData ? HasilData : [];
 
     if (Loading) {
         return (
@@ -29,9 +29,8 @@ export const Table = () => {
                 <thead>
                     <tr className="text-white bg-green-500">
                         <th className="border-r border-b py-4 px-6 border-gray-300 max-w-[50px] text-center">No</th>
-                        <th className="border-r border-b py-4 px-6 border-gray-300 min-w-[300px] text-center">Nama Pegawai</th>
-                        <th className="border-r border-b py-4 px-6 border-gray-300 min-w-[200px] text-center">NIP</th>
-                        <th className="border-r border-b py-4 px-6 border-gray-300 min-w-[200px] text-center">Perangkat Daerah</th>
+                        <th className="border-r border-b py-4 px-6 border-gray-300 min-w-[300px]">Nama Perangkat Daerah</th>
+                        <th className="border-r border-b py-4 px-6 border-gray-300 min-w-[200px]">Kode OPD</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -45,9 +44,8 @@ export const Table = () => {
                         data.map((data: any, index: number) => (
                             <tr key={index}>
                                 <td className="border-b border-green-500 px-6 py-4 text-center">{index + 1}</td>
-                                <td className="border border-green-500 px-6 py-4">{data.nama_pegawai || "-"}</td>
-                                <td className="border border-green-500 px-6 py-4 text-center">{data.nip || "-"}</td>
-                                <td className="border border-green-500 px-6 py-4 text-center">{data.nama_opd || "-"}</td>
+                                <td className="border border-green-500 px-6 py-4">{data.kodeOpd || "-"}</td>
+                                <td className="border border-green-500 px-6 py-4 text-center">{data.namaOpd || "-"}</td>
                             </tr>
                         ))
                     }

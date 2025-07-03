@@ -64,7 +64,7 @@ export const useGet = <T>({ url, fetchTrigger }: useFetchDataProps): FetchRespon
                     headers: headers,
                 });
                 const data = await response.json();
-                if (data.success) {
+                if (response.ok) {
                     setData(data);
                     // console.log(data);
                 } else {

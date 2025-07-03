@@ -3,9 +3,14 @@ export type FetchResponse<T> = {
   Loading: boolean;
   Error?: boolean;
 };
+export type PerencanaanResponse<T> = {
+  code: number;
+  status: string;
+  data?: T;
+}
 
-export type UsePostResponse<TResponse> = {
-  data: TResponse | null;
+export type UsePostResponse<T> = {
+  data: T | null;
   proses: boolean; // Mengindikasikan loading/proses
   error: boolean; // Mengindikasikan error
   message: string | null; // Pesan hasil operasi
@@ -22,11 +27,6 @@ export type ApiResponse<T> = {
   data: T;
   errors: string[];
   timestamp: string; // This is typically a string in ISO 8601 format
-}
-export type PerencanaanResponse<T> = {
-  code: number;
-  status: string;
-  data: T;
 }
 
 interface OperasionalDaerah {
@@ -63,6 +63,13 @@ export type PegawaiResponse = {
   nip: string;
   kode_opd: string;
   nama_opd: string;
+}
+
+// list opd
+export type OpdResponse= {
+  id: number;
+  kodeOpd: string;
+  namaOpd: string;
 }
 
 //fraud identifikasi

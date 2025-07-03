@@ -33,7 +33,7 @@ export default function Home() {
             <BoxMenu
               title="Daftar OPD"
               detail=' Menampilkan daftar Organisasi Perangkat Daerah apa saja yang terdaftar didalam website, control data tersedia di data master menu perencanaan'
-              url="/"
+              url="/datamaster/opd"
             >
               <TbBuilding size={50} />
             </BoxMenu>

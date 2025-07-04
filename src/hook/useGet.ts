@@ -45,15 +45,15 @@ export const useGet = <T>({ url, fetchTrigger }: useFetchDataProps): FetchRespon
                 setError(true);
                 return;
             }
-            // else if(!USERNAME_API){
-            //     console.error('Username API tidak terbaca');
-            //     setError(true);
-            //     return;
-            // } else if(!PASS_API){
-            //     console.error('Password API tidak terbaca');
-            //     setError(true);
-            //     return;
-            // }
+            else if(!USERNAME_API){
+                console.error('Username API tidak terbaca');
+                setError(true);
+                return;
+            } else if(!PASS_API){
+                console.error('Password API tidak terbaca');
+                setError(true);
+                return;
+            }
 
             setLoading(true);
             setError(false); // Reset error state on new fetch

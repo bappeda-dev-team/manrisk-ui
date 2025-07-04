@@ -26,7 +26,7 @@ const Table = () => {
     const tahun = branding.tahun ? branding?.tahun.value : 0;
 
     const { Data: HasilData, Loading, Error } = useGet<ApiResponse<IdentifikasiFraudValue[]>>({
-        url: `${url_manrisk}/identifikasi/get-all-data/akun_test_level_3/${tahun}`,
+        url: `${url_manrisk}/identifikasi/get-all-data/${branding.nip}/${tahun}`,
         fetchTrigger: FetchTrigger
     });
     const Identifikasi = HasilData?.data ?? [];

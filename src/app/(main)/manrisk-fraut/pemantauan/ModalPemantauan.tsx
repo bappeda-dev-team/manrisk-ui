@@ -8,6 +8,7 @@ import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import useToast from "@/components/global/alert/toastAlert";
 import { usePost } from "@/hook/usePost";
 import { PemantauanFraudPostValue, ResultPostResponse } from "@/app/types";
+import { useBrandingContext } from "@/components/context/BrandingContext";
 
 interface ModalPemantauan {
     isOpen: boolean;
@@ -20,6 +21,8 @@ interface ModalPemantauan {
 export const ModalPemantauan: React.FC<ModalPemantauan> = ({ isOpen, onClose, onSuccess, jenis, Data }) => {
 
     const { toastSuccess, toastError, toastWarning, toastInfo } = useToast();
+    const {branding} = useBrandingContext();
+    
     const { control, handleSubmit, reset } = useForm<PemantauanFraudPostValue>({
         defaultValues: {
             id_rencana_kinerja: Data.id_rencana_kinerja,
@@ -33,11 +36,6 @@ export const ModalPemantauan: React.FC<ModalPemantauan> = ({ isOpen, onClose, on
             bukti_pelaksanaan_tindak_lanjut: Data.bukti_pelaksanaan_tindak_lanjut,
             kendala: Data.kendala,
             catatan: Data.catatan,
-            pembuat: {
-                nama: Data.nama_pegawai,
-                nip: Data.pegawai_id,
-                golongan: "-"
-            }
         }
     });
 
@@ -59,11 +57,7 @@ export const ModalPemantauan: React.FC<ModalPemantauan> = ({ isOpen, onClose, on
             bukti_pelaksanaan_tindak_lanjut: data.bukti_pelaksanaan_tindak_lanjut,
             kendala: data.kendala,
             catatan: data.catatan,
-            pembuat: {
-                nama: data.nama_pegawai || "-",
-                nip: data.pegawai_id || "-",
-                golongan: "-"
-            }
+            nip_pembuat: branding.nip,
         }
         // console.log(formData);
         const success = await postPemantauan(formData);

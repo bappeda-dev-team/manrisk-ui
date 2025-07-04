@@ -19,13 +19,14 @@ const Table = () => {
 
     const [ModalOpen, setModalOpen] = useState<boolean>(false);
     const [JenisModal, setJenisModal] = useState<"baru" | "edit" | "">('');
+    const [Nip, setNip] = useState<string>("");
     const [DataToEdit, setDataToEdit] = useState<any>(null);
     const [FetchTrigger, setFetchTrigger] = useState<boolean>(false);
     const {branding} = useBrandingContext();
     const tahun = branding?.tahun ? branding?.tahun.value : 0;
     const { url_manrisk } = useApiUrlContext();
 
-    const { Data: HasilData, Loading, Error } = useGet<ApiResponse<AnalisaFraudValue[]>>({url: `${url_manrisk}/analisa/get-all-data/akun_test_level_3/${tahun}`, fetchTrigger: FetchTrigger});
+    const { Data: HasilData, Loading, Error } = useGet<ApiResponse<AnalisaFraudValue[]>>({url: `${url_manrisk}/analisa/get-all-data/${branding.nip}/${tahun}`, fetchTrigger: FetchTrigger});
     const Analisa = HasilData?.data || [];
 
     const handleModal = (jenis: "baru" | "edit" | "", data?: AnalisaFraudValue) => {

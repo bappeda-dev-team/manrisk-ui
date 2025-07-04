@@ -9,7 +9,8 @@ import { FloatingLabelTextarea, FloatingLabelInput } from "@/components/global/i
 import { } from "react-toastify";
 import useToast from "@/components/global/alert/toastAlert";
 import { usePost } from "@/hook/usePost";
-import { UsePostResponse, PenangananFraudPostValue, ResultPostResponse } from "@/app/types";
+import { PenangananFraudPostValue, ResultPostResponse } from "@/app/types";
+import { useBrandingContext } from "@/components/context/BrandingContext";
 
 interface ModalPenanganan {
     isOpen: boolean;
@@ -25,6 +26,8 @@ interface PostPenanganResponse {
 
 export const ModalPenanganan: React.FC<ModalPenanganan> = ({ isOpen, onClose, onSuccess, jenis, data }) => {
     const { toastSuccess, toastError, toastInfo, toastWarning } = useToast();
+    const {branding} = useBrandingContext();
+
     const [PostPenanganan, { data: PostPenangananData, proses: Proses, error: Error, message: MessagePost }] = usePost<PenangananFraudPostValue, ResultPostResponse>(
         jenis === 'baru' ? '/penanganan' : `/penanganan/${data.id_rencana_kinerja}`, jenis 
     );
@@ -57,11 +60,7 @@ export const ModalPenanganan: React.FC<ModalPenanganan> = ({ isOpen, onClose, on
             biaya_perlakuan_risiko: data.biaya_perlakuan_risiko,
             target_waktu: data.target_waktu,
             pic: data.pic,
-            pembuat: {
-                nama: data.nama_pegawai || "-",
-                nip: data.pegawai_id || "-",
-                golongan: "-"
-            }
+            nip_pembuat: branding.nip,
         }
         // console.log(formData);
         const success = await PostPenanganan(formData);

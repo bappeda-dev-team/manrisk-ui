@@ -8,8 +8,10 @@ import { usePathname } from "next/navigation";
 import { TbSettingsCog, TbAlertTriangle, TbDeviceAnalytics, TbLogout } from "react-icons/tb";
 import { useBrandingContext } from "../context/BrandingContext";
 import { useApiUrlContext } from "../context/ApiUrlContext";
-import { setTahunCookies, getOpdTahun, setOpdCookies } from "./utils/cookies";
+import { setTahunCookies, getOpdTahun, setNipCookies, setOpdCookies } from "./utils/cookies";
 import { useGet } from "@/hook/useGet";
+import { usePost } from "@/hook/usePost";
+import { UsePostResponse } from "@/app/types";
 import { OpdResponse } from "@/app/types";
 
 interface OptionType {
@@ -29,11 +31,15 @@ export const Header = () => {
   const [OptionOpd, setOptionOpd] = useState<OpdResponse[]>([]);
   const [SelectedOpd, setSelectedOpd] = useState<OptionType | null>(null);
 
+  const [Nip, setNip] = useState<string>("");
+  const [sendData, { data: dataNip, proses, error, message }] = usePost<{ data: string }, any>("/api/external/encrypt", 'baru');
+
   const url = usePathname();
   const { branding } = useBrandingContext();
 
   const { url_perencanaan } = useApiUrlContext();
 
+  //handle header scroll animation 
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollPos = window.pageYOffset;
@@ -52,6 +58,7 @@ export const Header = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [prevScrollPos, url]);
 
+  // handle close menu kinerja w/ esc button
   useEffect(() => {
     const handleEscapeKey = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
@@ -69,7 +76,27 @@ export const Header = () => {
     };
   }, []);
 
-  // Di luar komponen atau di file utilitas terpisah
+  // fetch nip encryption
+  useEffect(() => {
+    const fetchNip = async () => {
+      const formData = {
+        data: "akun_test_level_3"
+      }
+      await sendData(formData);
+    }
+    fetchNip();
+  }, [sendData]);
+
+  useEffect(() => {
+    if (!proses && dataNip) {
+      setNip(dataNip.data);
+      setNipCookies(dataNip.data);
+      // console.log("NIP setelah update state:", dataNip.data);
+    } else if (!proses && error) {
+      alert("NIP gagal dienkripsi: " + message);
+    }
+  }, [dataNip, proses, error, message]);
+
   const getActiveClass = (isActive: boolean, type = 'default') => {
     const activeClasses = "text-white bg-red-500";
     let defaultClasses = "hover:text-white text-red-500 hover:bg-red-700";
@@ -85,7 +112,7 @@ export const Header = () => {
 
   const fetchOpd = () => {
     const { Data: HasilData, Loading, Error } = useGet<OpdResponse[]>({ url: `${url_perencanaan}/api/v1/master_opd/opds` });
-    if(HasilData){
+    if (HasilData) {
       setOptionOpd(HasilData);
     } else {
       setOptionOpd([]);

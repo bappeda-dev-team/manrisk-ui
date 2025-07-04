@@ -38,7 +38,7 @@ export const usePost = <T, TResponse = { message: string }>(urlPath: string, jen
 
                 if (response.ok) {
                     setData(result);
-                    // console.log(result);
+                    // console.log("post berhasil: ", result);
                     setMessage(result.message || 'Berhasil menyimpan data.');
                     return true; // Menandakan keberhasilan
                 } else {

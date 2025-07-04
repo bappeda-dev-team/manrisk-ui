@@ -9,6 +9,7 @@ import { FloatingLabelInput, FloatingLabelTextarea } from "@/components/global/i
 import useToast from "@/components/global/alert/toastAlert";
 import { usePost } from "@/hook/usePost";
 import { ResultPostResponse, AnalisaFraudFormPost } from "@/app/types";
+import { useBrandingContext } from "@/components/context/BrandingContext";
 
 interface ModalAnalisa {
     isOpen: boolean;
@@ -21,6 +22,7 @@ interface ModalAnalisa {
 export const ModalAnalisa: React.FC<ModalAnalisa> = ({ isOpen, onClose, onSuccess, Data, jenis }) => {
 
     const { toastSuccess, toastError, toastInfo, toastWarning } = useToast();
+    const {branding} = useBrandingContext();
     
     const [sendData, { data, proses, error, message }] = usePost<AnalisaFraudFormPost, ResultPostResponse>(jenis === 'baru' ? '/analisa' : `/analisa/${Data.id_rencana_kinerja}`, jenis);
 
@@ -86,11 +88,7 @@ export const ModalAnalisa: React.FC<ModalAnalisa> = ({ isOpen, onClose, onSucces
             akibat: data.akibat || "-",
             skala_dampak: Number(data.skala_dampak) || 0,
             skala_kemungkinan: Number(data.skala_kemungkinan) || 0,
-            pembuat: {
-                nama: data.nama_pegawai || "-",
-                nip: data.pegawai_id || "-",
-                golongan: "-",
-            }
+            nip_pembuat: branding.nip,
         };
         // console.log(formData);
         const success = await sendData(formData);

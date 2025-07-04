@@ -31,25 +31,32 @@ export const setOpdCookies = (selectedOption: { value: string, label: string }) 
         window.location.reload();
     }, 1000);
 }
+export const setNipCookies = (nip: string) => {
+    setCookies("nip", nip);
+}
 
 export const getOpdTahun = () => {
     const get_tahun = getCookies("tahun");
     const get_opd = getCookies("opd");
+    const get_nip = getCookies("nip");
 
-    if (get_tahun && get_opd) {
+    if (get_tahun && get_opd && get_nip) {
         return {
             tahun: JSON.parse(get_tahun),
-            opd: JSON.parse(get_opd)
+            opd: JSON.parse(get_opd),
+            nip: JSON.parse(get_nip)
         };
     }
 
     if (get_tahun) {
         return { tahun: JSON.parse(get_tahun), opd: null };
     }
-
     if (get_opd) {
         return { tahun: null, opd: JSON.parse(get_opd) };
     }
+    if (get_nip) {
+        return { tahun: null, opd: JSON.parse(get_nip) };
+    }
 
-    return { tahun: null, opd: null };
+    return { tahun: null, opd: null, nip: null };
 };

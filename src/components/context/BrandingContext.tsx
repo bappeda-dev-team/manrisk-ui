@@ -3,6 +3,8 @@
 import { createContext, useContext } from "react"
 import { useState, useEffect } from "react";
 import { getOpdTahun } from "../global/utils/cookies";
+import { usePost } from "@/hook/usePost";
+import { ResultPostResponse } from "@/app/types";
 
 interface OptionType {
   value: number;
@@ -24,6 +26,7 @@ interface BrandingContextType {
     title: string;
     tahun: OptionType | null | undefined;
     opd: OptionTypeString | null | undefined;
+    nip: string;
     logo: string;
     url_dashboard: string;
     url_login: string;
@@ -46,44 +49,49 @@ export function BrandingProvider({ children }: Readonly<{ children: React.ReactN
 
   const [Tahun, setTahun] = useState<OptionType | null>(null);
   const [SelectedOpd, setSelecetedOpd] = useState<OptionTypeString | null>(null);
-  
+  const [Nip, setNip] = useState<string>("");
+
   useEffect(() => {
     const data = getOpdTahun();
-    if(data.opd){
+    if (data.opd) {
       const opd = {
         value: data.opd.value,
         label: data.opd.label,
       }
       setSelecetedOpd(opd);
     }
-    if(data.tahun){
+    if (data.tahun) {
       const tahun = {
         value: data.tahun.value,
         label: data.tahun.label,
       }
       setTahun(tahun);
     }
+    if (data.nip) {
+      setNip(data.nip);
+    }
   }, []);
-  
+
   return (
-    <BrandingContext.Provider 
-      value={{ 
-        title: appName, 
-        logo: logo, 
+    <BrandingContext.Provider
+      value={{
+        title: appName,
+        logo: logo,
         url_dashboard: url_dashboard,
         url_login: url_login,
         api_perencanaan: api_perencanaan,
         api_manrisk: api_manrisk,
-        branding: { 
-          title: appName, 
+        branding: {
+          title: appName,
           logo: logo,
           tahun: Tahun,
           opd: SelectedOpd,
+          nip: Nip,
           url_dashboard: url_dashboard,
           url_login: url_login,
           api_perencanaan: api_perencanaan,
           api_manrisk: api_manrisk,
-        } 
+        }
       }}
     >
       {children}

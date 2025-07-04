@@ -1,17 +1,18 @@
 'use client'
 
 import { useGet } from "@/hook/useGet";
-import { PerencanaanResponse, OpdResponse } from "@/app/types";
+import { ApiResponse, OpdResponse } from "@/app/types";
 import { LoadingClock } from "@/components/global/loading";
 import { ErrorMessage } from "@/components/page/Error";
-import { useApiUrlContext } from "@/components/context/ApiUrlContext";
+import { useBrandingContext } from "@/components/context/BrandingContext";
 
 export const Table = () => {
 
-    const { url_perencanaan } = useApiUrlContext();
+    const {branding} = useBrandingContext();
+    const url_manrisk = branding.api_manrisk;
 
-    const { Data: HasilData, Loading, Error } = useGet<OpdResponse[]>({ url: `${url_perencanaan}/api/v1/master_opd/opds`});
-    const data = HasilData ? HasilData : [];
+    const { Data: HasilData, Loading, Error } = useGet<ApiResponse<OpdResponse[]>>({ url: `${url_manrisk}/api/external/opdlist`});
+    const data = HasilData?.data || [];
 
     if (Loading) {
         return (
@@ -31,6 +32,7 @@ export const Table = () => {
                         <th className="border-r border-b py-4 px-6 border-gray-300 max-w-[50px] text-center">No</th>
                         <th className="border-r border-b py-4 px-6 border-gray-300 min-w-[300px]">Nama Perangkat Daerah</th>
                         <th className="border-r border-b py-4 px-6 border-gray-300 min-w-[200px]">Kode OPD</th>
+                        <th className="border-r border-b py-4 px-6 border-gray-300 min-w-[200px]">Alamat</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -41,11 +43,12 @@ export const Table = () => {
                             </td>
                         </tr>
                         :
-                        data.map((data: any, index: number) => (
+                        data.map((data: OpdResponse, index: number) => (
                             <tr key={index}>
                                 <td className="border-b border-green-500 px-6 py-4 text-center">{index + 1}</td>
-                                <td className="border border-green-500 px-6 py-4">{data.kodeOpd || "-"}</td>
-                                <td className="border border-green-500 px-6 py-4 text-center">{data.namaOpd || "-"}</td>
+                                <td className="border border-green-500 px-6 py-4">{data.nama_opd || "-"} ({data.singkatan || "-"})</td>
+                                <td className="border border-green-500 px-6 py-4 text-center">{data.kode_opd || "-"}</td>
+                                <td className="border border-green-500 px-6 py-4 text-center">{data.alamat || "-"}</td>
                             </tr>
                         ))
                     }

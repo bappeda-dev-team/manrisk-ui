@@ -66,10 +66,49 @@ export type PegawaiResponse = {
 }
 
 // list opd
-export type OpdResponse= {
-  id: number;
-  kodeOpd: string;
-  namaOpd: string;
+export type OpdResponse = {
+  id: string;
+  kode_opd: string;
+  nama_opd: string;
+  singkatan: string;
+  alamat: string;
+  telepon: string;
+  fax: string;
+  email: string;
+  website: string;
+  nama_kepala_opd: string;
+  nip_kepala_opd: string;
+  pangkat_kepala: string;
+}
+
+// rencana kinerja
+interface Target {
+  id_target: string;
+  indikator_id: string;
+  target: string;
+  satuan: string;
+}
+
+interface Indikator {
+  id_indikator: string;
+  rencana_kinerja_id: string;
+  nama_indikator: string;
+  targets: Target[];
+  manual_ik_exist: boolean;
+}
+
+export type RencanaKinerjaValue = {
+  id_rencana_kinerja: string;
+  id_pohon: number;
+  nama_pohon: string;
+  level_pohon: number;
+  nama_rencana_kinerja: string;
+  tahun: string;
+  status_rencana_kinerja: string;
+  operasional_daerah: OperasionalDaerah;
+  pegawai_id: string;
+  nama_pegawai: string;
+  indikator: Indikator[];
 }
 
 //fraud identifikasi
@@ -135,17 +174,13 @@ export type AnalisaFraudFormPost = {
   nama_rencana_kinerja?: string;
   pegawai_id?: string;
 
-  id_rencana_kinerja: string,
-  nama_risiko: string,
-  penyebab: string,
-  akibat: string,
-  skala_dampak: number,
-  skala_kemungkinan: number,
-  pembuat: {
-    nama: string,
-    nip: string,
-    golongan: string
-  }
+  id_rencana_kinerja: string;
+  nama_risiko: string;
+  penyebab: string;
+  akibat: string;
+  skala_dampak: number;
+  skala_kemungkinan: number;
+  nip_pembuat: string;
 }
 
 // fraud penanganan
@@ -182,11 +217,7 @@ export type PenangananFraudPostValue = {
   biaya_perlakuan_risiko: string;
   target_waktu: string;
   pic: string;
-  pembuat: {
-    nama: string;
-    nip: string;
-    golongan: string;
-  }
+  nip_pembuat: string;
 }
 
 // fraud pemantauan RTP
@@ -236,9 +267,5 @@ export type PemantauanFraudPostValue = {
   bukti_pelaksanaan_tindak_lanjut: string;
   kendala: string;
   catatan: string;
-  pembuat: {
-    nama: string;
-    nip: string;
-    golongan: string;
-  }
+  nip_pembuat: string;
 }

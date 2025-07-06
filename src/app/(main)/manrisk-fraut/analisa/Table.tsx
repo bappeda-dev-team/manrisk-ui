@@ -22,11 +22,11 @@ const Table = () => {
     const [Nip, setNip] = useState<string>("");
     const [DataToEdit, setDataToEdit] = useState<any>(null);
     const [FetchTrigger, setFetchTrigger] = useState<boolean>(false);
-    const {branding} = useBrandingContext();
+    const { branding } = useBrandingContext();
     const tahun = branding?.tahun ? branding?.tahun.value : 0;
     const { url_manrisk } = useApiUrlContext();
 
-    const { Data: HasilData, Loading, Error } = useGet<ApiResponse<AnalisaFraudValue[]>>({url: `${url_manrisk}/analisa/get-all-data/${branding.nip}/${tahun}`, fetchTrigger: FetchTrigger});
+    const { Data: HasilData, Loading, Error } = useGet<ApiResponse<AnalisaFraudValue[]>>({ url: `${url_manrisk}/analisa/get-all-data/${branding.nip}/${tahun}`, fetchTrigger: FetchTrigger });
     const Analisa = HasilData?.data || [];
 
     const handleModal = (jenis: "baru" | "edit" | "", data?: AnalisaFraudValue) => {
@@ -44,7 +44,7 @@ const Table = () => {
             }
         }
     }
-    
+
     const [
         triggerVerifikasi,
         { proses, error: ErrorVerifikasi, message },
@@ -56,23 +56,20 @@ const Table = () => {
         const formData: VerifikasiFormValue = {
             status: status,
             keterangan: keterangan || "",
-            verifikator: {
-                nama: dataRekin.nama_pegawai,
-                nip: dataRekin.pegawai_id,
-                golongan: '-',
-            },
+            nip_verifikator: branding.nip,
         };
         if (!id) {
             toast.error('ID Verifikasi belum tersedia.');
             return;
         }
 
+        // console.log(formData);
         const success = await triggerVerifikasi(id, formData);
 
         if (success) {
             toast.success("Berhasil Verifikasi Data");
             setFetchTrigger((prev) => !prev);
-        } else if(ErrorVerifikasi){
+        } else if (ErrorVerifikasi) {
             toast.error(`${message}`);
         }
     };

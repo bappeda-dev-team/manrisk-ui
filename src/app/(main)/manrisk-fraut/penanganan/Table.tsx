@@ -10,20 +10,10 @@ import { Status } from "@/components/page/Status";
 import { LoadingClock } from "@/components/global/loading";
 import { ErrorMessage } from "@/components/page/Error";
 import { useGet } from "@/hook/useGet";
-import { ApiResponse, PenangananFraudValue } from "@/app/types";
+import { ApiResponse, PenangananFraudValue, VerifikasiFormValue } from "@/app/types";
 import { useBrandingContext } from "@/components/context/BrandingContext";
 import { useApiUrlContext } from "@/components/context/ApiUrlContext";
 import { useVerifikasi } from "@/hook/useVerifikasi";
-
-interface VerifikasiValue {
-    status: string;
-    keterangan: string;
-    verifikator: {
-        nama: string;
-        nip: string;
-        golongan: string;
-    };
-}
 
 const Table = () => {
 
@@ -60,24 +50,20 @@ const Table = () => {
     const [
         triggerVerifikasi,
         { proses, error, message },
-    ] = useVerifikasi<VerifikasiValue, { message: string; verifikasiId: string }>(
+    ] = useVerifikasi<VerifikasiFormValue, { message: string; verifikasiId: string }>(
         'penanganan'
     );
     const handleVerifikasi = async (id: string, status: string, keterangan: string, dataRekin: PenangananFraudValue) => {
-        const formData: VerifikasiValue = {
+        const formData: VerifikasiFormValue = {
             status: status,
             keterangan: keterangan || "",
-            verifikator: {
-                nama: dataRekin.nama_pegawai,
-                nip: dataRekin.pegawai_id,
-                golongan: '-',
-            },
+            nip_verifikator: branding.nip,
         };
         if (!id) {
             toast.error('ID Verifikasi belum tersedia.');
             return;
         }
-
+        // console.log(formData);
         const success = await triggerVerifikasi(id, formData);
 
         if (success) {

@@ -32,11 +32,17 @@ export const useGet = <T>({ url, fetchTrigger }: useFetchDataProps): FetchRespon
         return btoa(credentials);
     }
 
-    // const basicToken = encodeBasicAuth(USERNAME_API, PASS_API);
     const headers: HeadersInit = {
         'Content-Type': 'application/json',
         ...(token && { Authorization: `Bearer ${token}` }),
     }
+    const credentials = btoa(`${USERNAME_API}:${PASS_API}`);
+
+    // Tambahkan header Authorization ke objek headers Anda
+    const headersWithAuth = {
+        ...headers, // Pastikan Anda menyertakan headers lain yang mungkin sudah ada
+        'Authorization': `Basic ${credentials}`
+    };
 
     useEffect(() => {
         const getListData = async () => {
@@ -45,11 +51,11 @@ export const useGet = <T>({ url, fetchTrigger }: useFetchDataProps): FetchRespon
                 setError(true);
                 return;
             }
-            else if(!USERNAME_API){
+            else if (!USERNAME_API) {
                 console.error('Username API tidak terbaca');
                 setError(true);
                 return;
-            } else if(!PASS_API){
+            } else if (!PASS_API) {
                 console.error('Password API tidak terbaca');
                 setError(true);
                 return;
@@ -57,11 +63,12 @@ export const useGet = <T>({ url, fetchTrigger }: useFetchDataProps): FetchRespon
 
             setLoading(true);
             setError(false); // Reset error state on new fetch
+            // console.log(headersWithAuth);
 
             try {
                 setLoading(true);
                 const response = await fetch(`${url}`, {
-                    headers: headers,
+                    headers: headersWithAuth,
                 });
                 const data = await response.json();
                 if (response.ok) {

@@ -38,11 +38,7 @@ interface OperasionalDaerah {
 export type VerifikasiFormValue = {
   status: string;
   keterangan: string;
-  verifikator: {
-    nama: string;
-    nip: string;
-    golongan: string;
-  }
+  nip_verifikator: string;
 }
 
 // jenis risiko

@@ -2,7 +2,7 @@ import { useState, useCallback } from "react";
 import { UsePostResponse } from "@/app/types";
 import { useApiUrlContext } from "@/components/context/ApiUrlContext";
 
-export const usePost = <T, TResponse = { message: string }>(urlPath: string, jenis: string ): [
+export const usePost = <T, TResponse = { message: string }>(urlPath: string, jenis: string): [
     (formValue: T) => Promise<boolean>, // Fungsi untuk memicu POST/PUT
     UsePostResponse<TResponse> // Objek state yang dikembalikan
 ] => {
@@ -10,7 +10,21 @@ export const usePost = <T, TResponse = { message: string }>(urlPath: string, jen
     const [proses, setProses] = useState<boolean>(false);
     const [error, setError] = useState<boolean>(false);
     const [message, setMessage] = useState<string | null>(null);
-    const { url_manrisk } = useApiUrlContext();
+    const { url_manrisk, token } = useApiUrlContext();
+    const USERNAME_API = process.env.NEXT_PUBLIC_USERNAME_API || "-";
+    const PASS_API = process.env.NEXT_PUBLIC_PASSWORD_API || "-";
+
+    const headers: HeadersInit = {
+        'Content-Type': 'application/json',
+        ...(token && { Authorization: `Bearer ${token}` }),
+    }
+    const credentials = btoa(`${USERNAME_API}:${PASS_API}`);
+
+    // Tambahkan header Authorization ke objek headers Anda
+    const headersWithAuth = {
+        ...headers, // Pastikan Anda menyertakan headers lain yang mungkin sudah ada
+        'Authorization': `Basic ${credentials}`
+    };
 
     const triggerPost = useCallback(
         async (formValue: T): Promise<boolean> => {
@@ -28,9 +42,7 @@ export const usePost = <T, TResponse = { message: string }>(urlPath: string, jen
             try {
                 const response = await fetch(`${url_manrisk}${urlPath}`, {
                     method: jenis === "baru" ? 'POST' : "PUT",
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                    headers: headersWithAuth,
                     body: JSON.stringify(formValue),
                 });
 

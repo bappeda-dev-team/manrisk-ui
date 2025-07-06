@@ -53,11 +53,7 @@ const Table = () => {
         const formData: VerifikasiFormValue = {
             status: status,
             keterangan: keterangan || "",
-            verifikator: {
-                nama: dataRekin.nama_pegawai,
-                nip: dataRekin.pegawai_id,
-                golongan: '-',
-            },
+            nip_verifikator: branding.nip,
         };
         if (!id) {
             toast.error('ID Verifikasi belum tersedia.');

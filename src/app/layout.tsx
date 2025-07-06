@@ -1,10 +1,10 @@
-import { Figtree } from "next/font/google";
+import { Poppins } from "next/font/google";
 import "./globals.css";
 import NextTopLoader from "nextjs-toploader";
 import { BrandingProvider } from "@/components/context/BrandingContext";
 import { ApiUrlProvider } from "@/components/context/ApiUrlContext";
 
-const font = Figtree({
+const font = Poppins({
   subsets: ['latin'],
   weight: ['300', '400', '500', '600', '700', '800', '900'],
   display: 'swap',

@@ -2,8 +2,9 @@
 
 import { useState, useCallback } from "react";
 import { VerifikasiFormValue } from "@/app/types";
+import { useApiUrlContext } from "@/components/context/ApiUrlContext";
 
-export function useVerifikasi<TRequest = VerifikasiFormValue, TResponse = {message: string}>(
+export function useVerifikasi<TRequest = VerifikasiFormValue, TResponse = { message: string }>(
     url: string // Endpoint API, misal '/analisa'
 ): [
         (id: string, data: TRequest) => Promise<boolean>, // Fungsi pemicu yang mengembalikan Promise<boolean> (sukses/gagal)
@@ -13,16 +14,30 @@ export function useVerifikasi<TRequest = VerifikasiFormValue, TResponse = {messa
             message: string | null;
         }
     ] {
+    const { url_manrisk, token } = useApiUrlContext();
     const [proses, setProses] = useState<boolean>(false);
     const [error, setError] = useState<boolean>(false);
     const [message, setMessage] = useState<string | null>(null);
 
-    const API_URL = process.env.NEXT_PUBLIC_API_URL;
+    const USERNAME_API = process.env.NEXT_PUBLIC_USERNAME_API || "-";
+    const PASS_API = process.env.NEXT_PUBLIC_PASSWORD_API || "-";
+
+    const headers: HeadersInit = {
+        'Content-Type': 'application/json',
+        ...(token && { Authorization: `Bearer ${token}` }),
+    }
+    const credentials = btoa(`${USERNAME_API}:${PASS_API}`);
+
+    // Tambahkan header Authorization ke objek headers Anda
+    const headersWithAuth = {
+        ...headers, // Pastikan Anda menyertakan headers lain yang mungkin sudah ada
+        'Authorization': `Basic ${credentials}`
+    };
 
     const triggerVerifikasi = useCallback(
         async (id: string, formValue: TRequest): Promise<boolean> => {
-            if (!API_URL) {
-                console.error('API URL is not defined. Please set NEXT_PUBLIC_API_URL or configure rewrites.');
+            if (!url_manrisk) {
+                console.error('API URL is not defined. Please set NEXT_PUBLIC_url_manrisk or configure rewrites.');
                 setError(true);
                 setMessage('API URL is not configured.');
                 return false; // Menandakan kegagalan
@@ -33,13 +48,12 @@ export function useVerifikasi<TRequest = VerifikasiFormValue, TResponse = {messa
             setMessage(null); // Reset pesan
 
             // console.log(formValue);
+            // console.log(headersWithAuth);
 
             try {
-                const response = await fetch(`${API_URL}/${url}/${id}`, {
+                const response = await fetch(`${url_manrisk}/${url}/${id}`, {
                     method: "PATCH",
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                    headers: headersWithAuth,
                     body: JSON.stringify(formValue),
                 });
 
@@ -64,7 +78,7 @@ export function useVerifikasi<TRequest = VerifikasiFormValue, TResponse = {messa
                 setProses(false);
             }
         },
-        [API_URL, url]
+        [url_manrisk, url]
     );
 
     return [triggerVerifikasi, { proses, error, message }];

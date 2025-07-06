@@ -3,12 +3,10 @@
 import { createContext, useContext } from "react"
 import { useState, useEffect } from "react";
 import { getOpdTahun } from "../global/utils/cookies";
-import { usePost } from "@/hook/usePost";
-import { ResultPostResponse } from "@/app/types";
 
 interface OptionType {
-  value: number;
   label: string;
+  value: number;
 }
 interface OptionTypeString {
   value: string;
@@ -26,7 +24,7 @@ interface BrandingContextType {
     title: string;
     tahun: OptionType | null | undefined;
     opd: OptionTypeString | null | undefined;
-    nip: string;
+    nip: string | null;
     logo: string;
     url_dashboard: string;
     url_login: string;
@@ -49,21 +47,21 @@ export function BrandingProvider({ children }: Readonly<{ children: React.ReactN
 
   const [Tahun, setTahun] = useState<OptionType | null>(null);
   const [SelectedOpd, setSelecetedOpd] = useState<OptionTypeString | null>(null);
-  const [Nip, setNip] = useState<string>("");
+  const [Nip, setNip] = useState<string | null>(null);
 
   useEffect(() => {
     const data = getOpdTahun();
     if (data.opd) {
       const opd = {
-        value: data.opd.value,
         label: data.opd.label,
+        value: data.opd.value,
       }
       setSelecetedOpd(opd);
     }
     if (data.tahun) {
       const tahun = {
-        value: data.tahun.value,
         label: data.tahun.label,
+        value: data.tahun.value,
       }
       setTahun(tahun);
     }

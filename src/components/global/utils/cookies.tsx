@@ -47,7 +47,7 @@ type OptionTypeString = {
 export const getOpdTahun = (): {
   tahun: OptionType | null;
   opd: OptionTypeString | null;
-  nip: string | null;
+  nip: string;
 } => {
   const get_tahun = getCookies("tahun");
   const get_opd = getCookies("opd");
@@ -56,17 +56,17 @@ export const getOpdTahun = (): {
   return {
     tahun: parseOptionType(get_tahun),
     opd: parseOptionTypeString(get_opd),
-    nip: typeof get_nip === "string" ? safeParse(get_nip) : null
+    nip: typeof get_nip === "string" ? safeParse(get_nip) : ""
   };
 };
 
 // Optional: helper untuk handle parse error
-function safeParse(value: string): string | null {
+function safeParse(value: string): string {
   try {
     const parsed = JSON.parse(value);
-    return typeof parsed === "string" ? parsed : null;
+    return typeof parsed === "string" ? parsed : "";
   } catch {
-    return null;
+    return "";
   }
 }
 

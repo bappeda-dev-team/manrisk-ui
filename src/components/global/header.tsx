@@ -11,12 +11,15 @@ import { useApiUrlContext } from "../context/ApiUrlContext";
 import { setTahunCookies, getOpdTahun, setNipCookies, setOpdCookies } from "./utils/cookies";
 import { useGet } from "@/hook/useGet";
 import { usePost } from "@/hook/usePost";
-import { UsePostResponse } from "@/app/types";
 import { OpdResponse } from "@/app/types";
 
 interface OptionType {
-  value: number;
   label: string;
+  value: number;
+}
+interface OptionTypeString {
+  label: string;
+  value: string;
 }
 
 export const Header = () => {
@@ -29,7 +32,7 @@ export const Header = () => {
   const [Tahun, setTahun] = useState<OptionType | null>(null);
 
   const [OptionOpd, setOptionOpd] = useState<OpdResponse[]>([]);
-  const [SelectedOpd, setSelectedOpd] = useState<OptionType | null>(null);
+  const [SelectedOpd, setSelectedOpd] = useState<OptionTypeString | null>(null);
 
   const [Nip, setNip] = useState<string>("");
   const [sendData, { data: dataNip, proses, error, message }] = usePost<{ data: string }, any>("/api/external/encrypt", 'baru');

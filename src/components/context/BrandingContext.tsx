@@ -24,7 +24,7 @@ interface BrandingContextType {
     title: string;
     tahun: OptionType | null | undefined;
     opd: OptionTypeString | null | undefined;
-    nip: string | null;
+    nip: string;
     logo: string;
     url_dashboard: string;
     url_login: string;
@@ -47,7 +47,7 @@ export function BrandingProvider({ children }: Readonly<{ children: React.ReactN
 
   const [Tahun, setTahun] = useState<OptionType | null>(null);
   const [SelectedOpd, setSelecetedOpd] = useState<OptionTypeString | null>(null);
-  const [Nip, setNip] = useState<string | null>(null);
+  const [Nip, setNip] = useState<string>("");
 
   useEffect(() => {
     const data = getOpdTahun();

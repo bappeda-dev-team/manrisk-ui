@@ -15,7 +15,7 @@ export const HeaderFraut = () => {
     return(
         <div className="flex items-center gap-2 overflow-x-auto pb-1">
             <button 
-                className={`flex items-center gap-1 py-1 px-3 border rounded-lg cursor-pointer ${url === '/manrisk-fraut/rekin' ? "bg-red-500 border-red-500 text-white" : "border-red-500 text-red-500 hover:bg-red-500 hover:text-white"}`}
+                className={`flex items-center gap-1 py-1 px-3 min-w-[200px] justify-center border rounded-lg cursor-pointer ${url === '/manrisk-fraut/rekin' ? "bg-red-500 border-red-500 text-white" : "border-red-500 text-red-500 hover:bg-red-500 hover:text-white"}`}
                 onClick={() => {
                     if(url != '/manrisk-fraut/rekin'){
                         router.push("/manrisk-fraut/rekin");
@@ -33,7 +33,7 @@ export const HeaderFraut = () => {
                 Daftar Rekin
             </button>
             <button 
-                className={`flex items-center gap-1 py-1 px-3 border rounded-lg cursor-pointer ${url === '/manrisk-fraut/identifikasi' ? "bg-green-500 border-green-500 text-white" : "border-green-500 text-green-500 hover:bg-green-500 hover:text-white"}`}
+                className={`flex items-center gap-1 py-1 px-3 min-w-[200px] justify-center border rounded-lg cursor-pointer ${url === '/manrisk-fraut/identifikasi' ? "bg-green-500 border-green-500 text-white" : "border-green-500 text-green-500 hover:bg-green-500 hover:text-white"}`}
                 onClick={() => {
                     if(url != '/manrisk-fraut/identifikasi'){
                         router.push("/manrisk-fraut/identifikasi");
@@ -51,7 +51,7 @@ export const HeaderFraut = () => {
                 Identifikasi
             </button>
             <button 
-                className={`flex items-center gap-1 py-1 px-3 border rounded-lg cursor-pointer ${url === '/manrisk-fraut/analisa' ? "bg-blue-500 border-blue-500 text-white" : "border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white"}`}
+                className={`flex items-center gap-1 py-1 px-3 min-w-[200px] justify-center border rounded-lg cursor-pointer ${url === '/manrisk-fraut/analisa' ? "bg-blue-500 border-blue-500 text-white" : "border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white"}`}
                 onClick={() => {
                     if(url != '/manrisk-fraut/analisa'){
                         router.push("/manrisk-fraut/analisa");
@@ -69,7 +69,7 @@ export const HeaderFraut = () => {
                 Analisa
             </button>
             <button 
-                className={`flex items-center gap-1 py-1 px-3 border rounded-lg cursor-pointer ${url === '/manrisk-fraut/penanganan' ? "bg-amber-500 border-amber-500 text-white" : "border-amber-500 text-amber-500 hover:bg-amber-500 hover:text-white"}`}
+                className={`flex items-center gap-1 py-1 px-3 min-w-[200px] justify-center border rounded-lg cursor-pointer ${url === '/manrisk-fraut/penanganan' ? "bg-amber-500 border-amber-500 text-white" : "border-amber-500 text-amber-500 hover:bg-amber-500 hover:text-white"}`}
                 onClick={() => {
                     if(url != 'manrisk-fraut/penanganan'){
                         router.push("/manrisk-fraut/penanganan");
@@ -87,7 +87,7 @@ export const HeaderFraut = () => {
                 Pengendalian
             </button>
             <button 
-                className={`flex items-center gap-1 py-1 px-3 border rounded-lg cursor-pointer ${url === '/manrisk-fraut/pemantauan' ? "bg-gray-700 border-gray-700 text-white" : "border-gray-700 text-gray-700 hover:bg-gray-700 hover:text-white"}`}
+                className={`flex items-center gap-1 py-1 px-3 min-w-[200px] justify-center border rounded-lg cursor-pointer ${url === '/manrisk-fraut/pemantauan' ? "bg-gray-700 border-gray-700 text-white" : "border-gray-700 text-gray-700 hover:bg-gray-700 hover:text-white"}`}
                 onClick={() => {
                     if(url != 'manrisk-fraut/pemantauan'){
                         router.push("/manrisk-fraut/pemantauan");
@@ -105,7 +105,7 @@ export const HeaderFraut = () => {
                 Pemantauan RTP
             </button>
             <button 
-                className={`flex items-center gap-1 py-1 px-3 border rounded-lg cursor-pointer ${url === '/manrisk-fraut/hasil-pemantauan' ? "bg-gray-700 border-gray-700 text-white" : "border-gray-700 text-gray-700 hover:bg-gray-700 hover:text-white"}`}
+                className={`flex items-center gap-1 py-1 px-3 min-w-[200px] justify-center border rounded-lg cursor-pointer ${url === '/manrisk-fraut/hasil-pemantauan' ? "bg-gray-700 border-gray-700 text-white" : "border-gray-700 text-gray-700 hover:bg-gray-700 hover:text-white"}`}
                 onClick={() => {
                     if(url != 'manrisk-fraut/hasil-pemantauan'){
                         router.push("/manrisk-fraut/hasil-pemantauan");

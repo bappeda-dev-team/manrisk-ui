@@ -19,7 +19,7 @@ export const HeaderKinerja: React.FC<HeaderKinerja> = ({ jenis }) => {
     return (
         <div className="flex items-center gap-2 overflow-x-auto pb-1">
             <button
-                className={`flex items-center gap-1 py-1 px-3 border rounded-lg cursor-pointer 
+                className={`flex items-center gap-1 py-1 px-3 min-w-[200px] justify-center border rounded-lg cursor-pointer 
                     ${(
                         url === '/manrisk-kinerja/pemda/identifikasi' ||
                         url === '/manrisk-kinerja/opd/identifikasi' ||
@@ -61,7 +61,7 @@ export const HeaderKinerja: React.FC<HeaderKinerja> = ({ jenis }) => {
                 Identifikasi
             </button>
             <button
-                className={`flex items-center gap-1 py-1 px-3 border rounded-lg cursor-pointer 
+                className={`flex items-center gap-1 py-1 px-3 min-w-[200px] justify-center border rounded-lg cursor-pointer 
                     ${(
                         url === '/manrisk-kinerja/pemda/analisa' ||
                         url === '/manrisk-kinerja/opd/analisa' ||
@@ -103,7 +103,7 @@ export const HeaderKinerja: React.FC<HeaderKinerja> = ({ jenis }) => {
                 Analisa
             </button>
             <button
-                className={`flex items-center gap-1 py-1 px-3 border rounded-lg cursor-pointer 
+                className={`flex items-center gap-1 py-1 px-3 min-w-[200px] justify-center border rounded-lg cursor-pointer 
                     ${(
                         url === '/manrisk-kinerja/pemda/penanganan' ||
                         url === '/manrisk-kinerja/opd/penanganan' ||
@@ -145,7 +145,7 @@ export const HeaderKinerja: React.FC<HeaderKinerja> = ({ jenis }) => {
                 Pengendalian
             </button>
             <button
-                className={`flex items-center gap-1 py-1 px-3 border rounded-lg cursor-pointer 
+                className={`flex items-center gap-1 py-1 px-3 min-w-[200px] justify-center border rounded-lg cursor-pointer 
                     ${(
                         url === '/manrisk-kinerja/pemda/pemantauan' ||
                         url === '/manrisk-kinerja/opd/pemantauan' ||
@@ -187,7 +187,7 @@ export const HeaderKinerja: React.FC<HeaderKinerja> = ({ jenis }) => {
                 Pemantauan RTP
             </button>
             <button
-                className={`flex items-center gap-1 py-1 px-3 border rounded-lg cursor-pointer 
+                className={`flex items-center gap-1 py-1 px-3 min-w-[200px] justify-center border rounded-lg cursor-pointer 
                     ${(
                         url === '/manrisk-kinerja/pemda/hasil-pemantauan' ||
                         url === '/manrisk-kinerja/opd/hasil-pemantauan' ||

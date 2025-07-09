@@ -54,7 +54,7 @@ export const ModalIdentifikasi: React.FC<ModalIdentifikasiProps> = ({ isOpen, on
             nama_risiko: dataValue.nama_risiko,
             jenis_risiko: dataValue.jenis_risiko,
             kemungkinan_kecurangan: dataValue.kemungkinan_kecurangan,
-            strategi: "-",
+            // strategi: "-",
             uraian: "-",
             indikasi: dataValue.indikasi,
             kemungkinan_pihak_terkait: dataValue.kemungkinan_pihak_terkait,

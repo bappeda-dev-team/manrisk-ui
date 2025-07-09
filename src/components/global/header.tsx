@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { TbSettingsCog, TbAlertTriangle, TbDeviceAnalytics, TbLogout } from "react-icons/tb";
+import { TbSettingsCog, TbAlertTriangle, TbDeviceAnalytics, TbLogout, TbDatabase, TbReportAnalytics } from "react-icons/tb";
 import { useBrandingContext } from "../context/BrandingContext";
 import { useApiUrlContext } from "../context/ApiUrlContext";
 import { setTahunCookies, getOpdTahun, setNipCookies, setOpdCookies } from "./utils/cookies";
@@ -174,24 +174,33 @@ export const Header = () => {
               height={40}
             />
           </Link>
-          <ul className="hidden lg:flex space-x-6 items-center">
+          <ul className="hidden lg:flex space-x-2 items-center">
+            <Link
+              href='/datamaster'
+              className={`flex items-center gap-1 font-medium rounded-lg cursor-pointer py-1 px-5 ${getActiveClass(
+                url.startsWith('/datamaster'), 'default'
+              )}`}
+            >
+              <TbDatabase />
+              Data Master
+            </Link>
             <div
               className="relative inline-block"
               onClick={() => setShowManriskKinerjaDropdown((prev) => !prev)}
             >
               <div
                 className={`flex items-center gap-1 font-medium rounded-lg cursor-pointer py-1 px-5
-                            ${showManriskKinerjaDropdown ? "text-white bg-red-500 border border-red-500" : "hover:text-white text-red-500 hover:bg-red-700 border border-red-700"}
+                            ${showManriskKinerjaDropdown ? "text-white bg-red-500 border border-red-500" : "hover:text-white text-red-500 hover:bg-red-700 border border-red-500"}
                           `}
               >
                 <TbSettingsCog />
-                Manrisk Kinerja
+                Kinerja
               </div>
 
               {/* Menu Dropdown "Manrisk Kinerja" */}
               {showManriskKinerjaDropdown && (
                 <div
-                  className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-md shadow-lg min-w-[160px] z-10 flex flex-col overflow-hidden"
+                  className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-md shadow-lg min-w-[120px] z-10 flex flex-col overflow-hidden"
                 >
                   <Link href="/manrisk-kinerja/pemda/identifikasi" className="block px-4 py-2 text-gray-800 hover:bg-red-700 hover:text-white transition duration-150 ease-in-out whitespace-nowrap">
                     Pemda
@@ -213,7 +222,7 @@ export const Header = () => {
               )}`}
             >
               <TbAlertTriangle />
-              Manrisk Fraud
+              Fraud
             </Link>
             <Link
               href='/manrisk-spbe/identifikasi'
@@ -222,7 +231,16 @@ export const Header = () => {
               )}`}
             >
               <TbDeviceAnalytics />
-              Manrisk SPBE
+              SPBE
+            </Link>
+            <Link
+              href='/laporan'
+              className={`flex items-center gap-1 font-medium rounded-lg cursor-pointer py-1 px-5 ${getActiveClass(
+                url.startsWith('/laporan'), 'default'
+              )}`}
+            >
+              <TbReportAnalytics />
+              Laporan
             </Link>
           </ul>
         </div>
@@ -236,11 +254,14 @@ export const Header = () => {
               setSelectedOpd(option);
               setOpdCookies(option);
             }}
-            placeholder="Pilih Perangkat Daerah"
+            placeholder="Pilih OPD"
             styles={{
               control: (baseStyles: any) => ({
                 ...baseStyles,
                 borderRadius: '8px',
+                minWidth: '157.562px',
+                maxWidth: '160px',
+                minHeight: '38px'
               })
             }}
           />
@@ -257,6 +278,9 @@ export const Header = () => {
               control: (baseStyles: any) => ({
                 ...baseStyles,
                 borderRadius: '8px',
+                minWidth: '157.562px',
+                maxWidth: '160px',
+                minHeight: '38px'
               })
             }}
           />

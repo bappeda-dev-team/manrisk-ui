@@ -33,6 +33,10 @@ interface OperasionalDaerah {
   nama_opd: string;
   kode_opd: string;
 }
+interface UserInfo {
+  nip: string;
+  nama: string;
+}
 
 //Verifikasi
 export type VerifikasiFormValue = {
@@ -84,7 +88,6 @@ interface Target {
   target: string;
   satuan: string;
 }
-
 interface Indikator {
   id_indikator: string;
   rencana_kinerja_id: string;
@@ -140,6 +143,21 @@ export type IdentifikasiFraudValue = {
     nip: string;
     golongan: string;
   },
+}
+export type IdentifikasiFraudPost = {
+  nama_pegawai?: string;
+  nama_rencana_kinerja?: string;
+  pegawai_id?: string;
+
+  id_rencana_kinerja: string;
+  nama_risiko: string;
+  jenis_risiko: string;
+  strategi?: string;
+  uraian: string;
+  kemungkinan_kecurangan: string;
+  indikasi: string;
+  kemungkinan_pihak_terkait: string;
+  nip_pembuat: string;
 }
 
 // fraud analisa
@@ -247,7 +265,6 @@ export type PemantauanFraudValue = {
     golongan: string;
   }
 }
-
 export type PemantauanFraudPostValue = {
   pegawai_id?: string;
   nama_pegawai?: string;
@@ -263,5 +280,51 @@ export type PemantauanFraudPostValue = {
   bukti_pelaksanaan_tindak_lanjut: string;
   kendala: string;
   catatan: string;
+  nip_pembuat: string;
+}
+
+// fraud hasil pemantauan
+export type HasilPemantauanFraudValue = {
+  id: number;
+  id_rencana_kinerja: string;
+  id_pohon: number;
+  nama_pohon: string;
+  level_pohon: number;
+  nama_rencana_kinerja: string;
+  tahun: string;
+  status_rencana_kinerja: string;
+  pegawai_id: string;
+  nama_pegawai: string;
+  operasional_daerah: OperasionalDaerah;
+  pemilik_risiko: string;
+  risiko_kecurangan: string;
+  deskripsi_kegiatan_pengendalian: string;
+  pic: string;
+  rencana_waktu_pelaksanaan: string;
+  realisasi_waktu_pelaksanaan: string;
+  progres_tindak_lanjut: string;
+  bukti_pelaksanaan_tindak_lanjut: string;
+  kendala: string;
+  catatan: string;
+  status: string;
+  keterangan: string;
+  skala_dampak: number;
+  skala_kemungkinan: number;
+  tingkat_risiko: number;
+  level_risiko: string;
+  status_hasil_pemantauan: string;
+  keterangan_hasil_pemantauan: string;
+  pembuat: UserInfo;
+  verifikator: UserInfo;
+  created_at: string; // ISO 8601 string
+  updated_at: string; // ISO 8601 string
+}
+export type HasilPemantauanFraudPostValue = {
+  risiko_kecurangan?: string;
+  deskripsi_kegiatan_pengendalian?: string;
+  id_rencana_kinerja: string;
+  skala_dampak: number;
+  skala_kemungkinan: number;
+  catatan?: string;
   nip_pembuat: string;
 }

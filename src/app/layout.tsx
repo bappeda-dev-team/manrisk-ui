@@ -25,7 +25,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <title>Manajemen Resiko</title>
+        <title>Manrisk - Manajemen Risiko</title>
         <meta name="description" content="Aplikasi KAK - Manrisk" />
         <link
           rel="icon"

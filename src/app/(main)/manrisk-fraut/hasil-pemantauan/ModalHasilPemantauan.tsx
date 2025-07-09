@@ -7,67 +7,49 @@ import { LoadingButtonClip } from "@/components/global/loadingButton";
 import { FloatingLabelInput, FloatingLabelTextarea } from "@/components/global/input";
 import { useForm, SubmitHandler, Controller, useWatch } from "react-hook-form";
 import useToast from "@/components/global/alert/toastAlert";
+import { HasilPemantauanFraudPostValue, ResultPostResponse } from "@/app/types";
+import { useBrandingContext } from "@/components/context/BrandingContext";
+import { usePost } from "@/hook/usePost";
 
 interface ModalPemantauan {
     isOpen: boolean;
     onClose: () => void;
-    data: FormValue;
-}
-interface FormValue {
-    id_resiko: number;
-    nama_pemilik_resiko: string;
-    resiko_kecurangan_yang_dimitigasi: string;
-    bentuk_kegiatan_pengendalian: string;
-    dampak: number,
-    kemungkinan: number,
-    catatan: string;
-    status: string;
-    catatan_status: string;
+    onSuccess: () => void;
+    jenis: "baru" | "edit" | "";
+    data: HasilPemantauanFraudPostValue;
 }
 
-export const ModalHasilPemantauan: React.FC<ModalPemantauan> = ({ isOpen, onClose, data }) => {
+export const ModalHasilPemantauan: React.FC<ModalPemantauan> = ({ isOpen, onClose, data, onSuccess, jenis }) => {
     const DefaultValue = {
-        nama_pemilik_resiko: '',
-        resiko_kecurangan_yang_dimitigasi: '',
-        bentuk_kegiatan_pengendalian: '',
-        dampak: 0,
-        kemungkinan: 0,
-        catatan: '',
+        id_rencana_kinerja: data.id_rencana_kinerja,
+        risiko_kecurangan: data.risiko_kecurangan,
+        deskripsi_kegiatan_pengendalian: data.deskripsi_kegiatan_pengendalian,
+        skala_dampak: data.skala_dampak,
+        skala_kemungkinan: data.skala_kemungkinan,
+        catatan: data.catatan,
     }
-    const { reset, control, handleSubmit, setValue } = useForm<FormValue>({
+    const { reset, control, handleSubmit, setValue } = useForm<HasilPemantauanFraudPostValue>({
         defaultValues: DefaultValue
     });
 
-    useEffect(() => {
-        if (isOpen) {
-            reset({
-                nama_pemilik_resiko: data.nama_pemilik_resiko,
-                resiko_kecurangan_yang_dimitigasi: data.resiko_kecurangan_yang_dimitigasi,
-                bentuk_kegiatan_pengendalian: data.bentuk_kegiatan_pengendalian,
-                dampak: data.dampak,
-                kemungkinan: data.kemungkinan,
-                catatan: data.catatan,
-            });
-        } else {
-            reset(DefaultValue)
-        }
-    }, [isOpen]);
-
+    const { branding } = useBrandingContext();
     const [Proses, setProses] = useState<boolean>(false);
     const [TingkatResiko, setTingkatResiko] = useState<number>(0);
     const [LevelResiko, setLevelResiko] = useState<string>('');
     const { toastSuccess, toastError, toastInfo, toastWarning } = useToast()
 
-    const [dampak, kemungkinan] = useWatch({
+    const [skala_dampak, skala_kemungkinan] = useWatch({
         control,
-        name: ['dampak', 'kemungkinan'], // Watch kedua field ini
+        name: ['skala_dampak', 'skala_kemungkinan'], // Watch kedua field ini
     });
+
+    const [sendData, { data: HasilData, proses, error, message }] = usePost<HasilPemantauanFraudPostValue, ResultPostResponse>(jenis === 'baru' ? '/hasil-pemantauan' : `/hasil-pemantauan/${data.id_rencana_kinerja}`, jenis);
 
 
     useEffect(() => {
         // Pastikan nilai adalah angka sebelum melakukan perhitungan
-        const d = Number(dampak);
-        const k = Number(kemungkinan);
+        const d = Number(skala_dampak);
+        const k = Number(skala_kemungkinan);
 
         if (!isNaN(d) && !isNaN(k)) {
             const hasil = d * k;
@@ -87,20 +69,26 @@ export const ModalHasilPemantauan: React.FC<ModalPemantauan> = ({ isOpen, onClos
             setTingkatResiko(0); // Reset jika input tidak valid
             setLevelResiko('-');
         }
-    }, [dampak, kemungkinan, setValue]);
+    }, [skala_dampak, skala_kemungkinan, setValue]);
 
-    const onSubmit: SubmitHandler<FormValue> = async (data) => {
+    const onSubmit: SubmitHandler<HasilPemantauanFraudPostValue> = async (data) => {
         const formData = {
             //key : value
-            resiko_kecurangan_yang_dimitigasi: data.resiko_kecurangan_yang_dimitigasi || "-",
-            bentuk_kegiatan_pengendalian: data.bentuk_kegiatan_pengendalian || "-",
-            dampak: Number(data.dampak) || 0,
-            kemungkinan: Number(data.kemungkinan) || 0,
-            catatan: data.catatan
+            id_rencana_kinerja: data.id_rencana_kinerja,
+            skala_dampak: Number(data.skala_dampak) || 0,
+            skala_kemungkinan: Number(data.skala_kemungkinan) || 0,
+            nip_pembuat: branding.nip,
         };
-        console.log(formData);
-        toastSuccess("Berhasil Menyimpan Data");
-        handleClose();
+        // console.log(formData);
+        const success = await sendData(formData);
+        if (success && !proses) {
+            toastSuccess("Berhasil Menyimpan Data");
+            reset(); // Reset form setelah berhasil
+            handleClose(); // Tutup modal setelah berhasil
+            onSuccess();
+        } else if (error && !proses) {
+            toastError(message || "Gagal Menyimpan Data");
+        }
     }
 
     const handleClose = () => {
@@ -114,31 +102,31 @@ export const ModalHasilPemantauan: React.FC<ModalPemantauan> = ({ isOpen, onClos
             onClose={onClose}
         >
             <div className="w-max-[500px] py-2 border-b text-center border-blue-500">
-                <h1 className="text-xl uppercase font-semibold">Form Hasil Pemantauan</h1>
+                <h1 className="text-xl uppercase font-semibold">Form Hasil Pemantauan {jenis}</h1>
             </div>
             <form
                 onSubmit={handleSubmit(onSubmit)}
                 className="flex flex-col mx-5 py-5 gap-2"
             >
                 <Controller
-                    name="resiko_kecurangan_yang_dimitigasi"
+                    name="risiko_kecurangan"
                     control={control}
                     render={({ field }) => (
                         <FloatingLabelTextarea
                             {...field}
-                            id="resiko_kecuarangan_yang_dimitigasi"
+                            id="resiko_kecuarangan"
                             label="Resiko Kecurangan Yang Dimitigasi"
                             disable
                         />
                     )}
                 />
                 <Controller
-                    name="bentuk_kegiatan_pengendalian"
+                    name="deskripsi_kegiatan_pengendalian"
                     control={control}
                     render={({ field }) => (
                         <FloatingLabelTextarea
                             {...field}
-                            id="bentuk_kegiatan_pengendalian"
+                            id="deskripsi_kegiatan_pengendalian"
                             label="Bentuk Kegiatan Pengendalian"
                             disable
                         />
@@ -146,24 +134,24 @@ export const ModalHasilPemantauan: React.FC<ModalPemantauan> = ({ isOpen, onClos
                 />
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-1 border border-gray-500 py-1 px-3 rounded-lg">
                     <Controller
-                        name="dampak"
+                        name="skala_dampak"
                         control={control}
                         render={({ field }) => (
                             <FloatingLabelInput
                                 {...field}
-                                id="dampak"
+                                id="skala_dampak"
                                 label="Dampak"
                                 type="number"
                             />
                         )}
                     />
                     <Controller
-                        name="kemungkinan"
+                        name="skala_kemungkinan"
                         control={control}
                         render={({ field }) => (
                             <FloatingLabelInput
                                 {...field}
-                                id="kemungkinan"
+                                id="skala_kemungkinan"
                                 label="kemungkinan"
                                 type="number"
                             />
@@ -198,6 +186,7 @@ export const ModalHasilPemantauan: React.FC<ModalPemantauan> = ({ isOpen, onClos
                             {...field}
                             id="catatan"
                             label="Catatan"
+                            disable
                         />
                     )}
                 />

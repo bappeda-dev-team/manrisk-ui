@@ -19,7 +19,6 @@ const Table = () => {
 
     const [ModalOpen, setModalOpen] = useState<boolean>(false);
     const [JenisModal, setJenisModal] = useState<"baru" | "edit" | "">('');
-    const [Nip, setNip] = useState<string>("");
     const [DataToEdit, setDataToEdit] = useState<any>(null);
     const [FetchTrigger, setFetchTrigger] = useState<boolean>(false);
     const { branding } = useBrandingContext();

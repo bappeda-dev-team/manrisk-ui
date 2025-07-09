@@ -48,7 +48,7 @@ export const Table = () => {
                                 <td className="border-b border-green-500 px-6 py-4 text-center">{index + 1}</td>
                                 <td className="border border-green-500 px-6 py-4">{data.nama_opd || "-"} ({data.singkatan || "-"})</td>
                                 <td className="border border-green-500 px-6 py-4 text-center">{data.kode_opd || "-"}</td>
-                                <td className="border border-green-500 px-6 py-4 text-center">{data.alamat || "-"}</td>
+                                <td className="border border-green-500 px-6 py-4">{data.alamat || "-"}</td>
                             </tr>
                         ))
                     }

@@ -51,7 +51,7 @@ export default function MainLayout({
                         <Header />
                     </header>
                 }
-                {(branding?.tahun?.value === null || branding?.tahun?.value === undefined) ?
+                {((branding?.tahun?.value === null || branding?.tahun?.value === undefined) && user) ?
                     <TahunNull />
                     :
                     <div className="pt-[90px] px-5 pb-5">

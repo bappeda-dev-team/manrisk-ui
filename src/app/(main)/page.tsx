@@ -1,12 +1,30 @@
 'use client'
 
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { useBrandingContext } from '@/components/context/BrandingContext';
+import { User } from '../types';
+import { authenticate } from '@/lib/auth';
+import Logout from '@/components/Logout';
+import Login from '@/components/Login';
 
 export default function Home() {
 
   const { branding } = useBrandingContext();
+  const [User, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await authenticate();
+        setUser(res);
+      } catch (err) {
+        console.error('Autentikasi gagal', err);
+      }
+    };
+    fetchUser();
+  }, []);
 
   return (
     <>
@@ -30,6 +48,11 @@ export default function Home() {
           />
           <h1 className="text-4xl uppercase font-extrabold">Manrisk</h1>
           <h3 className="text-base font-light">Manajemen Risiko</h3>
+          {User ?
+            <Logout />
+            :
+            <Login />
+          }
         </div>
       </motion.div>
     </>

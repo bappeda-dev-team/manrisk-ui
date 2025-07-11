@@ -46,19 +46,10 @@ export default function MainLayout({
                     color="red"
                     showSpinner={false}
                 />
-                {user ?
-                    (
-                        <header>
-                            <Logout />
-                            <Header />
-                        </header>
-                    )
-                    :
-                    (
-                        <header>
-                            <Login />
-                        </header>
-                    )
+                {user &&
+                    <header>
+                        <Header />
+                    </header>
                 }
                 {(branding?.tahun?.value === null || branding?.tahun?.value === undefined) ?
                     <TahunNull />

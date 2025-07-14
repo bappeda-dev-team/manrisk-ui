@@ -76,17 +76,8 @@ export type PegawaiResponse = {
 // list opd
 export type OpdResponse = {
   id: string;
-  kode_opd: string;
-  nama_opd: string;
-  singkatan: string;
-  alamat: string;
-  telepon: string;
-  fax: string;
-  email: string;
-  website: string;
-  nama_kepala_opd: string;
-  nip_kepala_opd: string;
-  pangkat_kepala: string;
+  kodeOpd: string;
+  namaOpd: string;
 }
 
 // rencana kinerja

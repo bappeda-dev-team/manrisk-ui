@@ -29,9 +29,9 @@ export const usePost = <T, TResponse = { message: string }>(urlPath: string, jen
     const triggerPost = useCallback(
         async (formValue: T): Promise<boolean> => {
             if (!url_manrisk) {
-                console.error('API URL is not defined. Please set NEXT_PUBLIC_API_URL or configure rewrites.');
+                console.error('API is not defined. Please set NEXT_PUBLIC_API_MANRISK or configure rewrites.');
                 setError(true);
-                setMessage('API URL is not configured.');
+                setMessage('API is not configured.');
                 return false; // Menandakan kegagalan
             }
 

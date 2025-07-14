@@ -8,10 +8,9 @@ import { useBrandingContext } from "@/components/context/BrandingContext";
 
 export const Table = () => {
 
-    const {branding} = useBrandingContext();
-    const url_manrisk = branding.api_manrisk;
+    const { api_perencanaan } = useBrandingContext();
 
-    const { Data: HasilData, Loading, Error } = useGet<ApiResponse<OpdResponse[]>>({ url: `${url_manrisk}/api/external/opdlist`});
+    const { Data: HasilData, Loading, Error } = useGet<ApiResponse<OpdResponse[]>>({ url: `${api_perencanaan}/opd/opds` });
     const data = HasilData?.data || [];
 
     if (Loading) {
@@ -32,7 +31,6 @@ export const Table = () => {
                         <th className="border-r border-b py-4 px-6 border-gray-300 max-w-[50px] text-center">No</th>
                         <th className="border-r border-b py-4 px-6 border-gray-300 min-w-[300px]">Nama Perangkat Daerah</th>
                         <th className="border-r border-b py-4 px-6 border-gray-300 min-w-[200px]">Kode OPD</th>
-                        <th className="border-r border-b py-4 px-6 border-gray-300 min-w-[200px]">Alamat</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -46,9 +44,8 @@ export const Table = () => {
                         data.map((data: OpdResponse, index: number) => (
                             <tr key={index}>
                                 <td className="border-b border-green-500 px-6 py-4 text-center">{index + 1}</td>
-                                <td className="border border-green-500 px-6 py-4">{data.nama_opd || "-"} ({data.singkatan || "-"})</td>
-                                <td className="border border-green-500 px-6 py-4 text-center">{data.kode_opd || "-"}</td>
-                                <td className="border border-green-500 px-6 py-4">{data.alamat || "-"}</td>
+                                <td className="border border-green-500 px-6 py-4">{data.namaOpd || "-"}</td>
+                                <td className="border border-green-500 px-6 py-4 text-center">{data.kodeOpd || "-"}</td>
                             </tr>
                         ))
                     }

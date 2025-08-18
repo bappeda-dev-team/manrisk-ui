@@ -11,6 +11,7 @@ const nextConfig: NextConfig = {
       }
     ]
   },
+  transpilePackages: ['@react-pdf/renderer', 'react-pdf'],
 };
 
 export default nextConfig;

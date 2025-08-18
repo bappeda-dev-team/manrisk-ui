@@ -14,7 +14,7 @@ const ManriskFrautIdentifikasi = () => {
                         <TbAlertTriangle />
                         <h1> manrisk fraud - identifikasi </h1>
                     </div>
-                    <Link href="/Cetak/kinerja/1">
+                    <Link href="/Cetak/kinerja/identifikasi/1">
                         <ButtonSky className="flex items-center gap-1">
                             <TbPrinter />
                             Cetak

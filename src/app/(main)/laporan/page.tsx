@@ -47,7 +47,7 @@ const Laporan = () => {
             <BoxMenu
               title="Fraud"
               detail='Rekap data manrisk Fraud'
-              url="/laporan"
+              url="/Cetak/kinerja/allData/1"
             >
               <TbAlertTriangle size={50} />
             </BoxMenu>

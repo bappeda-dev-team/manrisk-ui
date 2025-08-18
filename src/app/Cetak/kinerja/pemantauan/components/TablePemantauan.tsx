@@ -73,6 +73,9 @@ const TablePemantauan = () => (
             <View style={[styles.tableCol, styles.col3, styles.colBorderRight]}>
                 <Text style={styles.tableCell}>contoh data</Text>
             </View>
+            <View style={[styles.tableCol, styles.col3, styles.colBorderRight]}>
+                <Text style={styles.tableCell}>contoh data</Text>
+            </View>
             <View style={[styles.tableCol, styles.col3]}>
                 <Text style={styles.tableCell}>Bappeda</Text>
             </View>

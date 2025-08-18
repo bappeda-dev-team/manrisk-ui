@@ -56,28 +56,31 @@ const TheadTable = () => (
                 <Text style={styles.tableCell}>Pemilik Risiko</Text>
             </View>
             <View style={[styles.tableColHeader, styles.col3, styles.colBorderRight, styles.colBorderBottom]}>
-                <Text style={styles.tableCell}>Tahap Proses Bisnis</Text>
+                <Text style={styles.tableCell}>Risiko Kecurangan yang di Mitigasi</Text>
             </View>
             <View style={[styles.tableColHeader, styles.col2, styles.colBorderRight, styles.colBorderBottom]}>
-                <Text style={styles.tableCell}>ID Risiko</Text>
+                <Text style={styles.tableCell}>Bentuk Kegiatan Pengendalian</Text>
             </View>
             <View style={[styles.tableColHeader, styles.col3, styles.colBorderRight, styles.colBorderBottom]}>
-                <Text style={styles.tableCell}>Existing Control / Internal Control</Text>
+                <Text style={styles.tableCell}>Penanggung Jawab (PIC)</Text>
             </View>
             <View style={[styles.tableColHeader, styles.col3, styles.colBorderRight, styles.colBorderBottom]}>
-                <Text style={styles.tableCell}>Jenis Perlakuan Risiko</Text>
+                <Text style={styles.tableCell}>Rencana Waktu Pelaksanaan Risiko</Text>
             </View>
             <View style={[styles.tableColHeader, styles.col3, styles.colBorderRight, styles.colBorderBottom]}>
-                <Text style={styles.tableCell}>Rencana Perlakuan Risiko</Text>
+                <Text style={styles.tableCell}>Realisasi Waktu Pelaksanaan Perlakuan Risiko</Text>
             </View>
             <View style={[styles.tableColHeader, styles.col3, styles.colBorderRight, styles.colBorderBottom]}>
-                <Text style={styles.tableCell}>Biaya Perlakuan Risiko</Text>
+                <Text style={styles.tableCell}>Progres Tindak Lanjut (%)</Text>
             </View>
             <View style={[styles.tableColHeader, styles.col3, styles.colBorderRight, styles.colBorderBottom]}>
-                <Text style={styles.tableCell}>Target Waktu Rencana Perlakuan Risiko</Text>
+                <Text style={styles.tableCell}>Bukti Pelaksanaan Tindak Lanjut</Text>
+            </View>
+            <View style={[styles.tableColHeader, styles.col3, styles.colBorderRight, styles.colBorderBottom]}>
+                <Text style={styles.tableCell}>Kendala</Text>
             </View>
             <View style={[styles.tableColHeader, styles.col3, styles.colBorderBottom]}>
-                <Text style={styles.tableCell}>Penanggung Jawab (PIC)</Text>
+                <Text style={styles.tableCell}>Catatan</Text>
             </View>
         </View>
         {/* NUMBER HEADER ROW */}
@@ -109,8 +112,11 @@ const TheadTable = () => (
             <View style={[styles.tableColHeader, styles.col3, styles.colBorderRight]}>
                 <Text style={styles.tableCell}>9</Text>
             </View>
-            <View style={[styles.tableColHeader, styles.col3]}>
+            <View style={[styles.tableColHeader, styles.col3, styles.colBorderRight]}>
                 <Text style={styles.tableCell}>10</Text>
+            </View>
+            <View style={[styles.tableColHeader, styles.col3]}>
+                <Text style={styles.tableCell}>11</Text>
             </View>
         </View>
     </View>

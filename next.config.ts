@@ -5,11 +5,11 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'cdnkk.zeabur.app',
-        pathname: '**'
-      }
-    ]
+        protocol: "https",
+        hostname: "logo.kertaskerja.cc",
+        pathname: "/logo",
+      },
+    ],
   },
   transpilePackages: ['@react-pdf/renderer', 'react-pdf'],
 };

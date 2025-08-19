@@ -10,7 +10,8 @@ export const Table = () => {
 
     const { api_perencanaan } = useBrandingContext();
 
-    const { Data: HasilData, Loading, Error } = useGet<ApiResponse<OpdResponse[]>>({ url: `${api_perencanaan}/opd/opds` });
+    // api nya males ga ada data: ...
+    const { Data: HasilData, Loading, Error } = useGet<OpdResponse[]>({ url: `${api_perencanaan}/opd/opds` });
     const data = HasilData || [];
 
     if (Loading) {

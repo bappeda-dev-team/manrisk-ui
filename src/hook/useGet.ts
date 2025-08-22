@@ -59,34 +59,38 @@ export const useGet = <T>({ url, fetchTrigger }: useFetchDataProps): FetchRespon
                 console.error('Password API tidak terbaca');
                 setError(true);
                 return;
-            }
-
-            setLoading(true);
-            setError(false); // Reset error state on new fetch
-            // console.log(headersWithAuth);
-
-            try {
+            } else if(branding?.nip === undefined || branding?.nip === null){
+                alert("nip belum ter encrypt");
+            } else {
                 setLoading(true);
-                const response = await fetch(`${url}`, {
-                    headers: headersWithAuth,
-                });
-                const data = await response.json();
-                if (response.ok) {
-                    setData(data);
-                    // console.log(data);
-                } else {
-                    console.log(data);
-                    setData(undefined);
+                setError(false); // Reset error state on new fetch
+                // console.log(headersWithAuth);
+    
+                try {
+                    setLoading(true);
+                    const response = await fetch(`${url}`, {
+                        headers: headersWithAuth,
+                    });
+                    const data = await response.json();
+                    if (response.ok) {
+                        setData(data);
+                        // console.log(data);
+                    } else {
+                        console.log(data);
+                        setData(undefined);
+                        setError(true);
+                    }
+                } catch (err) {
+                    console.error(err);
                     setError(true);
+                } finally {
+                    setLoading(false);
                 }
-            } catch (err) {
-                console.error(err);
-                setError(true);
-            } finally {
-                setLoading(false);
             }
         }
-        getListData();
+        if((branding?.nip != undefined || branding?.nip != null) && branding?.tahun?.value != undefined){
+            getListData();
+        }
     }, [tahun, url_manrisk, USERNAME_API, PASS_API, fetchTrigger]);
 
     return (

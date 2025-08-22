@@ -1,5 +1,11 @@
 import React from 'react';
 import { Text, View, StyleSheet } from '@react-pdf/renderer';
+import { IdentifikasiFraudValue } from '@/app/types';
+
+interface TableIdentifikasi {
+    data: IdentifikasiFraudValue;
+    index: number;
+}
 
 const styles = StyleSheet.create({
     page: {
@@ -28,8 +34,11 @@ const styles = StyleSheet.create({
     colBorderBottom: {
         borderBottom: 1,
     },
-    tableCell: {
+    font11: {
         fontSize: 11, // Ukuran font untuk konten sel
+    },
+    font9: {
+        fontSize: 9,
     },
     textStart: {
         textAlign: 'left'
@@ -42,39 +51,39 @@ const styles = StyleSheet.create({
 });
 
 // Komponen Tabel
-const TableIdentifikasi = () => (
+const TableIdentifikasi: React.FC<TableIdentifikasi> = ({ data, index }) => (
     <View style={styles.table}>
         {/* Baris Data 1 */}
         <View style={[styles.tableRow, styles.colBorderBottom]}>
             <View style={[styles.tableCol, styles.col1, styles.colBorderRight, styles.textStart]}>
-                <Text style={styles.tableCell}>1</Text>
+                <Text style={styles.font11}>{index}</Text>
             </View>
             <View style={[styles.tableCol, styles.col3, styles.colBorderRight]}>
-                <Text style={styles.tableCell}>Akun Test Level 3</Text>
+                <Text style={styles.font11}>{data.nama_pegawai || "-"}</Text>
             </View>
             <View style={[styles.tableCol, styles.col3, styles.colBorderRight]}>
-                <Text style={styles.tableCell}>Tahap Proses Bisnis</Text>
+                <Text style={styles.font11}>{data.nama_rencana_kinerja || "-"}</Text>
             </View>
-            <View style={[styles.tableCol, styles.col2, styles.colBorderRight]}>
-                <Text style={styles.tableCell}>ID Risiko</Text>
+            {/* <View style={[styles.tableCol, styles.col3, styles.colBorderRight]}>
+                <Text style={styles.font9}>{data.id_rencana_kinerja || "-"}</Text>
+            </View> */}
+            <View style={[styles.tableCol, styles.col3, styles.colBorderRight]}>
+                <Text style={styles.font11}>Bappeda</Text>
             </View>
             <View style={[styles.tableCol, styles.col3, styles.colBorderRight]}>
-                <Text style={styles.tableCell}>Bappeda</Text>
+                <Text style={styles.font11}>{data.nama_risiko || "-"}</Text>
             </View>
             <View style={[styles.tableCol, styles.col3, styles.colBorderRight]}>
-                <Text style={styles.tableCell}>Nama Risiko Fraud</Text>
+                <Text style={styles.font11}>{data.jenis_risiko || "-"}</Text>
             </View>
             <View style={[styles.tableCol, styles.col3, styles.colBorderRight]}>
-                <Text style={styles.tableCell}>Identifikasi</Text>
+                <Text style={styles.font11}>{data.kemungkinan_kecurangan || "-"}</Text>
             </View>
             <View style={[styles.tableCol, styles.col3, styles.colBorderRight]}>
-                <Text style={styles.tableCell}>contoh kemungkinan skenario kecurangan</Text>
-            </View>
-            <View style={[styles.tableCol, styles.col3, styles.colBorderRight]}>
-                <Text style={styles.tableCell}>Gejala / Kemungkinan</Text>
+                <Text style={styles.font11}>{data.indikasi || "-"}</Text>
             </View>
             <View style={[styles.tableCol, styles.col3]}>
-                <Text style={styles.tableCell}>Bappeda</Text>
+                <Text style={styles.font11}>{data.kemungkinan_pihak_terkait || "-"}</Text>
             </View>
         </View>
     </View>

@@ -6,19 +6,22 @@ import TableIdentifikasi from '../components/TableIdentifikasi';
 import TTD from '../components/TandaTangan';
 import { Font } from '@react-pdf/renderer';
 import TheadTable from '../components/TheadTable';
+import React from 'react';
 
 
 Font.register({ family: 'Times-Roman', src: '/font/times.ttf', fontStyle: 'normal', fontWeight: 'normal' });
 
 interface DocumentProps {
     branding: any;
+    data: any[];
+    tanggal: string;
 }
 
 // Gaya untuk MyDocument
 const styles = StyleSheet.create({
     page: {
-        paddingVertical: 30, // px-20
-        paddingHorizontal: 38, // py-5
+        paddingVertical: 15, // sumbu y
+        paddingHorizontal: 10,  // sumbu x
         fontFamily: "Times-Roman",
         textAlign: 'justify'
     },
@@ -72,7 +75,7 @@ const styles = StyleSheet.create({
 });
 
 
-const Kertas: React.FC<DocumentProps> = ({ branding }) => {
+const Kertas: React.FC<DocumentProps> = ({ branding, data, tanggal }) => {
 
     if (branding.logo === '' || branding.logo === undefined) {
         return (
@@ -84,10 +87,8 @@ const Kertas: React.FC<DocumentProps> = ({ branding }) => {
         )
     }
 
-    const imageUrl = branding?.logo;
-
     return (
-        <Document>
+        <Document title={`Manrisk Fraud - ${branding?.tahun?.label}`}>
             <Page size="A4" style={styles.page} orientation='landscape'>
                 <Text style={styles.headingBr}>
                     KERTAS KERJA MANAJEMEN RISIKO KECURANGAN (FRAUD)
@@ -97,13 +98,16 @@ const Kertas: React.FC<DocumentProps> = ({ branding }) => {
                 </Text>
                 <TablePemda />
                 <TheadTable />
-                <TableIdentifikasi />
-                <TableIdentifikasi />
-                <TableIdentifikasi />
+                {data.map((data: any, index: number) => (
+                    <React.Fragment key={index}>
+                        <TableIdentifikasi data={data} index={index + 1} />
+                    </React.Fragment>
+                ))}
                 <TTD
                     pihak='Kepala Badan Perencanaan Penelitian dan Pengembangan'
                     nama='Akun Test Level 1'
                     nip='019284098130948'
+                    date={tanggal}
                     tanggal
                 />
             </Page>

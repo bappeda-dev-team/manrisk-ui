@@ -39,6 +39,23 @@ export default function MainLayout({
         };
         fetchUser();
     }, []);
+
+    if(branding?.tahun?.value == undefined){
+        return(
+            <>
+                <BrandingProvider>
+                    <NextTopLoader
+                        color="red"
+                        showSpinner={false}
+                    />
+                        <header>
+                            <Header />
+                        </header>
+                        <TahunNull />
+                </BrandingProvider>
+            </>
+        )
+    }
     return (
         <>
             <BrandingProvider>

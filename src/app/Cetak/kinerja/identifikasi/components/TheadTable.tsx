@@ -58,9 +58,9 @@ const TheadTable = () => (
             <View style={[styles.tableColHeader, styles.col3, styles.colBorderRight, styles.colBorderBottom]}>
                 <Text style={styles.tableCell}>Tahap Proses Bisnis</Text>
             </View>
-            <View style={[styles.tableColHeader, styles.col2, styles.colBorderRight, styles.colBorderBottom]}>
+            {/* <View style={[styles.tableColHeader, styles.col2, styles.colBorderRight, styles.colBorderBottom]}>
                 <Text style={styles.tableCell}>ID Risiko</Text>
-            </View>
+            </View> */}
             <View style={[styles.tableColHeader, styles.col3, styles.colBorderRight, styles.colBorderBottom]}>
                 <Text style={styles.tableCell}>Program Unit Kerja</Text>
             </View>
@@ -91,7 +91,10 @@ const TheadTable = () => (
             <View style={[styles.tableColHeader, styles.col3, styles.colBorderRight]}>
                 <Text style={styles.tableCell}>3</Text>
             </View>
-            <View style={[styles.tableColHeader, styles.col2, styles.colBorderRight]}>
+            {/* <View style={[styles.tableColHeader, styles.col2, styles.colBorderRight]}>
+                <Text style={styles.tableCell}>4</Text>
+            </View> */}
+            <View style={[styles.tableColHeader, styles.col3, styles.colBorderRight]}>
                 <Text style={styles.tableCell}>4</Text>
             </View>
             <View style={[styles.tableColHeader, styles.col3, styles.colBorderRight]}>
@@ -106,11 +109,8 @@ const TheadTable = () => (
             <View style={[styles.tableColHeader, styles.col3, styles.colBorderRight]}>
                 <Text style={styles.tableCell}>8</Text>
             </View>
-            <View style={[styles.tableColHeader, styles.col3, styles.colBorderRight]}>
-                <Text style={styles.tableCell}>9</Text>
-            </View>
             <View style={[styles.tableColHeader, styles.col3]}>
-                <Text style={styles.tableCell}>10</Text>
+                <Text style={styles.tableCell}>9</Text>
             </View>
         </View>
     </View>

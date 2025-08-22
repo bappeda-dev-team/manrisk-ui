@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { TbSettingsCog, TbAlertTriangle, TbDeviceAnalytics, TbLogout, TbDatabase, TbReportAnalytics } from "react-icons/tb";
+import { TbSettingsCog, TbAlertTriangle, TbDeviceAnalytics, TbDatabase, TbReportAnalytics } from "react-icons/tb";
 import { useBrandingContext } from "../context/BrandingContext";
 import { useApiUrlContext } from "../context/ApiUrlContext";
 import { setTahunCookies, getOpdTahun, setNipCookies, setOpdCookies } from "./utils/cookies";
@@ -87,8 +87,10 @@ export const Header = () => {
       }
       await sendData(formData);
     }
-    fetchNip();
-  }, [sendData]);
+    if(branding?.nip == undefined || branding?.nip == null || branding?.nip == ''){
+      fetchNip();
+    }
+  }, [sendData, branding]);
 
   useEffect(() => {
     if (!proses && dataNip) {

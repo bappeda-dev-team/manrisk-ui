@@ -4,6 +4,7 @@ interface TTD {
     nama: string;
     nip: string;
     pihak: string;
+    date?: string;
     tanggal: boolean;
 }
 
@@ -58,7 +59,7 @@ const styles = StyleSheet.create({
     }
 });
 
-const TTD: React.FC<TTD> = ({ pihak, nama, nip, tanggal }) => {
+const TTD: React.FC<TTD> = ({ pihak, nama, nip, tanggal, date }) => {
 
     const today = new Date();
 
@@ -113,7 +114,7 @@ const TTD: React.FC<TTD> = ({ pihak, nama, nip, tanggal }) => {
         <View style={styles.parentContainer}>
             <View style={styles.container}>
                 <Text style={[styles.tanggalText, tanggal ? styles.opacityFull : styles.opacityZero]}>
-                    Madiun, {formattedDate}
+                    Madiun, {date ? date : formattedDate}
                 </Text>
                 <Text style={[styles.tanggalText, styles.fontBold]}>{pihak || "pihak"},</Text>
 

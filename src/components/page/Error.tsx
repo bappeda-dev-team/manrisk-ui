@@ -61,9 +61,14 @@ export const TahunNull = () => (
             d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
           ></path>
         </svg>
-        <h2 className="mt-6 text-3xl font-extrabold text-blue-800">
-          Pilih Tahun Terlebih Dahulu
-        </h2>
+        <div className="flex items-center justify-center gap-1 mt-3">
+          <h2 className="text-3xl font-extrabold text-blue-800">
+            Pilih
+          </h2>
+          <h2 className="text-3xl font-extrabold text-red-500">
+            Tahun
+          </h2>
+        </div>
         <p className="mt-2 text-sm text-blue-600">
           Untuk menampilkan data, mohon pilih tahun di header terlebih dahulu.
         </p>

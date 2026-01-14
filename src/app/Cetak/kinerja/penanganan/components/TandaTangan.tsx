@@ -113,7 +113,7 @@ const TTD: React.FC<TTD> = ({ pihak, nama, nip, tanggal }) => {
         <View style={styles.parentContainer}>
             <View style={styles.container}>
                 <Text style={[styles.tanggalText, tanggal ? styles.opacityFull : styles.opacityZero]}>
-                    Madiun, {formattedDate}
+                    -, {formattedDate}
                 </Text>
                 <Text style={[styles.tanggalText, styles.fontBold]}>{pihak || "pihak"},</Text>
 

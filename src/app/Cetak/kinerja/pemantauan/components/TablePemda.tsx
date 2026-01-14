@@ -42,7 +42,7 @@ const TablePemda = () => (
                 <Text style={[styles.textStart]}>:</Text>
             </View>
             <View style={[ styles.col2, styles.textStart]}>
-                <Text style={[styles.textStart, styles.textStart]}>Kota Madiun</Text>
+                <Text style={[styles.textStart, styles.textStart]}>Manrisk</Text>
             </View>
         </View>
         {/* Baris Data 2 */}
@@ -54,7 +54,7 @@ const TablePemda = () => (
                 <Text style={[styles.textStart]}>:</Text>
             </View>
             <View style={[ styles.col2, styles.textStart]}>
-                <Text style={[styles.textStart, styles.textStart]}>Badan Perencanaan Penelitian dan Pengembangan Kota Madiun</Text>
+                <Text style={[styles.textStart, styles.textStart]}>Badan Perencanaan Penelitian dan Pengembangan</Text>
             </View>
         </View>
         {/* Baris Data 3 */}

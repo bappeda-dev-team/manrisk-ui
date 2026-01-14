@@ -41,7 +41,7 @@ export default function Home() {
         <div className="flex flex-col items-center gap-2 rounded-xl py-10 px-30 shadow-2xl shadow-gray-400">
           <Image
             className='mb-3'
-            src={branding.logo || "https://cdnkk.zeabur.app/api/cdn/download/images/universal.png"}
+            src={branding.logo}
             alt="logo"
             width={100}
             height={100}
